@@ -43,7 +43,7 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
         super(builder);
 
         this.enumClass = this.defaultValue.getDeclaringClass();
-        this.enumByIdFunction = ValueLists.createIdToValueFunction(E::getId, this.getEnumConstants(), ValueLists.OutOfBoundsHandling.WRAP);
+        this.enumByIdFunction = ValueLists.createIndexToValueFunction(E::getId, this.getEnumConstants(), ValueLists.OutOfBoundsHandling.WRAP);
 
         this.postConstruct();
     }
