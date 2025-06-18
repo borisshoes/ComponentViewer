@@ -26,14 +26,15 @@ package dev.fixyl.componentviewer.control.notification;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,10 +49,10 @@ public class CopyToast implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR_SUCCESS = Formatting.DARK_GREEN.getColorValue();
-    private static final int SECOND_ROW_COLOR_SUCCESS = Formatting.GOLD.getColorValue();
-    private static final int FIRST_ROW_COLOR_FAILURE = Formatting.RED.getColorValue();
-    private static final int SECOND_ROW_COLOR_FAILURE = Formatting.DARK_AQUA.getColorValue();
+    private static final int FIRST_ROW_COLOR_SUCCESS = ColorHelper.fullAlpha(Formatting.DARK_GREEN.getColorValue());
+    private static final int SECOND_ROW_COLOR_SUCCESS = ColorHelper.fullAlpha(Formatting.GOLD.getColorValue());
+    private static final int FIRST_ROW_COLOR_FAILURE = ColorHelper.fullAlpha(Formatting.RED.getColorValue());
+    private static final int SECOND_ROW_COLOR_FAILURE = ColorHelper.fullAlpha(Formatting.DARK_AQUA.getColorValue());
 
     private final CopyToast.Type toastType;
     @Nullable private final ItemStack itemStack;
@@ -101,7 +102,7 @@ public class CopyToast implements Toast {
     @Override
     public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
         drawContext.drawGuiTexture(
-            RenderLayer::getGuiTextured,
+            RenderPipelines.GUI_TEXTURED,
             CopyToast.BACKGROUND_TEXTURE,
             0,
             0,
