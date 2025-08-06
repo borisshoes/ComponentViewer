@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.TranslatableOption;
 
 public enum ClipboardCopy implements TranslatableOption {
+
     @SerializedName("component_value") COMPONENT_VALUE(0, "componentviewer.config.clipboard.copy.component_value"),
     @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.clipboard.copy.item_stack"),
     @SerializedName("give_command") GIVE_COMMAND(2, "componentviewer.config.clipboard.copy.give_command"),

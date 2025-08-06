@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 
 public abstract class ConfigScreen extends GameOptionsScreen {
+
     private static final int WIDGET_WIDTH = 150;
 
     private final List<ClickableWidget> queuedWidgets;

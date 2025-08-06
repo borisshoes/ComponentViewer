@@ -29,6 +29,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 
 public final class KeyCombos {
+
     private KeyCombos() {}
 
     public static boolean isCycleNextPressed() {

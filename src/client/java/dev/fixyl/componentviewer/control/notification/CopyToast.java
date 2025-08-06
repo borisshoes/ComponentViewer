@@ -39,6 +39,7 @@ import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class CopyToast implements Toast {
+
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
     private static final long DURATION = 3000L;
 

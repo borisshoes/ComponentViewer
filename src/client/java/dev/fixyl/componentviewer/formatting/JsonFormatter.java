@@ -53,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class JsonFormatter implements CodecBasedFormatter {
+
     private static final String NO_CODEC_REPR = "{}";
 
     private static final Pattern STRING_ESCAPE_PATTERN = Pattern.compile("[\\\\\"]");

@@ -42,6 +42,7 @@ import dev.fixyl.componentviewer.formatting.ObjectFormatter;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 
 public final class ControlFlow {
+
     private final Configs configs;
 
     private final StateManager stateManager;

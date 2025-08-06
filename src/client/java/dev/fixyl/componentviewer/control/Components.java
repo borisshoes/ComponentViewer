@@ -40,6 +40,7 @@ import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class Components {
+
     private static final Comparator<Component<?>> COMPARATOR = Comparator.comparing(component -> component.type().toString());
     private static final ResultCache<Components> COMPONENTS_CACHE = new ResultCache<>();
 

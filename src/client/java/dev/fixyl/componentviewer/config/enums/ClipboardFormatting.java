@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.TranslatableOption;
 
 public enum ClipboardFormatting implements TranslatableOption {
+
     @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
     @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
     @SerializedName("json") JSON(2, "componentviewer.config.clipboard.formatting.json"),

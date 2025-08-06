@@ -54,6 +54,7 @@ import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.Options;
 
 public final class ConfigManager {
+
     private final Set<String> optionIds;
     private final Set<AdvancedOption<?>> options;
 
@@ -136,6 +137,7 @@ public final class ConfigManager {
     }
 
     private class ConfigAdapter implements JsonSerializer<ConfigHelper>, JsonDeserializer<ConfigHelper> {
+
         @Override
         public JsonElement serialize(ConfigHelper src, Type type, JsonSerializationContext context) {
             JsonObject root = new JsonObject();
@@ -222,6 +224,7 @@ public final class ConfigManager {
     }
 
     private static record ConfigHelper(boolean doConfigRewrite) {
+
         private ConfigHelper() {
             this(false);
         }

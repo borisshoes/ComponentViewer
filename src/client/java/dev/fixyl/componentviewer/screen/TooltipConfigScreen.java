@@ -30,6 +30,7 @@ import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class TooltipConfigScreen extends ConfigScreen {
+
     public TooltipConfigScreen(Screen parentScreen) {
         super(parentScreen, "componentviewer.config.tooltip.title");
     }

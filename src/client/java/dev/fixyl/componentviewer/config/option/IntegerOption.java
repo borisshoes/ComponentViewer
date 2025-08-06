@@ -33,6 +33,7 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
 public class IntegerOption extends AdvancedOption<Integer> {
+
     private final Integer minValue;
     private final Integer maxValue;
 
@@ -88,6 +89,7 @@ public class IntegerOption extends AdvancedOption<Integer> {
     }
 
     public static class IntegerOptionBuilder extends AdvancedOptionBuilder<Integer, IntegerOption, IntegerOptionBuilder> {
+
         private Integer minValue;
         private Integer maxValue;
 

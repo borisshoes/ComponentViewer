@@ -41,6 +41,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AdvancedOption<T> {
+
     private static final String ID_REGEX = "^[a-z]++(?:_[a-z]++)*+(?:\\.[a-z]++(?:_[a-z]++)*+)*+$";
 
     protected SimpleOption<T> simpleOption;
@@ -161,6 +162,7 @@ public abstract class AdvancedOption<T> {
     }
 
     public abstract static class AdvancedOptionBuilder<T, O extends AdvancedOption<T>, B extends AdvancedOptionBuilder<T, O, B>> {
+
         protected String id;
         protected T defaultValue;
         @Nullable protected String translationKey;

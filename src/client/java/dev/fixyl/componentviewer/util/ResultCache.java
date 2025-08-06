@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ResultCache<T> {
+
     private T result;
     private int hashCode;
     private boolean empty;

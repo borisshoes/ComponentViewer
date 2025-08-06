@@ -27,6 +27,7 @@ package dev.fixyl.componentviewer.control;
 import dev.fixyl.componentviewer.keyboard.KeyCombos;
 
 public final class StateManager {
+
     private int selectedComponentIndex;
     private boolean previousCycleAction;
     private boolean previousCopyAction;

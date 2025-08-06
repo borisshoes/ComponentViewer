@@ -41,6 +41,7 @@ import dev.fixyl.componentviewer.config.option.IntegerOption;
 import dev.fixyl.componentviewer.config.option.Options;
 
 public final class Configs implements Options {
+
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
     private final ConfigManager configManager;

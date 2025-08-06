@@ -38,6 +38,7 @@ import dev.fixyl.componentviewer.formatting.FormattingException;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 
 public class Clipboard {
+
     private static final String GIVE_COMMAND_BASE = "give @s";
 
     private final SnbtFormatter snbtFormatter;

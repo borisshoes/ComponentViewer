@@ -44,6 +44,7 @@ import net.minecraft.util.Formatting;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class ObjectFormatter implements Formatter {
+
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
         Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
         Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
@@ -318,6 +319,7 @@ public class ObjectFormatter implements Formatter {
     }
 
     private static class Tokenizer {
+
         private static final Pattern NON_WORD_CHAR_PATTERN = Pattern.compile("^[^\\p{L}\\p{N}_]$");
         private static final Pattern NON_WORD_DOT_CHAR_PATTERN = Pattern.compile("^[^\\p{L}\\p{N}_.]$");
         private static final Pattern NON_WORD_DOT_DASH_CHAR_PATTERN = Pattern.compile("^[^\\p{L}\\p{N}_.\\-]$");

@@ -27,6 +27,7 @@ package dev.fixyl.componentviewer.util;
 import java.util.List;
 
 public final class Lists {
+
     private Lists() {}
 
     public static <T> boolean isModifiable(List<T> list) {

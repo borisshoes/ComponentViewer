@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class SnbtFormatter implements CodecBasedFormatter {
+
     private static final String NO_CODEC_REPR = "{}";
     private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 

@@ -36,6 +36,7 @@ import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
 public class EnumOption<E extends Enum<E> & TranslatableOption> extends AdvancedOption<E> {
+
     private final Class<E> enumClass;
     private final IntFunction<E> enumByIdFunction;
 
@@ -89,6 +90,7 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
     }
 
     public static class EnumOptionBuilder<E extends Enum<E> & TranslatableOption> extends AdvancedOptionBuilder<E, EnumOption<E>, EnumOptionBuilder<E>> {
+
         public EnumOptionBuilder(String id) {
             super(id);
         }

@@ -33,6 +33,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public interface Formatter {
+
     public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
 
     public <T> String componentToString(Component<T> component, int indentation, String linePrefix);

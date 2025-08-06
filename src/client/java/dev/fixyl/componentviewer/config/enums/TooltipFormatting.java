@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.TranslatableOption;
 
 public enum TooltipFormatting implements TranslatableOption {
+
     @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltip.formatting.snbt"),
     @SerializedName("json") JSON(1, "componentviewer.config.tooltip.formatting.json"),
     @SerializedName("object") OBJECT(2, "componentviewer.config.tooltip.formatting.object");

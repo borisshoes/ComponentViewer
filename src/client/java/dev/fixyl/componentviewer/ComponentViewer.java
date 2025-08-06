@@ -36,6 +36,7 @@ import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.keyboard.KeyBindings;
 
 public final class ComponentViewer implements ClientModInitializer {
+
     private static ComponentViewer instance;
 
     public final Logger logger;

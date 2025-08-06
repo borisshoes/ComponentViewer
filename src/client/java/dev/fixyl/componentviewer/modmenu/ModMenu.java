@@ -30,6 +30,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public class ModMenu implements ModMenuApi {
+
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return MainConfigScreen::new;

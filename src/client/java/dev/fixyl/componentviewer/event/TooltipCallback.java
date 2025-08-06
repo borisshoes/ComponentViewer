@@ -34,6 +34,7 @@ import dev.fixyl.componentviewer.control.Tooltip;
 
 @FunctionalInterface
 public interface TooltipCallback {
+
     public static final Event<TooltipCallback> EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip, tooltipType) -> {
         for (TooltipCallback listener : listeners) {
             listener.onTooltipCallback(itemStack, tooltip, tooltipType);

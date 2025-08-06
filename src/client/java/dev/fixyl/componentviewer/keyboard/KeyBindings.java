@@ -44,6 +44,7 @@ import dev.fixyl.componentviewer.keyboard.keybinding.AdvancedKeyBinding;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class KeyBindings {
+
     private static final String GENERAL_CATEGORY = "componentviewer.keybind.general";
     private static final String CONFIG_CATEGORY = "componentviewer.keybind.config";
 

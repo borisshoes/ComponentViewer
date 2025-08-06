@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.TranslatableOption;
 
 public enum TooltipPurpose implements TranslatableOption {
+
     @SerializedName("components") COMPONENTS(0, "componentviewer.config.tooltip.purpose.components"),
     @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.tooltip.purpose.item_stack");
 

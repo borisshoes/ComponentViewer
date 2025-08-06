@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.fixyl.componentviewer.config.option.EnumOption;
 
 public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements Toast {
+
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
     private static final long DURATION = 2000L;
 

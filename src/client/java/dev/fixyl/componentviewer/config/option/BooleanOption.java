@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.option.SimpleOption;
 
 public class BooleanOption extends AdvancedOption<Boolean> {
+
     private BooleanOption(BooleanOptionBuilder builder) {
         super(builder);
 
@@ -65,6 +66,7 @@ public class BooleanOption extends AdvancedOption<Boolean> {
     }
 
     public static class BooleanOptionBuilder extends AdvancedOptionBuilder<Boolean, BooleanOption, BooleanOptionBuilder> {
+
         public BooleanOptionBuilder(String id) {
             super(id);
         }

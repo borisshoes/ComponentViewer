@@ -33,6 +33,7 @@ import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.control.notification.EnumOptionToast;
 
 public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extends AdvancedKeyBinding {
+
     private final EnumOption<E> option;
 
     @Nullable private EnumOptionToast<E> optionToast;

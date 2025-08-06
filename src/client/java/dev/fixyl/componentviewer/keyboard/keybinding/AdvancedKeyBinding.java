@@ -27,6 +27,7 @@ package dev.fixyl.componentviewer.keyboard.keybinding;
 import net.minecraft.client.option.KeyBinding;
 
 public class AdvancedKeyBinding extends KeyBinding {
+
     public AdvancedKeyBinding(String translationKey, int code, String category) {
         super(translationKey, code, category);
     }

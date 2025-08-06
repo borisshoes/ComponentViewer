@@ -39,6 +39,7 @@ import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
 
 public class Tooltip {
+
     private static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);
 
     private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);

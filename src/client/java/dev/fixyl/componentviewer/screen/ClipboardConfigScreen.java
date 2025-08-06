@@ -30,6 +30,7 @@ import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class ClipboardConfigScreen extends ConfigScreen {
+
     public ClipboardConfigScreen(Screen parentScreen) {
         super(parentScreen, "componentviewer.config.clipboard.title");
     }

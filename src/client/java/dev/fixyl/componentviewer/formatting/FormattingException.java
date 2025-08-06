@@ -25,6 +25,7 @@
 package dev.fixyl.componentviewer.formatting;
 
 public class FormattingException extends RuntimeException {
+
     public FormattingException() {
         super();
     }

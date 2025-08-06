@@ -35,6 +35,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public interface CodecBasedFormatter extends Formatter {
+
     public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix);
 
     public <T> List<Text> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix);
