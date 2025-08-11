@@ -32,6 +32,8 @@ import net.minecraft.component.Component;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
+import dev.fixyl.componentviewer.config.enums.ClipboardSelector;
+import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.control.notification.CopyToast;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
@@ -39,11 +41,15 @@ import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 
 public class Clipboard {
 
-    private static final String GIVE_COMMAND_BASE = "give @s";
+    private static final String GIVE_COMMAND_BASE = "give";
+
+    private final EnumOption<ClipboardSelector> selectorOption;
 
     private final SnbtFormatter snbtFormatter;
 
-    public Clipboard() {
+    public Clipboard(EnumOption<ClipboardSelector> selectorOption) {
+        this.selectorOption = selectorOption;
+
         this.snbtFormatter = new SnbtFormatter();
     }
 
@@ -84,6 +90,8 @@ public class Clipboard {
 
         commandString.append(Clipboard.GIVE_COMMAND_BASE)
                      .append(' ')
+                     .append(this.getGiveCommandSelector())
+                     .append(' ')
                      .append(Registries.ITEM.getEntry(itemStack.getItem()).getIdAsString());
 
         Components components = Components.getChangedComponents(itemStack);
@@ -112,6 +120,15 @@ public class Clipboard {
 
     private void setClipboard(String content) {
         MinecraftClient.getInstance().keyboard.setClipboard(content);
+    }
+
+    private String getGiveCommandSelector() {
+        return switch (this.selectorOption.getValue()) {
+            case EVERYONE -> "@a";
+            case NEAREST -> "@p";
+            case SELF -> "@s";
+            case PLAYER -> MinecraftClient.getInstance().getGameProfile().getName();
+        };
     }
 
     private List<String> createGiveCommandComponentList(Components components) {

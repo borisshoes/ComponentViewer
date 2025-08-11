@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
+import dev.fixyl.componentviewer.config.enums.ClipboardSelector;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
@@ -66,6 +67,7 @@ public final class Configs implements Options {
             this.clipboardCopy,
             this.clipboardFormatting,
             this.clipboardIndentation,
+            this.clipboardSelector,
             this.clipboardPrependSlash,
             this.clipboardIncludeCount,
             this.clipboardSuccessNotification
@@ -158,6 +160,12 @@ public final class Configs implements Options {
             default -> throw new IllegalStateException(String.format("Unexpected int value: %s", value));
         })
         .setDependency(() -> EnumSet.of(ClipboardCopy.COMPONENT_VALUE, ClipboardCopy.ITEM_STACK).contains(this.clipboardCopy.getValue()))
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final EnumOption<ClipboardSelector> clipboardSelector = EnumOption.<ClipboardSelector>create("clipboard.selector")
+        .setDefaultValue(ClipboardSelector.SELF)
+        .setTranslationKey("componentviewer.config.clipboard.selector")
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption clipboardPrependSlash = BooleanOption.create("clipboard.prepend_slash")

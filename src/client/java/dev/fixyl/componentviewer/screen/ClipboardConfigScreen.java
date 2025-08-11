@@ -43,6 +43,7 @@ public class ClipboardConfigScreen extends ConfigScreen {
             configs.clipboardCopy,
             configs.clipboardFormatting,
             configs.clipboardIndentation,
+            configs.clipboardSelector,
             configs.clipboardPrependSlash,
             configs.clipboardIncludeCount,
             configs.clipboardSuccessNotification

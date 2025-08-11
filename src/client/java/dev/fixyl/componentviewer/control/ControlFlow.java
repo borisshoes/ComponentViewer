@@ -56,7 +56,7 @@ public final class ControlFlow {
         this.configs = configs;
 
         this.stateManager = new StateManager();
-        this.clipboard = new Clipboard();
+        this.clipboard = new Clipboard(configs.clipboardSelector);
 
         this.snbtFormatter = new SnbtFormatter();
         this.jsonFormatter = new JsonFormatter();
