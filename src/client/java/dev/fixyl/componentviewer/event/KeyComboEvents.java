@@ -1,0 +1,57 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 fixyldev
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package dev.fixyl.componentviewer.event;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
+import dev.fixyl.componentviewer.control.Selection;
+
+public final class KeyComboEvents {
+
+    private KeyComboEvents() {}
+
+    public static final Event<CycleComponentCallback> CYCLE_COMPONENT_EVENT = EventFactory.createArrayBacked(CycleComponentCallback.class, listeners -> cycleType -> {
+        for (CycleComponentCallback listener : listeners) {
+            listener.onCycleComponentCallback(cycleType);
+        }
+    });
+
+    public static final Event<CopyActionCallback> COPY_ACTION_EVENT = EventFactory.createArrayBacked(CopyActionCallback.class, listeners -> () -> {
+        for (CopyActionCallback listener : listeners) {
+            listener.onCopyActionCallback();
+        }
+    });
+
+    @FunctionalInterface
+    public static interface CycleComponentCallback {
+        public void onCycleComponentCallback(Selection.CycleType cycleType);
+    }
+
+    @FunctionalInterface
+    public interface CopyActionCallback {
+        public void onCopyActionCallback();
+    }
+}

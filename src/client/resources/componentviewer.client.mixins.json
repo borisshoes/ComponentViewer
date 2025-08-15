@@ -3,7 +3,9 @@
     "package": "dev.fixyl.componentviewer.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "ItemStackMixin"
+        "ItemStackMixin",
+        "KeyboardMixin",
+        "MouseMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -29,6 +29,7 @@ import net.minecraft.component.Component;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.util.ActionResult;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -45,38 +46,59 @@ public final class ControlFlow {
 
     private final Configs configs;
 
-    private final StateManager stateManager;
     private final Clipboard clipboard;
 
     private final Formatter snbtFormatter;
     private final Formatter jsonFormatter;
     private final Formatter objectFormatter;
 
+    private long clientTick;
+
+    private HoveredItemStack hoveredItemStack;
+    private ItemStack previousItemStack;
+
+    private long lastTimeItemStackHovered;
+    private boolean isTooltipShown;
+    private long lastTimeTooltipShown;
+
     public ControlFlow(Configs configs) {
         this.configs = configs;
 
-        this.stateManager = new StateManager();
         this.clipboard = new Clipboard(configs.clipboardSelector);
 
         this.snbtFormatter = new SnbtFormatter();
         this.jsonFormatter = new JsonFormatter();
         this.objectFormatter = new ObjectFormatter();
+
+        this.clientTick = Long.MIN_VALUE;
+
+        this.lastTimeItemStackHovered = 0;
+        this.isTooltipShown = false;
+        this.lastTimeTooltipShown = 0;
+    }
+
+    public void onClientTick() {
+        this.clientTick++;
     }
 
     public void onTooltip(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType) {
-        boolean shouldPerformCopyAction = this.stateManager.shouldPerformCopyAction();
+        if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
+            HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
 
-        if (shouldPerformCopyAction) {
-            ClipboardCopy clipboardCopy = this.configs.clipboardCopy.getValue();
-
-            if (clipboardCopy == ClipboardCopy.ITEM_STACK) {
-                this.copyItemStack(itemStack);
-            } else if (clipboardCopy == ClipboardCopy.GIVE_COMMAND) {
-                this.copyGiveCommand(itemStack);
+            if (this.hoveredItemStack != null && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+                newHoveredItemStack.getComponentSelection().updateByValue(this.hoveredItemStack.getComponentSelection().getSelectedIndex());
             }
+
+            this.hoveredItemStack = newHoveredItemStack;
+            this.previousItemStack = itemStack;
         }
 
-        if (!this.shouldDisplayToolip(tooltipType)) {
+        this.lastTimeItemStackHovered = this.clientTick;
+
+        this.isTooltipShown = this.shouldDisplayToolip(tooltipType);
+        if (this.isTooltipShown) {
+            this.lastTimeTooltipShown = this.clientTick;
+        } else {
             return;
         }
 
@@ -85,10 +107,51 @@ public final class ControlFlow {
         }
 
         if (this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
-            this.handleComponentPurpose(itemStack, tooltip, shouldPerformCopyAction);
+            this.handleComponentPurpose(tooltip);
         } else {
             this.handleItemStackPurpose(itemStack, tooltip);
         }
+    }
+
+    public void onCycleComponent(Selection.CycleType cycleType) {
+        if (this.isTooltipShown() && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+            this.hoveredItemStack.getComponentSelection().updateByCycling(cycleType);
+        }
+    }
+
+    public ActionResult onMouseScroll(double distance) {
+        if (this.isTooltipShown() && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+            this.hoveredItemStack.getComponentSelection().updateByScrolling(distance);
+            return ActionResult.SUCCESS;
+        }
+
+        return ActionResult.PASS;
+    }
+
+    public void onCopyAction() {
+        if (!this.isItemStackHovered()) {
+            return;
+        }
+
+        switch (this.configs.clipboardCopy.getValue()) {
+            case ITEM_STACK -> this.copyItemStack(this.hoveredItemStack.getItemStack());
+            case GIVE_COMMAND -> this.copyGiveCommand(this.hoveredItemStack.getItemStack());
+            case ClipboardCopy copyType when (
+                copyType == ClipboardCopy.COMPONENT_VALUE
+                && this.isTooltipShown()
+                && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+                && !this.hoveredItemStack.getComponents().isEmpty()
+            ) -> this.copyComponentValue(this.hoveredItemStack.getSelectedComponent());
+            default -> { /* Default not needed, copying disabled */ }
+        }
+    }
+
+    public boolean isItemStackHovered() {
+        return this.lastTimeItemStackHovered == this.clientTick;
+    }
+
+    public boolean isTooltipShown() {
+        return this.isTooltipShown && this.lastTimeTooltipShown == this.clientTick;
     }
 
     private boolean shouldDisplayToolip(TooltipType tooltipType) {
@@ -100,18 +163,15 @@ public final class ControlFlow {
         return tooltipType.isAdvanced() || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
-    private void handleComponentPurpose(ItemStack itemStack, Tooltip tooltip, boolean shouldPerformCopyAction) {
-        Components components = this.getComponents(itemStack);
-        int selectedComponentIndex = this.stateManager.cycleSelectedComponentIndex(components.size());
+    private void handleComponentPurpose(Tooltip tooltip) {
+        tooltip.addComponentSelection(this.hoveredItemStack);
+
         boolean tooltipComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
-
-        tooltip.addComponentSelection(components, (tooltipComponentValues) ? selectedComponentIndex : -1);
-
-        if (components.isEmpty() || !tooltipComponentValues) {
+        if (this.hoveredItemStack.getComponents().isEmpty() || !tooltipComponentValues) {
             return;
         }
 
-        Component<?> selectedComponent = components.get(selectedComponentIndex);
+        Component<?> selectedComponent = this.hoveredItemStack.getSelectedComponent();
 
         tooltip.addSpacer().addComponentValue(
             selectedComponent,
@@ -119,10 +179,6 @@ public final class ControlFlow {
             this.getTooltipIndentation(),
             this.configs.tooltipColoredFormatting.getBooleanValue()
         );
-
-        if (shouldPerformCopyAction && this.configs.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE) {
-            this.copyComponentValue(selectedComponent);
-        }
     }
 
     private void handleItemStackPurpose(ItemStack itemStack, Tooltip tooltip) {
@@ -159,14 +215,6 @@ public final class ControlFlow {
             this.configs.clipboardIncludeCount.getBooleanValue(),
             this.configs.clipboardSuccessNotification.getBooleanValue()
         );
-    }
-
-    private Components getComponents(ItemStack itemStack) {
-        return switch (this.configs.tooltipComponents.getValue()) {
-            case ALL -> Components.getAllComponents(itemStack);
-            case DEFAULT -> Components.getDefaultComponents(itemStack);
-            case CHANGES -> Components.getChangedComponents(itemStack);
-        };
     }
 
     private Formatter getTooltipFormatter() {

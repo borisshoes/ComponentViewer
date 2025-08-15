@@ -84,6 +84,14 @@ public class Components {
         return index >= this.startOfRemovedComponents;
     }
 
+    public static Components getComponentsBasedOnType(ItemStack itemStack, TooltipComponents componentsType) {
+        return switch (componentsType) {
+            case ALL -> getAllComponents(itemStack);
+            case DEFAULT -> getDefaultComponents(itemStack);
+            case CHANGES -> getChangedComponents(itemStack);
+        };
+    }
+
     public static Components getAllComponents(ItemStack itemStack) {
         return Components.COMPONENTS_CACHE.cache(() -> {
             Set<Component<?>> regularComponents = Components.createComponentSet(itemStack.getComponents());

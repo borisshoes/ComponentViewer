@@ -88,7 +88,9 @@ public class Tooltip {
         return this;
     }
 
-    public Tooltip addComponentSelection(Components components, int indexOfSelected) {
+    public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack) {
+        Components components = hoveredItemStack.getComponents();
+
         if (components.isEmpty()) {
             this.addHeader(Tooltip.EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
             return this;
@@ -98,6 +100,8 @@ public class Tooltip {
 
         // Double the indentation if more than one component needs to be displayed
         String indentationOfSelected = Tooltip.CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));
+
+        int indexOfSelected = hoveredItemStack.getComponentSelection().getSelectedIndex();
 
         // Add all component types
         for (int index = 0; index < components.size(); index++) {

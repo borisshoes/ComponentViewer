@@ -24,42 +24,30 @@
 
 package dev.fixyl.componentviewer.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Mouse;
+import net.minecraft.util.ActionResult;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;
-import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)
-public abstract class ItemStackMixin {
+@Mixin(value = Mouse.class, priority = Integer.MIN_VALUE)
+public abstract class MouseMixin {
 
-    @Inject(method = "getTooltip", at = @At(value = "RETURN"), cancellable = true)
-    private void getTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> callback) {
-        if (player == null) {
+    @Inject(method = "onMouseScroll", at = @At(value = "HEAD"), cancellable = true)
+    private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo callback) {
+        if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
             return;
         }
 
-        List<Text> tooltip = callback.getReturnValue();
+        ActionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScrollCallback(horizontal, vertical);
 
-        if (!Lists.isModifiable(tooltip)) {
-            tooltip = new ArrayList<>(tooltip);
-            callback.setReturnValue(tooltip);
+        if (result == ActionResult.SUCCESS) {
+            callback.cancel();
         }
-
-        MixinEvents.TOOLTIP_EVENT.invoker().onTooltipCallback((ItemStack) (Object) this, new Tooltip(tooltip), type);
     }
 }

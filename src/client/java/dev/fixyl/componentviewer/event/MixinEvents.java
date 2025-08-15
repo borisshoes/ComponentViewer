@@ -27,19 +27,53 @@ package dev.fixyl.componentviewer.event;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import net.minecraft.client.util.InputUtil.Key;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.util.ActionResult;
 
 import dev.fixyl.componentviewer.control.Tooltip;
 
-@FunctionalInterface
-public interface TooltipCallback {
+public final class MixinEvents {
 
-    public static final Event<TooltipCallback> EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip, tooltipType) -> {
+    private MixinEvents() {}
+
+    public static final Event<TooltipCallback> TOOLTIP_EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip, tooltipType) -> {
         for (TooltipCallback listener : listeners) {
             listener.onTooltipCallback(itemStack, tooltip, tooltipType);
         }
     });
 
-    public void onTooltipCallback(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType);
+    public static final Event<KeyboardCallback> KEYBOARD_EVENT = EventFactory.createArrayBacked(KeyboardCallback.class, listeners -> (key, modifiers) -> {
+        for (KeyboardCallback listener : listeners) {
+            listener.onKeyboardCallback(key, modifiers);
+        }
+    });
+
+    public static final Event<MouseScrollCallback> MOUSE_EVENT = EventFactory.createArrayBacked(MouseScrollCallback.class, listeners -> (horizontal, vertical) -> {
+        for (MouseScrollCallback listener : listeners) {
+            ActionResult result = listener.onMouseScrollCallback(horizontal, vertical);
+
+            if (result != ActionResult.PASS) {
+                return result;
+            }
+        }
+
+        return ActionResult.PASS;
+    });
+
+    @FunctionalInterface
+    public static interface TooltipCallback {
+        public void onTooltipCallback(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType);
+    }
+
+    @FunctionalInterface
+    public static interface KeyboardCallback {
+        public void onKeyboardCallback(Key key, int modifiers);
+    }
+
+    @FunctionalInterface
+    public static interface MouseScrollCallback {
+        public ActionResult onMouseScrollCallback(double horizontal, double vertical);
+    }
 }

@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.control.ControlFlow;
-import dev.fixyl.componentviewer.event.TooltipCallback;
+import dev.fixyl.componentviewer.event.KeyComboEvents;
+import dev.fixyl.componentviewer.event.MixinEvents;
 import dev.fixyl.componentviewer.keyboard.KeyBindings;
 
 public final class ComponentViewer implements ClientModInitializer {
@@ -52,10 +53,15 @@ public final class ComponentViewer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ControlFlow controlFlow = new ControlFlow(this.configs);
-        TooltipCallback.EVENT.register(controlFlow::onTooltip);
+        ClientTickEvents.START_CLIENT_TICK.register(client -> controlFlow.onClientTick());
+        MixinEvents.TOOLTIP_EVENT.register(controlFlow::onTooltip);
+        MixinEvents.MOUSE_EVENT.register((horizontal, vertical) -> controlFlow.onMouseScroll(vertical));
+        KeyComboEvents.CYCLE_COMPONENT_EVENT.register(controlFlow::onCycleComponent);
+        KeyComboEvents.COPY_ACTION_EVENT.register(controlFlow::onCopyAction);
 
         KeyBindings keyBindings = new KeyBindings();
         ClientTickEvents.END_CLIENT_TICK.register(keyBindings::onClientTick);
+        MixinEvents.KEYBOARD_EVENT.register((key, modifiers) -> keyBindings.onKey(key));
     }
 
     public static ComponentViewer getInstance() {

@@ -24,12 +24,16 @@
 
 package dev.fixyl.componentviewer.keyboard;
 
+import static org.lwjgl.glfw.GLFW.*;
+
+import static dev.fixyl.componentviewer.control.Selection.CycleType.*;
+
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
-
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.util.InputUtil.Key;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
@@ -39,6 +43,7 @@ import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
+import dev.fixyl.componentviewer.event.KeyComboEvents;
 import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
 import dev.fixyl.componentviewer.keyboard.keybinding.AdvancedKeyBinding;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
@@ -73,6 +78,28 @@ public final class KeyBindings {
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
     }
 
+    // SonarQube warning for missing pattern match guard suppressed since
+    // pattern match guards aren't applicable in this situation.
+    // TODO: Use a pattern match guard when it's finally possible.
+    @SuppressWarnings("java:S6916")
+    public void onKey(Key key) {
+        KeyComboEvents.CycleComponentCallback cycleInvoker = KeyComboEvents.CYCLE_COMPONENT_EVENT.invoker();
+        KeyComboEvents.CopyActionCallback copyInvoker = KeyComboEvents.COPY_ACTION_EVENT.invoker();
+
+        switch (key.getCode()) {
+            case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponentCallback(NEXT);
+            case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponentCallback(PREVIOUS);
+            case GLFW_KEY_HOME -> cycleInvoker.onCycleComponentCallback(FIRST);
+            case GLFW_KEY_END -> cycleInvoker.onCycleComponentCallback(LAST);
+            case GLFW_KEY_C -> {
+                if (Screen.hasControlDown()) {
+                    copyInvoker.onCopyActionCallback();
+                }
+            }
+            default -> { /* Default not needed, skip all other keys */ }
+        }
+    }
+
     private static void register(KeyBinding... keyBindings) {
         for (KeyBinding keyBinding : keyBindings) {
             KeyBindingHelper.registerKeyBinding(keyBinding);
@@ -81,42 +108,42 @@ public final class KeyBindings {
 
     public final AdvancedKeyBinding configScreenKey = new AdvancedKeyBinding(
         "componentviewer.keybind.general.config_screen",
-        GLFW.GLFW_KEY_J,
+        GLFW_KEY_J,
         KeyBindings.GENERAL_CATEGORY
     );
     public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_display",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipDisplay
     );
     public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_purpose",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipPurpose
     );
     public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_components",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipComponents
     );
     public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_formatting",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipFormatting
     );
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.clipboard_copy",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.clipboardCopy
     );
     public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.clipboard_formatting",
-        GLFW.GLFW_KEY_UNKNOWN,
+        GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.clipboardFormatting
     );

@@ -24,42 +24,28 @@
 
 package dev.fixyl.componentviewer.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.lwjgl.glfw.GLFW.*;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Keyboard;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.InputUtil;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;
-import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)
-public abstract class ItemStackMixin {
+@Mixin(value = Keyboard.class)
+public abstract class KeyboardMixin {
 
-    @Inject(method = "getTooltip", at = @At(value = "RETURN"), cancellable = true)
-    private void getTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> callback) {
-        if (player == null) {
+    @Inject(method = "onKey", at = @At(value = "HEAD"))
+    private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
+        if (window != MinecraftClient.getInstance().getWindow().getHandle() || action == GLFW_RELEASE) {
             return;
         }
 
-        List<Text> tooltip = callback.getReturnValue();
-
-        if (!Lists.isModifiable(tooltip)) {
-            tooltip = new ArrayList<>(tooltip);
-            callback.setReturnValue(tooltip);
-        }
-
-        MixinEvents.TOOLTIP_EVENT.invoker().onTooltipCallback((ItemStack) (Object) this, new Tooltip(tooltip), type);
+        MixinEvents.KEYBOARD_EVENT.invoker().onKeyboardCallback(InputUtil.fromKeyCode(key, scancode), modifiers);
     }
 }
