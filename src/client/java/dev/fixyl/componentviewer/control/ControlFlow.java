@@ -120,7 +120,11 @@ public final class ControlFlow {
     }
 
     public ActionResult onMouseScroll(double distance) {
-        if (this.isTooltipShown() && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+        if (
+            this.isTooltipShown()
+            && this.configs.controlsAllowScrolling.getBooleanValue()
+            && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+        ) {
             this.hoveredItemStack.getComponentSelection().updateByScrolling(distance);
             return ActionResult.SUCCESS;
         }

@@ -26,16 +26,21 @@ package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
 
-public class MainConfigScreen extends ConfigScreen {
+import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Configs;
 
-    public MainConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.title");
+public class ControlsConfigScreen extends ConfigScreen {
+
+    public ControlsConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.controls.title");
     }
 
     @Override
     protected void addElements() {
-        this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this));
-        this.addRedirect("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this));
-        this.addRedirect("componentviewer.config.controls", () -> new ControlsConfigScreen(this));
+        Configs configs = ComponentViewer.getInstance().configs;
+
+        this.addConfigs(
+            configs.controlsAllowScrolling
+        );
     }
 }

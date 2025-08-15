@@ -70,7 +70,8 @@ public final class Configs implements Options {
             this.clipboardSelector,
             this.clipboardPrependSlash,
             this.clipboardIncludeCount,
-            this.clipboardSuccessNotification
+            this.clipboardSuccessNotification,
+            this.controlsAllowScrolling
         };
     }
 
@@ -187,6 +188,12 @@ public final class Configs implements Options {
         .setTranslationKey("componentviewer.config.clipboard.success_notification")
         .setDescriptionTranslationKey("componentviewer.config.clipboard.success_notification.description")
         .setDependency(() -> this.clipboardCopy.getValue() != ClipboardCopy.DISABLED)
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final BooleanOption controlsAllowScrolling = BooleanOption.create("controls.allow_scrolling")
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.controls.allow_scrolling")
+        .setDescriptionTranslationKey("componentviewer.config.controls.allow_scrolling.description")
         .setChangeCallback(this::changeCallback)
         .build();
 }
