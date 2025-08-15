@@ -59,6 +59,7 @@ public final class Configs implements Options {
             this.tooltipDisplay,
             this.tooltipPurpose,
             this.tooltipComponents,
+            this.tooltipKeepSelection,
             this.tooltipComponentValues,
             this.tooltipFormatting,
             this.tooltipIndentation,
@@ -96,6 +97,13 @@ public final class Configs implements Options {
         .setDefaultValue(TooltipComponents.ALL)
         .setTranslationKey("componentviewer.config.tooltip.components")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.components.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final BooleanOption tooltipKeepSelection = BooleanOption.create("tooltip.keep_selection")
+        .setDefaultValue(false)
+        .setTranslationKey("componentviewer.config.tooltip.keep_selection")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.keep_selection.description")
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();

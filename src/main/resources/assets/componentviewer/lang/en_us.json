@@ -60,6 +60,8 @@
     "componentviewer.config.tooltip.indentation.description": "The amount of spaces used for indentation when formatting. 'No Indentation' will result in a one-liner.",
     "componentviewer.config.tooltip.indentation.off": "No Indentation",
     "componentviewer.config.tooltip.indentation.value": "Indentation: %s",
+    "componentviewer.config.tooltip.keep_selection": "Keep Selection",
+    "componentviewer.config.tooltip.keep_selection.description": "Keep the component selection when hovering over a new item stack. The selection is based on indices.",
     "componentviewer.config.tooltip.purpose": "Purpose",
     "componentviewer.config.tooltip.purpose.components": "Components",
     "componentviewer.config.tooltip.purpose.description": "What's the purpose of tooltips.\n\n- Components: Display individual components of an item stack\n\n- Item Stack: Display the item stack data. This is exactly the same as using `/data get` on the item stack",

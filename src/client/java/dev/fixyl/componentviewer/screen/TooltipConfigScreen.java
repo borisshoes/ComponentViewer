@@ -43,6 +43,7 @@ public class TooltipConfigScreen extends ConfigScreen {
             configs.tooltipDisplay,
             configs.tooltipPurpose,
             configs.tooltipComponents,
+            configs.tooltipKeepSelection,
             configs.tooltipComponentValues,
             configs.tooltipFormatting,
             configs.tooltipIndentation,

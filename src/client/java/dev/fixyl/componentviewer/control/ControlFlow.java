@@ -85,7 +85,11 @@ public final class ControlFlow {
         if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
             HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
 
-            if (this.hoveredItemStack != null && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+            if (
+                this.configs.tooltipKeepSelection.getBooleanValue()
+                && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+                && this.hoveredItemStack != null
+            ) {
                 newHoveredItemStack.getComponentSelection().updateByValue(this.hoveredItemStack.getComponentSelection().getSelectedIndex());
             }
 
