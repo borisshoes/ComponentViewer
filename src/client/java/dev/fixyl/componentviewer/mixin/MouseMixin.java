@@ -38,7 +38,7 @@ import dev.fixyl.componentviewer.event.MixinEvents;
 @Mixin(value = Mouse.class, priority = Integer.MIN_VALUE)
 public abstract class MouseMixin {
 
-    @Inject(method = "onMouseScroll", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "onMouseScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo callback) {
         if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
             return;

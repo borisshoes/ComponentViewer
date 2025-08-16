@@ -40,7 +40,7 @@ import dev.fixyl.componentviewer.event.MixinEvents;
 @Mixin(value = Keyboard.class)
 public abstract class KeyboardMixin {
 
-    @Inject(method = "onKey", at = @At(value = "HEAD"))
+    @Inject(method = "onKey(JIIII)V", at = @At(value = "HEAD"))
     private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
         if (window != MinecraftClient.getInstance().getWindow().getHandle() || action == GLFW_RELEASE) {
             return;
