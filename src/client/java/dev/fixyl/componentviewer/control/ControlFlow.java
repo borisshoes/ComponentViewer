@@ -70,11 +70,11 @@ public final class ControlFlow {
         this.jsonFormatter = new JsonFormatter();
         this.objectFormatter = new ObjectFormatter();
 
-        this.clientTick = Long.MIN_VALUE;
+        this.clientTick = 0L;
 
-        this.lastTimeItemStackHovered = 0;
+        this.lastTimeItemStackHovered = -1L;
         this.isTooltipShown = false;
-        this.lastTimeTooltipShown = 0;
+        this.lastTimeTooltipShown = -1L;
     }
 
     public void onClientTick() {
