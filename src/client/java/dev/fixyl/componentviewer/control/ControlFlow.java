@@ -46,8 +46,8 @@ import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 public final class ControlFlow {
 
     private final Configs configs;
-
     private final Clipboard clipboard;
+    private final MinecraftClient client;
 
     private final Formatter snbtFormatter;
     private final Formatter jsonFormatter;
@@ -64,8 +64,8 @@ public final class ControlFlow {
 
     public ControlFlow(Configs configs) {
         this.configs = configs;
-
-        this.clipboard = new Clipboard(configs.clipboardSelector);
+        this.clipboard = new Clipboard();
+        this.client = MinecraftClient.getInstance();
 
         this.snbtFormatter = new SnbtFormatter();
         this.jsonFormatter = new JsonFormatter();
@@ -118,7 +118,7 @@ public final class ControlFlow {
         if (this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
             this.handleComponentPurpose(tooltip);
         } else {
-            this.handleItemStackPurpose(itemStack, tooltip);
+            this.handleItemStackPurpose(tooltip);
         }
     }
 
@@ -173,7 +173,7 @@ public final class ControlFlow {
             return false;
         }
 
-        return MinecraftClient.getInstance().options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
+        return this.client.options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
     private void handleComponentPurpose(Tooltip tooltip) {
@@ -194,9 +194,9 @@ public final class ControlFlow {
         );
     }
 
-    private void handleItemStackPurpose(ItemStack itemStack, Tooltip tooltip) {
+    private void handleItemStackPurpose(Tooltip tooltip) {
         tooltip.addItemStack(
-            itemStack,
+            this.hoveredItemStack.getItemStack(),
             this.getTooltipFormatter(),
             this.configs.tooltipIndentation.getIntValue(),
             this.configs.tooltipColoredFormatting.getBooleanValue()
@@ -224,6 +224,7 @@ public final class ControlFlow {
     private void copyGiveCommand(ItemStack itemStack) {
         this.clipboard.copyGiveCommand(
             itemStack,
+            this.getGiveCommandSelector(),
             this.configs.clipboardPrependSlash.getBooleanValue(),
             this.configs.clipboardIncludeCount.getBooleanValue(),
             this.configs.clipboardSuccessNotification.getBooleanValue()
@@ -263,5 +264,14 @@ public final class ControlFlow {
         int clipboardIndentation = this.configs.clipboardIndentation.getIntValue();
 
         return (clipboardIndentation == -1) ? this.getTooltipIndentation() : clipboardIndentation;
+    }
+
+    private String getGiveCommandSelector() {
+        return switch (this.configs.clipboardSelector.getValue()) {
+            case EVERYONE -> "@a";
+            case NEAREST -> "@p";
+            case SELF -> "@s";
+            case PLAYER -> this.client.getGameProfile().getName();
+        };
     }
 }
