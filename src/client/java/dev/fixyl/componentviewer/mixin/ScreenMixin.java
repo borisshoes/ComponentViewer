@@ -24,30 +24,31 @@
 
 package dev.fixyl.componentviewer.mixin;
 
-import static org.lwjgl.glfw.GLFW.*;
+import java.util.List;
 
-import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;
+import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(value = Keyboard.class)
-public final class KeyboardMixin {
+@Mixin(value = Screen.class, priority = Integer.MAX_VALUE)
+public final class ScreenMixin {
 
-    private KeyboardMixin() {}
+    private ScreenMixin() {}
 
-    @Inject(method = "onKey(JIIII)V", at = @At(value = "HEAD"))
-    private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
-        if (window != MinecraftClient.getInstance().getWindow().getHandle() || action == GLFW_RELEASE) {
-            return;
-        }
-
-        MixinEvents.KEYBOARD_EVENT.invoker().onKeyboard(InputUtil.fromKeyCode(key, scancode), modifiers);
+    @Inject(method = "getTooltipFromItem(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
+    private static void getTooltipFromItem(MinecraftClient client, ItemStack stack, CallbackInfoReturnable<List<Text>> callback) {
+        List<Text> tooltipLines = Lists.makeMutable(callback.getReturnValue());
+        MixinEvents.TOOLTIP_EVENT.invoker().onTooltip(stack, new Tooltip(tooltipLines));
+        callback.setReturnValue(tooltipLines);
     }
 }

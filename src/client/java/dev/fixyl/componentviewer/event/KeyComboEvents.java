@@ -35,23 +35,23 @@ public final class KeyComboEvents {
 
     public static final Event<CycleComponentCallback> CYCLE_COMPONENT_EVENT = EventFactory.createArrayBacked(CycleComponentCallback.class, listeners -> cycleType -> {
         for (CycleComponentCallback listener : listeners) {
-            listener.onCycleComponentCallback(cycleType);
+            listener.onCycleComponent(cycleType);
         }
     });
 
     public static final Event<CopyActionCallback> COPY_ACTION_EVENT = EventFactory.createArrayBacked(CopyActionCallback.class, listeners -> () -> {
         for (CopyActionCallback listener : listeners) {
-            listener.onCopyActionCallback();
+            listener.onCopyAction();
         }
     });
 
     @FunctionalInterface
     public static interface CycleComponentCallback {
-        public void onCycleComponentCallback(Selection.CycleType cycleType);
+        public void onCycleComponent(Selection.CycleType cycleType);
     }
 
     @FunctionalInterface
     public interface CopyActionCallback {
-        public void onCopyActionCallback();
+        public void onCopyAction();
     }
 }

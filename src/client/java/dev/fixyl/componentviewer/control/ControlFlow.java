@@ -24,11 +24,11 @@
 
 package dev.fixyl.componentviewer.control;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.component.Component;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.util.ActionResult;
 
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +81,7 @@ public final class ControlFlow {
         this.clientTick++;
     }
 
-    public void onTooltip(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType) {
+    public void onTooltip(ItemStack itemStack, Tooltip tooltip) {
         if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
             HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
 
@@ -99,7 +99,7 @@ public final class ControlFlow {
 
         this.lastTimeItemStackHovered = this.clientTick;
 
-        this.isTooltipShown = this.shouldDisplayToolip(tooltipType);
+        this.isTooltipShown = this.shouldDisplayToolip();
         if (this.isTooltipShown) {
             this.lastTimeTooltipShown = this.clientTick;
         } else {
@@ -162,13 +162,13 @@ public final class ControlFlow {
         return this.isTooltipShown && this.lastTimeTooltipShown == this.clientTick;
     }
 
-    private boolean shouldDisplayToolip(TooltipType tooltipType) {
+    private boolean shouldDisplayToolip() {
         TooltipDisplay tooltipDisplay = this.configs.tooltipDisplay.getValue();
         if (tooltipDisplay == TooltipDisplay.NEVER || tooltipDisplay == TooltipDisplay.HOLD && !Screen.hasControlDown()) {
             return false;
         }
 
-        return tooltipType.isAdvanced() || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
+        return MinecraftClient.getInstance().options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
     private void handleComponentPurpose(Tooltip tooltip) {

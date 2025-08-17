@@ -84,14 +84,14 @@ public final class KeyBindings {
 
         // TODO: Make this primitive once primitive pattern matching is a thing
         switch (Integer.valueOf(key.getCode())) {
-            case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponentCallback(NEXT);
-            case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponentCallback(PREVIOUS);
-            case GLFW_KEY_HOME -> cycleInvoker.onCycleComponentCallback(FIRST);
-            case GLFW_KEY_END -> cycleInvoker.onCycleComponentCallback(LAST);
+            case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponent(NEXT);
+            case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponent(PREVIOUS);
+            case GLFW_KEY_HOME -> cycleInvoker.onCycleComponent(FIRST);
+            case GLFW_KEY_END -> cycleInvoker.onCycleComponent(LAST);
             case Integer keyCode when (
                 keyCode == GLFW_KEY_C
                 && Screen.hasControlDown()
-            ) -> copyInvoker.onCopyActionCallback();
+            ) -> copyInvoker.onCopyAction();
             default -> { /* Default not needed, skip all other keys */ }
         }
     }

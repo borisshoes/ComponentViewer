@@ -36,7 +36,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.fixyl.componentviewer.event.MixinEvents;
 
 @Mixin(value = Mouse.class, priority = Integer.MIN_VALUE)
-public abstract class MouseMixin {
+public final class MouseMixin {
+
+    private MouseMixin() {}
 
     @Inject(method = "onMouseScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo callback) {
@@ -46,7 +48,7 @@ public abstract class MouseMixin {
             return;
         }
 
-        ActionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScrollCallback(horizontal, vertical);
+        ActionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScroll(horizontal, vertical);
 
         if (result == ActionResult.SUCCESS) {
             client.getInactivityFpsLimiter().onInput();

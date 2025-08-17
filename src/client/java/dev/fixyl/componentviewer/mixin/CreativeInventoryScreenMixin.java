@@ -24,16 +24,11 @@
 
 package dev.fixyl.componentviewer.mixin;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
-
-import org.jetbrains.annotations.Nullable;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,22 +39,15 @@ import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;
 import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)
-public abstract class ItemStackMixin {
+@Mixin(value = CreativeInventoryScreen.class, priority = Integer.MAX_VALUE)
+public final class CreativeInventoryScreenMixin {
 
-    @Inject(method = "getTooltip(Lnet/minecraft/item/Item$TooltipContext;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/tooltip/TooltipType;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
-    private void getTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> callback) {
-        if (player == null) {
-            return;
-        }
+    private CreativeInventoryScreenMixin() {}
 
-        List<Text> tooltip = callback.getReturnValue();
-
-        if (!Lists.isModifiable(tooltip)) {
-            tooltip = new ArrayList<>(tooltip);
-            callback.setReturnValue(tooltip);
-        }
-
-        MixinEvents.TOOLTIP_EVENT.invoker().onTooltipCallback((ItemStack) (Object) this, new Tooltip(tooltip), type);
+    @Inject(method = "getTooltipFromItem(Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
+    private void getTooltipFromItem(ItemStack stack, CallbackInfoReturnable<List<Text>> callback) {
+        List<Text> tooltipLines = Lists.makeMutable(callback.getReturnValue());
+        MixinEvents.TOOLTIP_EVENT.invoker().onTooltip(stack, new Tooltip(tooltipLines));
+        callback.setReturnValue(tooltipLines);
     }
 }

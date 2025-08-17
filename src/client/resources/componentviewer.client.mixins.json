@@ -3,7 +3,9 @@
     "package": "dev.fixyl.componentviewer.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "ItemStackMixin",
+        "ScreenMixin",
+        "CreativeInventoryScreenMixin",
+        "AnimatedResultButtonMixin",
         "KeyboardMixin",
         "MouseMixin"
     ],
