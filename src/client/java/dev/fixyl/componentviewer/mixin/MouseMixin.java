@@ -40,13 +40,16 @@ public abstract class MouseMixin {
 
     @Inject(method = "onMouseScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo callback) {
-        if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (window != client.getWindow().getHandle()) {
             return;
         }
 
         ActionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScrollCallback(horizontal, vertical);
 
         if (result == ActionResult.SUCCESS) {
+            client.getInactivityFpsLimiter().onInput();
             callback.cancel();
         }
     }
