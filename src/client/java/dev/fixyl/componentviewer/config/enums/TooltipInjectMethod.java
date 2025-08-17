@@ -22,34 +22,32 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.config.enums;
 
-import net.minecraft.client.gui.screen.Screen;
+import com.google.gson.annotations.SerializedName;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Configs;
+import net.minecraft.util.TranslatableOption;
 
-public class TooltipConfigScreen extends ConfigScreen {
+public enum TooltipInjectMethod implements TranslatableOption {
 
-    public TooltipConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.tooltip.title");
+    @SerializedName("replace") REPLACE(1, "componentviewer.config.tooltip.inject_method.replace"),
+    @SerializedName("append") APPEND(0, "componentviewer.config.tooltip.inject_method.append");
+
+    private final int id;
+    private final String translationKey;
+
+    private TooltipInjectMethod(int id, String translationKey) {
+        this.id = id;
+        this.translationKey = translationKey;
     }
 
     @Override
-    protected void addElements() {
-        Configs configs = ComponentViewer.getInstance().configs;
+    public int getId() {
+        return this.id;
+    }
 
-        this.addConfigs(
-            configs.tooltipDisplay,
-            configs.tooltipPurpose,
-            configs.tooltipComponents,
-            configs.tooltipKeepSelection,
-            configs.tooltipComponentValues,
-            configs.tooltipFormatting,
-            configs.tooltipIndentation,
-            configs.tooltipColoredFormatting,
-            configs.tooltipInjectMethod,
-            configs.tooltipAdvancedTooltips
-        );
+    @Override
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 }

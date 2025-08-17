@@ -76,6 +76,10 @@ public class Tooltip {
         return this.lines.isEmpty();
     }
 
+    public void clear() {
+        this.lines.clear();
+    }
+
     public Tooltip addSpacer() {
         this.lines.add(Text.empty());
 

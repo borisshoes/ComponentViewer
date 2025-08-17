@@ -42,6 +42,7 @@ import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.event.KeyComboEvents;
 import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
@@ -62,6 +63,7 @@ public final class KeyBindings {
             this.tooltipPurposeConfigKey,
             this.tooltipComponentsConfigKey,
             this.tooltipFormattingConfigKey,
+            this.tooltipInjectMethodConfigKey,
             this.clipboardCopyConfigKey,
             this.clipboardFormattingConfigKey
         );
@@ -74,6 +76,7 @@ public final class KeyBindings {
         this.tooltipPurposeConfigKey.cycleValueOnPressed();
         this.tooltipComponentsConfigKey.cycleValueOnPressed();
         this.tooltipFormattingConfigKey.cycleValueOnPressed();
+        this.tooltipInjectMethodConfigKey.cycleValueOnPressed();
         this.clipboardCopyConfigKey.cycleValueOnPressed();
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
     }
@@ -130,6 +133,12 @@ public final class KeyBindings {
         GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipFormatting
+    );
+    public final EnumOptionKeyBinding<TooltipInjectMethod> tooltipInjectMethodConfigKey = new EnumOptionKeyBinding<>(
+        "componentviewer.keybind.config.tooltip_inject_method",
+        GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.tooltipInjectMethod
     );
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.clipboard_copy",

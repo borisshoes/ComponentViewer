@@ -34,6 +34,7 @@ import dev.fixyl.componentviewer.config.enums.ClipboardSelector;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
@@ -64,6 +65,7 @@ public final class Configs implements Options {
             this.tooltipFormatting,
             this.tooltipIndentation,
             this.tooltipColoredFormatting,
+            this.tooltipInjectMethod,
             this.tooltipAdvancedTooltips,
             this.clipboardCopy,
             this.clipboardFormatting,
@@ -135,6 +137,13 @@ public final class Configs implements Options {
         .setTranslationKey("componentviewer.config.tooltip.colored_formatting")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.colored_formatting.description")
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && ((this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS && this.tooltipComponentValues.getBooleanValue()) || this.tooltipPurpose.getValue() == TooltipPurpose.ITEM_STACK))
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final EnumOption<TooltipInjectMethod> tooltipInjectMethod = EnumOption.<TooltipInjectMethod>create("tooltip.inject_method")
+        .setDefaultValue(TooltipInjectMethod.REPLACE)
+        .setTranslationKey("componentviewer.config.tooltip.inject_method")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.inject_method.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption tooltipAdvancedTooltips = BooleanOption.create("tooltip.advanced_tooltips")

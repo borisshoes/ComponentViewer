@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
+import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.JsonFormatter;
@@ -104,6 +105,10 @@ public final class ControlFlow {
             this.lastTimeTooltipShown = this.clientTick;
         } else {
             return;
+        }
+
+        if (this.configs.tooltipInjectMethod.getValue() == TooltipInjectMethod.REPLACE) {
+            tooltip.clear();
         }
 
         if (!tooltip.isEmpty()) {
