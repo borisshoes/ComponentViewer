@@ -78,24 +78,20 @@ public final class KeyBindings {
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
     }
 
-    // SonarQube warning for missing pattern match guard suppressed since
-    // pattern match guards aren't applicable in this situation.
-    // TODO: Use a pattern match guard when it's finally possible.
-    @SuppressWarnings("java:S6916")
     public void onKey(Key key) {
         KeyComboEvents.CycleComponentCallback cycleInvoker = KeyComboEvents.CYCLE_COMPONENT_EVENT.invoker();
         KeyComboEvents.CopyActionCallback copyInvoker = KeyComboEvents.COPY_ACTION_EVENT.invoker();
 
-        switch (key.getCode()) {
+        // TODO: Make this primitive once primitive pattern matching is a thing
+        switch (Integer.valueOf(key.getCode())) {
             case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponentCallback(NEXT);
             case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponentCallback(PREVIOUS);
             case GLFW_KEY_HOME -> cycleInvoker.onCycleComponentCallback(FIRST);
             case GLFW_KEY_END -> cycleInvoker.onCycleComponentCallback(LAST);
-            case GLFW_KEY_C -> {
-                if (Screen.hasControlDown()) {
-                    copyInvoker.onCopyActionCallback();
-                }
-            }
+            case Integer keyCode when (
+                keyCode == GLFW_KEY_C
+                && Screen.hasControlDown()
+            ) -> copyInvoker.onCopyActionCallback();
             default -> { /* Default not needed, skip all other keys */ }
         }
     }
