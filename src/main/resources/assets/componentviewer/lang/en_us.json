@@ -23,6 +23,7 @@
     "componentviewer.config.clipboard.prepend_slash": "Prepend Slash",
     "componentviewer.config.clipboard.prepend_slash.description": "Add a `/` in front of the give command.",
     "componentviewer.config.clipboard.selector": "Target Selector",
+    "componentviewer.config.clipboard.selector.description": "The target selector for the give command.",
     "componentviewer.config.clipboard.selector.everyone": "@a",
     "componentviewer.config.clipboard.selector.nearest": "@p",
     "componentviewer.config.clipboard.selector.player": "%s",

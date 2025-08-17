@@ -103,7 +103,7 @@ public final class Configs implements Options {
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption tooltipKeepSelection = BooleanOption.create("tooltip.keep_selection")
-        .setDefaultValue(false)
+        .setDefaultValue(true)
         .setTranslationKey("componentviewer.config.tooltip.keep_selection")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.keep_selection.description")
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
@@ -183,6 +183,7 @@ public final class Configs implements Options {
     public final EnumOption<ClipboardSelector> clipboardSelector = EnumOption.<ClipboardSelector>create("clipboard.selector")
         .setDefaultValue(ClipboardSelector.SELF)
         .setTranslationKey("componentviewer.config.clipboard.selector")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.selector.description")
         .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
         .setChangeCallback(this::changeCallback)
         .build();
