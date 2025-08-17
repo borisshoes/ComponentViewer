@@ -25,6 +25,7 @@
 package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
@@ -39,6 +40,7 @@ public class ControlsConfigScreen extends ConfigScreen {
     protected void addElements() {
         Configs configs = ComponentViewer.getInstance().configs;
 
+        this.addRedirect("controls.keybinds", () -> new KeybindsScreen(this, this.gameOptions));
         this.addConfigs(
             configs.controlsAllowScrolling
         );
