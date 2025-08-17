@@ -87,7 +87,7 @@ public class Tooltip {
     }
 
     public Tooltip addHeader(String translationKey) {
-        this.lines.add(Text.translatable(translationKey).fillStyle(Tooltip.HEADER_STYLE));
+        this.lines.add(Text.translatable(translationKey).fillStyle(HEADER_STYLE));
 
         return this;
     }
@@ -96,30 +96,30 @@ public class Tooltip {
         Components components = hoveredItemStack.getComponents();
 
         if (components.isEmpty()) {
-            this.addHeader(Tooltip.EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
+            this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
             return this;
         }
 
-        this.addHeader(Tooltip.COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
+        this.addHeader(COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
 
         // Double the indentation if more than one component needs to be displayed
-        String indentationOfSelected = Tooltip.CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));
+        String indentationOfSelected = CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));
 
         int indexOfSelected = hoveredItemStack.getComponentSelection().getSelectedIndex();
 
         // Add all component types
         for (int index = 0; index < components.size(); index++) {
-            MutableText componentTypeText = Text.literal(components.get(index).type().toString()).fillStyle(Tooltip.COMPONENT_STYLE);
+            MutableText componentTypeText = Text.literal(components.get(index).type().toString()).fillStyle(COMPONENT_STYLE);
 
             if (index == indexOfSelected) {
-                componentTypeText.fillStyle(Tooltip.SELECTED_COMPONENT_STYLE);
+                componentTypeText.fillStyle(SELECTED_COMPONENT_STYLE);
             }
 
             if (components.isRemovedComponent(index)) {
-                componentTypeText.fillStyle(Tooltip.REMOVED_COMPONENT_STYLE);
+                componentTypeText.fillStyle(REMOVED_COMPONENT_STYLE);
             }
 
-            this.lines.add(Text.literal((index == indexOfSelected) ? indentationOfSelected : Tooltip.CONTENT_INDENTATION).append(componentTypeText));
+            this.lines.add(Text.literal((index == indexOfSelected) ? indentationOfSelected : CONTENT_INDENTATION).append(componentTypeText));
         }
 
         return this;
@@ -129,7 +129,7 @@ public class Tooltip {
         this.addHeader("componentviewer.tooltip.purpose.components.value");
 
         try {
-            this.lines.addAll(formatter.componentToText(component, formattingIndentation, coloredFormatting, Tooltip.CONTENT_INDENTATION));
+            this.lines.addAll(formatter.componentToText(component, formattingIndentation, coloredFormatting, CONTENT_INDENTATION));
         } catch (FormattingException e) {
             this.addFormattingException();
         }
@@ -141,7 +141,7 @@ public class Tooltip {
         this.addHeader("componentviewer.tooltip.purpose.item_stack");
 
         try {
-            this.lines.addAll(formatter.itemStackToText(itemStack, formattingIndentation, coloredFormatting, Tooltip.CONTENT_INDENTATION));
+            this.lines.addAll(formatter.itemStackToText(itemStack, formattingIndentation, coloredFormatting, CONTENT_INDENTATION));
         } catch (FormattingException e) {
             this.addFormattingException();
         }
@@ -150,6 +150,6 @@ public class Tooltip {
     }
 
     private void addFormattingException() {
-        this.lines.add(Text.literal(Tooltip.CONTENT_INDENTATION).append(Text.translatable("componentviewer.tooltip.formatting_exception").fillStyle(Tooltip.ERROR_STYLE)));
+        this.lines.add(Text.literal(CONTENT_INDENTATION).append(Text.translatable("componentviewer.tooltip.formatting_exception").fillStyle(ERROR_STYLE)));
     }
 }

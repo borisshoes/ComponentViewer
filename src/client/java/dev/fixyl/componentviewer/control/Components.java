@@ -51,7 +51,7 @@ public class Components {
     private Components(TooltipComponents componentsType, Set<Component<?>> regularComponents, Set<Component<?>> removedComponents) {
         this.componentsType = componentsType;
 
-        this.componentsList = Stream.concat(regularComponents.stream().sorted(Components.COMPARATOR), removedComponents.stream().sorted(Components.COMPARATOR)).toList();
+        this.componentsList = Stream.concat(regularComponents.stream().sorted(COMPARATOR), removedComponents.stream().sorted(COMPARATOR)).toList();
 
         this.startOfRemovedComponents = regularComponents.size();
     }
@@ -93,7 +93,7 @@ public class Components {
     }
 
     public static Components getAllComponents(ItemStack itemStack) {
-        return Components.COMPONENTS_CACHE.cache(() -> {
+        return COMPONENTS_CACHE.cache(() -> {
             Set<Component<?>> regularComponents = Components.createComponentSet(itemStack.getComponents());
 
             return new Components(TooltipComponents.ALL, regularComponents);
@@ -101,7 +101,7 @@ public class Components {
     }
 
     public static Components getDefaultComponents(ItemStack itemStack) {
-        return Components.COMPONENTS_CACHE.cache(() -> {
+        return COMPONENTS_CACHE.cache(() -> {
             Set<Component<?>> defaultComponents = Components.createComponentSet(itemStack.getDefaultComponents());
 
             return new Components(TooltipComponents.DEFAULT, defaultComponents);
@@ -109,7 +109,7 @@ public class Components {
     }
 
     public static Components getChangedComponents(ItemStack itemStack) {
-        return Components.COMPONENTS_CACHE.cache(() -> {
+        return COMPONENTS_CACHE.cache(() -> {
             Set<Component<?>> regularComponents = Components.createComponentSet(itemStack.getComponents());
             Set<Component<?>> defaultComponents = Components.createComponentSet(itemStack.getDefaultComponents());
 

@@ -136,7 +136,7 @@ public class ObjectFormatter implements Formatter {
     private List<Text> valueToText(String value, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (indentation <= 0 && !colored) {
-                return List.of(Text.literal(linePrefix + value).fillStyle(Formatter.NO_COLOR_STYLE));
+                return List.of(Text.literal(linePrefix + value).fillStyle(NO_COLOR_STYLE));
             }
 
             List<Token> tokenList = this.tokenizer.tokenize(value);
@@ -145,7 +145,7 @@ public class ObjectFormatter implements Formatter {
                 MutableText line = Text.literal(linePrefix);
 
                 for (Token token : tokenList) {
-                    line.append(Text.literal(token.content()).fillStyle(ObjectFormatter.TOKEN_STYLES.get(token.tokenType())));
+                    line.append(Text.literal(token.content()).fillStyle(TOKEN_STYLES.get(token.tokenType())));
                 }
 
                 return List.of(line);
@@ -173,7 +173,7 @@ public class ObjectFormatter implements Formatter {
         this.colored = colored;
 
         if (!this.colored) {
-            this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
+            this.textLine.fillStyle(NO_COLOR_STYLE);
         }
 
         this.formatTokens(tokens, indentation, linePrefix);
@@ -262,7 +262,7 @@ public class ObjectFormatter implements Formatter {
     private void processClosingBracketToken() {
         char bracketCharacter = this.currentToken.content().charAt(0);
 
-        if (this.bracketHistory.isEmpty() || !ObjectFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast()).equals(bracketCharacter)) {
+        if (this.bracketHistory.isEmpty() || !BRACKET_PAIR.get(this.bracketHistory.getLast()).equals(bracketCharacter)) {
             throw new FormattingException(String.format(
                 "Unexpected bracket '%s' encountered! Either no pair was to be closed, or a different bracket opened this pair.",
                 bracketCharacter
@@ -288,7 +288,7 @@ public class ObjectFormatter implements Formatter {
             this.textLine = Text.literal(this.getNewLinePrefix());
 
             if (!this.colored) {
-                this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
+                this.textLine.fillStyle(NO_COLOR_STYLE);
             }
         } else {
             this.stringBuilder.append(System.lineSeparator()).append(this.getNewLinePrefix());
@@ -306,7 +306,7 @@ public class ObjectFormatter implements Formatter {
         }
 
         if (this.formatAsText) {
-            this.textLine.append(Text.literal(tokenContent).fillStyle((this.colored) ? ObjectFormatter.TOKEN_STYLES.get(this.currentToken.tokenType()) : Formatter.NO_COLOR_STYLE));
+            this.textLine.append(Text.literal(tokenContent).fillStyle((this.colored) ? TOKEN_STYLES.get(this.currentToken.tokenType()) : NO_COLOR_STYLE));
         } else {
             this.stringBuilder.append(tokenContent);
         }
@@ -486,7 +486,7 @@ public class ObjectFormatter implements Formatter {
         }
 
         private boolean matchCurlyBracketStringBegin() {
-            if (!this.matchRegex(Tokenizer.NON_WORD_CHAR_PATTERN, Tokenizer.CURLY_BRACKET_STRING_BEGIN_PATTERN, TokenType.ANY)) {
+            if (!this.matchRegex(NON_WORD_CHAR_PATTERN, CURLY_BRACKET_STRING_BEGIN_PATTERN, TokenType.ANY)) {
                 return false;
             }
 
@@ -506,17 +506,17 @@ public class ObjectFormatter implements Formatter {
         }
 
         private boolean matchNumber() {
-            return this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.INTEGER_PATTERN, TokenType.INTEGER)
-                || this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.FLOAT_PATTERN, TokenType.FLOAT)
-                || this.matchRegex(Tokenizer.NON_WORD_DOT_CHAR_PATTERN, Tokenizer.HEX_PATTERN, TokenType.HEX);
+            return this.matchRegex(NON_WORD_DOT_DASH_CHAR_PATTERN, INTEGER_PATTERN, TokenType.INTEGER)
+                || this.matchRegex(NON_WORD_DOT_DASH_CHAR_PATTERN, FLOAT_PATTERN, TokenType.FLOAT)
+                || this.matchRegex(NON_WORD_DOT_CHAR_PATTERN, HEX_PATTERN, TokenType.HEX);
         }
 
         private boolean matchBoolean() {
-            return this.matchRegex(Tokenizer.NON_WORD_CHAR_PATTERN, Tokenizer.BOOLEAN_PATTERN, TokenType.BOOLEAN);
+            return this.matchRegex(NON_WORD_CHAR_PATTERN, BOOLEAN_PATTERN, TokenType.BOOLEAN);
         }
 
         private boolean matchNull() {
-            return this.matchRegex(Tokenizer.NON_WORD_CHAR_PATTERN, Tokenizer.NULL_PATTERN, TokenType.NULL);
+            return this.matchRegex(NON_WORD_CHAR_PATTERN, NULL_PATTERN, TokenType.NULL);
         }
 
         private boolean matchRegex(Pattern leadingCharPattern, Pattern contentPattern, TokenType tokenType) {
@@ -624,11 +624,11 @@ public class ObjectFormatter implements Formatter {
         NULL;
 
         private static EnumSet<TokenType> singleCharacterTokenTypes = EnumSet.of(
-            TokenType.SPECIAL,
-            TokenType.OPENING_BRACKET,
-            TokenType.CLOSING_BRACKET,
-            TokenType.COMMA,
-            TokenType.QUOTE
+            SPECIAL,
+            OPENING_BRACKET,
+            CLOSING_BRACKET,
+            COMMA,
+            QUOTE
         );
     }
 

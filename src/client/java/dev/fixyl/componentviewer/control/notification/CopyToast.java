@@ -71,12 +71,12 @@ public class CopyToast implements Toast {
 
         if (type.success) {
             this.translationKey = "componentviewer.notification.toast.copy.success";
-            this.firstRowColor = CopyToast.FIRST_ROW_COLOR_SUCCESS;
-            this.secondRowColor = CopyToast.SECOND_ROW_COLOR_SUCCESS;
+            this.firstRowColor = FIRST_ROW_COLOR_SUCCESS;
+            this.secondRowColor = SECOND_ROW_COLOR_SUCCESS;
         } else {
             this.translationKey = "componentviewer.notification.toast.copy.failure";
-            this.firstRowColor = CopyToast.FIRST_ROW_COLOR_FAILURE;
-            this.secondRowColor = CopyToast.SECOND_ROW_COLOR_FAILURE;
+            this.firstRowColor = FIRST_ROW_COLOR_FAILURE;
+            this.secondRowColor = SECOND_ROW_COLOR_FAILURE;
         }
 
         this.textLeftMargin = (itemStack == null) ? TEXT_LEFT_MARGIN : TEXT_LEFT_MARGIN_WITH_ITEM;
@@ -95,7 +95,7 @@ public class CopyToast implements Toast {
 
     @Override
     public void update(ToastManager toastManager, long elapsedTime) {
-        double actualDuration = CopyToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
+        double actualDuration = DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
         this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
@@ -104,7 +104,7 @@ public class CopyToast implements Toast {
     public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
         drawContext.drawGuiTexture(
             RenderPipelines.GUI_TEXTURED,
-            CopyToast.BACKGROUND_TEXTURE,
+            BACKGROUND_TEXTURE,
             0,
             0,
             this.getWidth(),
@@ -114,8 +114,8 @@ public class CopyToast implements Toast {
         if (this.itemStack != null) {
             drawContext.drawItemWithoutEntity(
                 this.itemStack,
-                CopyToast.ITEM_LEFT_MARGIN,
-                CopyToast.ITEM_TOP_MARGIN
+                ITEM_LEFT_MARGIN,
+                ITEM_TOP_MARGIN
             );
         }
 
@@ -123,7 +123,7 @@ public class CopyToast implements Toast {
             textRenderer,
             Text.translatable(this.translationKey),
             this.textLeftMargin,
-            CopyToast.TEXT_FIRST_ROW,
+            TEXT_FIRST_ROW,
             this.firstRowColor,
             false
         );
@@ -132,7 +132,7 @@ public class CopyToast implements Toast {
             textRenderer,
             Text.translatable(this.toastType.translationKey),
             this.textLeftMargin,
-            CopyToast.TEXT_SECOND_ROW,
+            TEXT_SECOND_ROW,
             this.secondRowColor,
             false
         );

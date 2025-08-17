@@ -64,7 +64,7 @@ public abstract class ConfigScreen extends GameOptionsScreen {
         ClickableWidget optionWidget = option.createWidget(
             0,
             0,
-            ConfigScreen.WIDGET_WIDTH,
+            WIDGET_WIDTH,
             value -> this.updateOptionWidgets()
         );
 

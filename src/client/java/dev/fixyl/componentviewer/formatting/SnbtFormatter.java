@@ -61,7 +61,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
     public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             if (codec == null) {
-                return linePrefix + SnbtFormatter.NO_CODEC_REPR;
+                return linePrefix + NO_CODEC_REPR;
             }
 
             String formattedString = SnbtFormatter.getFormattedText(value, codec, indentation).getString();
@@ -82,7 +82,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
                 return SnbtFormatter.convertToTextList(text, colored, linePrefix);
             }
 
-            Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPR).fillStyle((colored) ? SnbtFormatter.NO_CODEC_REPR_STYLE : Formatter.NO_COLOR_STYLE);
+            Text noCodecText = Text.literal(NO_CODEC_REPR).fillStyle((colored) ? NO_CODEC_REPR_STYLE : NO_COLOR_STYLE);
 
             if (linePrefix.isEmpty()) {
                 return List.of(noCodecText);
@@ -90,7 +90,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
 
             MutableText startOfLine = Text.literal(linePrefix);
             if (!colored) {
-                startOfLine.fillStyle(Formatter.NO_COLOR_STYLE);
+                startOfLine.fillStyle(NO_COLOR_STYLE);
             }
 
             return List.of(startOfLine.append(noCodecText));
@@ -112,7 +112,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
 
         MutableText startOfLine = Text.literal(linePrefix);
         if (!colored) {
-            startOfLine.fillStyle(Formatter.NO_COLOR_STYLE);
+            startOfLine.fillStyle(NO_COLOR_STYLE);
         }
 
         // This must be encapsulated in an array, otherwise
@@ -124,7 +124,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
 
             for (String stringSegment : stringArray) {
                 if (!stringSegment.equals("\n")) {
-                    textLine[0].append(Text.literal(stringSegment).fillStyle((colored) ? style : Formatter.NO_COLOR_STYLE));
+                    textLine[0].append(Text.literal(stringSegment).fillStyle((colored) ? style : NO_COLOR_STYLE));
                     continue;
                 }
 

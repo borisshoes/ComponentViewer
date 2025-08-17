@@ -112,10 +112,10 @@ public class JsonFormatter implements CodecBasedFormatter {
 
     private Style getStyle(JsonType jsonType) {
         if (!this.colored) {
-            return Formatter.NO_COLOR_STYLE;
+            return NO_COLOR_STYLE;
         }
 
-        return JsonFormatter.JSON_STYLES.get(jsonType);
+        return JSON_STYLES.get(jsonType);
     }
 
     private Style getStyle() {
@@ -155,7 +155,7 @@ public class JsonFormatter implements CodecBasedFormatter {
         this.indentLevel = 0;
 
         if (codec == null) {
-            this.textLine.append(Text.literal(JsonFormatter.NO_CODEC_REPR).fillStyle(this.getStyle()));
+            this.textLine.append(Text.literal(NO_CODEC_REPR).fillStyle(this.getStyle()));
             this.textList.add(this.textLine);
             return this.textList;
         }
@@ -277,9 +277,9 @@ public class JsonFormatter implements CodecBasedFormatter {
     }
 
     private static String escapeString(String string) {
-        Matcher matcher = JsonFormatter.STRING_ESCAPE_PATTERN.matcher(string);
+        Matcher matcher = STRING_ESCAPE_PATTERN.matcher(string);
 
-        return matcher.replaceAll(JsonFormatter.STRING_ESCAPE_REPLACEMENT);
+        return matcher.replaceAll(STRING_ESCAPE_REPLACEMENT);
     }
 
     private enum JsonType {

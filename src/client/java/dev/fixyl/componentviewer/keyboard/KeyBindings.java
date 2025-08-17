@@ -108,48 +108,48 @@ public final class KeyBindings {
     public final AdvancedKeyBinding configScreenKey = new AdvancedKeyBinding(
         "componentviewer.keybind.general.config_screen",
         GLFW_KEY_J,
-        KeyBindings.GENERAL_CATEGORY
+        GENERAL_CATEGORY
     );
     public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_display",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.tooltipDisplay
     );
     public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_purpose",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.tooltipPurpose
     );
     public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_components",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.tooltipComponents
     );
     public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_formatting",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.tooltipFormatting
     );
     public final EnumOptionKeyBinding<TooltipInjectMethod> tooltipInjectMethodConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_inject_method",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.tooltipInjectMethod
     );
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.clipboard_copy",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.clipboardCopy
     );
     public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.clipboard_formatting",
         GLFW_KEY_UNKNOWN,
-        KeyBindings.CONFIG_CATEGORY,
+        CONFIG_CATEGORY,
         this.configs.clipboardFormatting
     );
 }

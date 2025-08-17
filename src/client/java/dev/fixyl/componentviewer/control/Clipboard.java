@@ -82,7 +82,7 @@ public class Clipboard {
             commandString.append('/');
         }
 
-        commandString.append(Clipboard.GIVE_COMMAND_BASE)
+        commandString.append(GIVE_COMMAND_BASE)
                      .append(' ')
                      .append(targetSelector)
                      .append(' ')

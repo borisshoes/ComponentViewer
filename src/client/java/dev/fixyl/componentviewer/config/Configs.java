@@ -49,7 +49,7 @@ public final class Configs implements Options {
     private final ConfigManager configManager;
 
     public Configs(Logger logger) {
-        this.configManager = new ConfigManager(Configs.CONFIG_FILENAME, logger);
+        this.configManager = new ConfigManager(CONFIG_FILENAME, logger);
         this.configManager.addOptions(this);
         this.configManager.readFromFile();
     }

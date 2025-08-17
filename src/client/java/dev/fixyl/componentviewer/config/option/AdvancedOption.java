@@ -57,7 +57,7 @@ public abstract class AdvancedOption<T> {
     protected AdvancedOption(AdvancedOptionBuilder<T, ?, ?> builder) {
         Objects.requireNonNull(builder.id, "Option id not specified");
 
-        if (!builder.id.matches(AdvancedOption.ID_REGEX)) {
+        if (!builder.id.matches(ID_REGEX)) {
             throw new IllegalArgumentException(String.format("Invalid option id '%s'", builder.id));
         }
 

@@ -65,7 +65,7 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
         this.option = option;
         this.translationKey = Objects.requireNonNullElse(translationKey, option.getTranslationKey());
 
-        this.totalDuration = EnumOptionToast.DURATION;
+        this.totalDuration = DURATION;
         this.shouldResetTimer = false;
         this.visibility = Toast.Visibility.SHOW;
     }
@@ -83,10 +83,10 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
     public void update(ToastManager toastManager, long elapsedTime) {
         if (this.shouldResetTimer) {
             this.shouldResetTimer = false;
-            this.totalDuration = elapsedTime + EnumOptionToast.DURATION;
+            this.totalDuration = elapsedTime + DURATION;
         }
 
-        double actualDuration = (this.totalDuration - EnumOptionToast.DURATION) + EnumOptionToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
+        double actualDuration = (this.totalDuration - DURATION) + DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
         this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
@@ -95,7 +95,7 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
     public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
         drawContext.drawGuiTexture(
             RenderPipelines.GUI_TEXTURED,
-            EnumOptionToast.BACKGROUND_TEXTURE,
+            BACKGROUND_TEXTURE,
             0,
             0,
             this.getWidth(),
@@ -105,18 +105,18 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
         drawContext.drawText(
             textRenderer,
             Text.translatable(this.translationKey),
-            EnumOptionToast.TEXT_LEFT_MARGIN,
-            EnumOptionToast.TEXT_FIRST_ROW,
-            EnumOptionToast.FIRST_ROW_COLOR,
+            TEXT_LEFT_MARGIN,
+            TEXT_FIRST_ROW,
+            FIRST_ROW_COLOR,
             false
         );
 
         drawContext.drawText(
             textRenderer,
             Text.translatable(this.option.getValue().getTranslationKey()),
-            EnumOptionToast.TEXT_LEFT_MARGIN,
-            EnumOptionToast.TEXT_SECOND_ROW,
-            EnumOptionToast.SECOND_ROW_COLOR,
+            TEXT_LEFT_MARGIN,
+            TEXT_SECOND_ROW,
+            SECOND_ROW_COLOR,
             false
         );
     }
