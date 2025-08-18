@@ -96,5 +96,6 @@
     "componentviewer.tooltip.purpose.components.selection.default.empty": "No Default Components",
     "componentviewer.tooltip.purpose.components.value": "Value:",
     "componentviewer.tooltip.purpose.item_stack": "Item Stack:",
-    "componentviewer.tooltip.formatting_exception": ">> Formatting Exception"
+    "componentviewer.tooltip.formatting_exception": ">> Formatting Exception",
+    "componentviewer.tooltip.not_registered": "[not registered]"
 }

@@ -35,13 +35,19 @@ import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class Components {
 
-    private static final Comparator<Component<?>> COMPARATOR = Comparator.comparing(component -> component.type().toString());
+    private static final Comparator<Component<?>> COMPARATOR = Comparator.comparing(component -> {
+        Identifier identifier = Registries.DATA_COMPONENT_TYPE.getId(component.type());
+        return (identifier == null) ? "" : identifier.toString();
+    });
+
     private static final ResultCache<Components> COMPONENTS_CACHE = new ResultCache<>();
 
     private final TooltipComponents componentsType;

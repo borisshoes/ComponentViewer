@@ -29,10 +29,12 @@ import java.util.Map;
 
 import net.minecraft.component.Component;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.formatting.Formatter;
@@ -45,10 +47,13 @@ public class Tooltip {
     private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
     private static final Style SELECTED_COMPONENT_STYLE = Style.EMPTY.withColor(Formatting.DARK_GREEN);
     private static final Style REMOVED_COMPONENT_STYLE = Style.EMPTY.withStrikethrough(true);
+    private static final Style NOT_REGISTERED_COMPONENT_STYLE = Style.EMPTY.withItalic(true);
 
     private static final Style ERROR_STYLE = Style.EMPTY.withColor(Formatting.RED);
 
     private static final String CONTENT_INDENTATION = " ";
+
+    private static final String NOT_REGISTERED_TRANSLATION_KEY = "componentviewer.tooltip.not_registered";
 
     private static final Map<TooltipComponents, String> COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
         TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all",
@@ -109,7 +114,15 @@ public class Tooltip {
 
         // Add all component types
         for (int index = 0; index < components.size(); index++) {
-            MutableText componentTypeText = Text.literal(components.get(index).type().toString()).fillStyle(COMPONENT_STYLE);
+            Identifier identifier = Registries.DATA_COMPONENT_TYPE.getId(components.get(index).type());
+            MutableText componentTypeText = (
+                (identifier == null)
+                    ? Text.translatable(NOT_REGISTERED_TRANSLATION_KEY)
+                        .fillStyle(COMPONENT_STYLE)
+                        .fillStyle(NOT_REGISTERED_COMPONENT_STYLE)
+                    : Text.literal(identifier.toString())
+                        .fillStyle(COMPONENT_STYLE)
+            );
 
             if (index == indexOfSelected) {
                 componentTypeText.fillStyle(SELECTED_COMPONENT_STYLE);
