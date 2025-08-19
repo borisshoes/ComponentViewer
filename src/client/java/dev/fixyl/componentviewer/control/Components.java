@@ -29,13 +29,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
@@ -84,6 +88,33 @@ public class Components {
     @SuppressWarnings("java:S1452")
     public Component<?> get(int index) {
         return this.componentsList.get(index);
+    }
+
+    /**
+     * Get the index of any {@link Component} based on a given {@link ComponentType}.
+     * <p>
+     * If the component type is {@code null}, it is considered non-existent.
+     *
+     * @param <T> the type of the component
+     * @param componentType the instance representing a component type
+     * @return the index of the corresponding component, {@code -1} if no such component exists
+     */
+    public <T> int indexOf(@Nullable ComponentType<T> componentType) {
+        if (componentType == null) {
+            return -1;
+        }
+
+        Registry<ComponentType<?>> registry = Registries.DATA_COMPONENT_TYPE;
+        Identifier identifier = registry.getId(componentType);
+
+        if (identifier == null) {
+            return -1;
+        }
+
+        return IntStream.range(0, this.componentsList.size())
+            .filter(index -> identifier.equals(registry.getId(this.componentsList.get(index).type())))
+            .findFirst()
+            .orElse(-1);
     }
 
     public boolean isRemovedComponent(int index) {

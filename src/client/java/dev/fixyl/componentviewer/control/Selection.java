@@ -32,44 +32,57 @@ public class Selection {
     private int selectedIndex;
 
     public Selection(int amount) {
-        this.amount = amount;
+        this.amount = Selection.assertPositiveAmount(amount);
         this.selectedIndex = 0;
     }
 
+    /**
+     * Set the amount of items to select from.
+     * This effectively set the max possible index to {@code amount - 1}.
+     * It also clamps the currently selected index to fit within the new range.
+     *
+     * @param amount the amount of items possible to select
+     */
     public void setAmount(int amount) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Selection amount must be >= 0");
-        }
-
-        this.amount = amount;
+        this.amount = Selection.assertPositiveAmount(amount);
+        this.selectedIndex = Math.clamp(this.selectedIndex, 0, amount - 1);
     }
 
+    /**
+     * Get the amount of items to select from with this {@link Selection}.
+     * This effectively specifies the max possible index to select ({@code amount - 1}).
+     *
+     * @return the amount of items to select from
+     */
     public int getAmount() {
         return this.amount;
     }
 
     /**
      * Get the currently selected index.
-     * Will return {@code -1} when the selection amount is {@code 0}.
      *
      * @return the selected index
      */
     public int getSelectedIndex() {
-        return clampWithFallback(this.selectedIndex, 0, this.amount - 1, -1);
+        return this.selectedIndex;
     }
 
     /**
-     * Updates the selected index based on a mouse scroll distance.
+     * Update the selected index based on a mouse scroll distance.
      * Only the scroll direction (sign) is relevant though.
      *
-     * @param scrollDistance the distance scrolled
+     * @param scrollDistance the distance whose sign specifies direction
      */
     public void updateByScrolling(double scrollDistance) {
-        if (this.amount > 0) {
-            this.selectedIndex = Scroller.scrollCycling(scrollDistance, this.selectedIndex, this.amount);
-        }
+        this.selectedIndex = Scroller.scrollCycling(scrollDistance, this.selectedIndex, this.amount);
     }
 
+    /**
+     * Update the selected index based on a {@link CycleType}.
+     * This effectively allows cycling through the selection.
+     *
+     * @param cycleType the type specifying how to cycle
+     */
     public void updateByCycling(CycleType cycleType) {
         int newIndex = switch (cycleType) {
             case NEXT -> this.selectedIndex + 1;
@@ -87,16 +100,22 @@ public class Selection {
         }
     }
 
+    /**
+     * Update the selected index by providing the new index directly.
+     * The new index will be clamped to fit within the selection range.
+     *
+     * @param newIndex the new index
+     */
     public void updateByValue(int newIndex) {
-        this.selectedIndex = clampWithFallback(newIndex, 0, this.amount - 1, 0);
+        this.selectedIndex = Math.clamp(newIndex, 0, this.amount - 1);
     }
 
-    private static int clampWithFallback(long value, int min, int max, int fallback) {
-        try {
-            return Math.clamp(value, min, max);
-        } catch (IllegalArgumentException e) {
-            return fallback;
+    private static int assertPositiveAmount(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Selection amount must be > 0");
         }
+
+        return amount;
     }
 
     public enum CycleType {

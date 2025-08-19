@@ -38,6 +38,7 @@ import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
+import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.JsonFormatter;
 import dev.fixyl.componentviewer.formatting.ObjectFormatter;
@@ -55,8 +56,8 @@ public final class ControlFlow {
 
     private long clientTick;
 
-    private HoveredItemStack hoveredItemStack;
-    private ItemStack previousItemStack;
+    private @Nullable HoveredItemStack hoveredItemStack;
+    private @Nullable ItemStack previousItemStack;
 
     private long lastTimeItemStackHovered;
     private boolean isTooltipShown;
@@ -87,11 +88,11 @@ public final class ControlFlow {
             HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
 
             if (
-                this.configs.tooltipKeepSelection.getBooleanValue()
+                this.configs.tooltipKeepSelection.getValue() != TooltipKeepSelection.NEVER
                 && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
                 && this.hoveredItemStack != null
             ) {
-                newHoveredItemStack.getComponentSelection().updateByValue(this.hoveredItemStack.getComponentSelection().getSelectedIndex());
+                this.keepSelection(newHoveredItemStack);
             }
 
             this.hoveredItemStack = newHoveredItemStack;
@@ -124,7 +125,9 @@ public final class ControlFlow {
 
     public void onCycleComponent(Selection.CycleType cycleType) {
         if (this.isTooltipShown() && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
-            this.hoveredItemStack.getComponentSelection().updateByCycling(cycleType);
+            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
+                selection.updateByCycling(cycleType)
+            );
         }
     }
 
@@ -134,7 +137,10 @@ public final class ControlFlow {
             && this.configs.controlsAllowScrolling.getBooleanValue()
             && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
         ) {
-            this.hoveredItemStack.getComponentSelection().updateByScrolling(distance);
+            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
+                selection.updateByScrolling(distance)
+            );
+
             return ActionResult.SUCCESS;
         }
 
@@ -153,8 +159,7 @@ public final class ControlFlow {
                 copyType == ClipboardCopy.COMPONENT_VALUE
                 && this.isTooltipShown()
                 && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
-                && !this.hoveredItemStack.getComponents().isEmpty()
-            ) -> this.copyComponentValue(this.hoveredItemStack.getSelectedComponent());
+            ) -> this.hoveredItemStack.getSelectedComponent().ifPresent(this::copyComponentValue);
             default -> { /* Default not needed, copying disabled */ }
         }
     }
@@ -176,6 +181,37 @@ public final class ControlFlow {
         return this.client.options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
+    private void keepSelection(HoveredItemStack newHoveredItemStack) {
+        switch (this.configs.tooltipKeepSelection.getValue()) {
+            case INDEX -> this.keepSelectionByIndex(newHoveredItemStack);
+            case TYPE -> this.keepSelectionByType(newHoveredItemStack);
+            case NEVER -> { /* Don't keep the selection */ }
+        }
+    }
+
+    private void keepSelectionByIndex(HoveredItemStack newHoveredItemStack) {
+        this.hoveredItemStack.getComponentSelection().ifPresent(currentSelection ->
+            newHoveredItemStack.getComponentSelection().ifPresent(newSelection ->
+                newSelection.updateByValue(currentSelection.getSelectedIndex())
+            )
+        );
+    }
+
+    private void keepSelectionByType(HoveredItemStack newHoveredItemStack) {
+        this.hoveredItemStack.getSelectedComponent().ifPresent(component -> {
+            int indexOfComponent = newHoveredItemStack.getComponents().indexOf(component.type());
+
+            if (indexOfComponent < 0) {
+                this.keepSelectionByIndex(newHoveredItemStack);
+                return;
+            }
+
+            newHoveredItemStack.getComponentSelection().ifPresent(newSelection ->
+                newSelection.updateByValue(indexOfComponent)
+            );
+        });
+    }
+
     private void handleComponentPurpose(Tooltip tooltip) {
         tooltip.addComponentSelection(this.hoveredItemStack);
 
@@ -184,7 +220,7 @@ public final class ControlFlow {
             return;
         }
 
-        Component<?> selectedComponent = this.hoveredItemStack.getSelectedComponent();
+        Component<?> selectedComponent = this.hoveredItemStack.getSelectedComponent().orElseThrow();
 
         tooltip.addSpacer().addComponentValue(
             selectedComponent,

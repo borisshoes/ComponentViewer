@@ -36,6 +36,7 @@ import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
+import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
 import dev.fixyl.componentviewer.config.option.EnumOption;
@@ -60,8 +61,8 @@ public final class Configs implements Options {
             this.tooltipDisplay,
             this.tooltipPurpose,
             this.tooltipComponents,
-            this.tooltipKeepSelection,
             this.tooltipComponentValues,
+            this.tooltipKeepSelection,
             this.tooltipFormatting,
             this.tooltipIndentation,
             this.tooltipColoredFormatting,
@@ -102,18 +103,18 @@ public final class Configs implements Options {
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();
-    public final BooleanOption tooltipKeepSelection = BooleanOption.create("tooltip.keep_selection")
-        .setDefaultValue(true)
-        .setTranslationKey("componentviewer.config.tooltip.keep_selection")
-        .setDescriptionTranslationKey("componentviewer.config.tooltip.keep_selection.description")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
-        .setChangeCallback(this::changeCallback)
-        .build();
     public final BooleanOption tooltipComponentValues = BooleanOption.create("tooltip.component_values")
         .setDefaultValue(true)
         .setTranslationKey("componentviewer.config.tooltip.component_values")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.component_values.description")
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final EnumOption<TooltipKeepSelection> tooltipKeepSelection = EnumOption.<TooltipKeepSelection>create("tooltip.selection")
+        .setDefaultValue(TooltipKeepSelection.TYPE)
+        .setTranslationKey("componentviewer.config.tooltip.keep_selection")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.keep_selection.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS && this.tooltipComponentValues.getBooleanValue())
         .setChangeCallback(this::changeCallback)
         .build();
     public final EnumOption<TooltipFormatting> tooltipFormatting = EnumOption.<TooltipFormatting>create("tooltip.formatting")

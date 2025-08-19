@@ -110,7 +110,7 @@ public class Tooltip {
         // Double the indentation if more than one component needs to be displayed
         String indentationOfSelected = CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));
 
-        int indexOfSelected = hoveredItemStack.getComponentSelection().getSelectedIndex();
+        int indexOfSelected = hoveredItemStack.getComponentSelection().orElseThrow().getSelectedIndex();
 
         // Add all component types
         for (int index = 0; index < components.size(); index++) {
