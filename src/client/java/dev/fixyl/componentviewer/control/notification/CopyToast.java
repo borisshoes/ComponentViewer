@@ -56,7 +56,7 @@ public class CopyToast implements Toast {
     private static final int SECOND_ROW_COLOR_FAILURE = ColorHelper.fullAlpha(Formatting.DARK_AQUA.getColorValue());
 
     private final CopyToast.Type toastType;
-    @Nullable private final ItemStack itemStack;
+    private final @Nullable ItemStack itemStack;
 
     private final String translationKey;
     private final int firstRowColor;

@@ -165,11 +165,11 @@ public abstract class AdvancedOption<T> {
 
         protected String id;
         protected T defaultValue;
-        @Nullable protected String translationKey;
-        @Nullable protected String descriptionTranslationKey;
-        @Nullable protected Function<T, String> translationKeyOverwrite;
-        @Nullable protected BooleanSupplier dependencyFulfillmentSupplier;
-        @Nullable protected Consumer<T> changeCallback;
+        protected @Nullable String translationKey;
+        protected @Nullable String descriptionTranslationKey;
+        protected @Nullable Function<T, String> translationKeyOverwrite;
+        protected @Nullable BooleanSupplier dependencyFulfillmentSupplier;
+        protected @Nullable Consumer<T> changeCallback;
 
         protected AdvancedOptionBuilder(String id) {
             this.id = id;

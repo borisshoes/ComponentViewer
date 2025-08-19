@@ -36,7 +36,7 @@ public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extend
 
     private final EnumOption<E> option;
 
-    @Nullable private EnumOptionToast<E> optionToast;
+    private @Nullable EnumOptionToast<E> optionToast;
 
     public EnumOptionKeyBinding(String translationKey, int code, String category, EnumOption<E> option) {
         super(translationKey, code, category);
