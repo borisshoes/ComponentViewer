@@ -124,7 +124,7 @@ public final class ControlFlow {
     }
 
     public void onCycleComponent(Selection.CycleType cycleType) {
-        if (this.isTooltipShown() && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+        if (this.isComponentSelectionShown()) {
             this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
                 selection.updateByCycling(cycleType)
             );
@@ -133,9 +133,8 @@ public final class ControlFlow {
 
     public ActionResult onMouseScroll(double distance) {
         if (
-            this.isTooltipShown()
+            this.isComponentSelectionShown()
             && this.configs.controlsAllowScrolling.getBooleanValue()
-            && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
         ) {
             this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
                 selection.updateByScrolling(distance)
@@ -157,8 +156,7 @@ public final class ControlFlow {
             case GIVE_COMMAND -> this.copyGiveCommand(this.hoveredItemStack.getItemStack());
             case ClipboardCopy copyType when (
                 copyType == ClipboardCopy.COMPONENT_VALUE
-                && this.isTooltipShown()
-                && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+                && this.isComponentSelectionShown()
             ) -> this.hoveredItemStack.getSelectedComponent().ifPresent(this::copyComponentValue);
             default -> { /* Default not needed, copying disabled */ }
         }
@@ -170,6 +168,12 @@ public final class ControlFlow {
 
     public boolean isTooltipShown() {
         return this.isTooltipShown && this.lastTimeTooltipShown == this.clientTick;
+    }
+
+    private boolean isComponentSelectionShown() {
+        return this.isTooltipShown()
+            && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+            && this.configs.tooltipComponentValues.getBooleanValue();
     }
 
     private boolean shouldDisplayToolip() {
@@ -213,10 +217,11 @@ public final class ControlFlow {
     }
 
     private void handleComponentPurpose(Tooltip tooltip) {
-        tooltip.addComponentSelection(this.hoveredItemStack);
+        boolean showComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
 
-        boolean tooltipComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
-        if (this.hoveredItemStack.getComponents().isEmpty() || !tooltipComponentValues) {
+        tooltip.addComponentSelection(this.hoveredItemStack, showComponentValues);
+
+        if (this.hoveredItemStack.getComponents().isEmpty() || !showComponentValues) {
             return;
         }
 
