@@ -46,6 +46,8 @@ import dev.fixyl.componentviewer.util.ResultCache;
 
 public class SnbtFormatter implements CodecBasedFormatter {
 
+    private static final String LF = "\n";
+
     private static final String NO_CODEC_REPR = "{}";
     private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 
@@ -67,7 +69,9 @@ public class SnbtFormatter implements CodecBasedFormatter {
             String formattedString = SnbtFormatter.getFormattedText(value, codec, indentation).getString();
 
             if (!linePrefix.isEmpty()) {
-                return linePrefix + formattedString.replace("\n", System.lineSeparator() + linePrefix);
+                formattedString = linePrefix + formattedString.replace(LF, System.lineSeparator() + linePrefix);
+            } else if (!System.lineSeparator().equals(LF)) {
+                formattedString = formattedString.replace(LF, System.lineSeparator());
             }
 
             return formattedString;
@@ -123,7 +127,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
             String[] stringArray = string.split("(?=\\n)|(?<=\\n)");
 
             for (String stringSegment : stringArray) {
-                if (!stringSegment.equals("\n")) {
+                if (!stringSegment.equals(LF)) {
                     textLine[0].append(Text.literal(stringSegment).fillStyle((colored) ? style : NO_COLOR_STYLE));
                     continue;
                 }
