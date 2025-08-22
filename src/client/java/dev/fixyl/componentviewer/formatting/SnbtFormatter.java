@@ -31,7 +31,6 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.visitor.NbtTextFormatter;
@@ -106,7 +105,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
 
         NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(prefix);
 
-        NbtElement nbtElement = codec.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), value).getOrThrow(FormattingException::new);
+        NbtElement nbtElement = codec.encodeStart(NbtOps.INSTANCE, value).getOrThrow(FormattingException::new);
 
         return nbtTextFormatter.apply(nbtElement);
     }

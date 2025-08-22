@@ -39,10 +39,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -160,7 +160,7 @@ public class JsonFormatter implements CodecBasedFormatter {
             return this.textList;
         }
 
-        JsonElement jsonElement = codec.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(JsonOps.INSTANCE), value).getOrThrow(FormattingException::new);
+        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, value).getOrThrow(FormattingException::new);
 
         this.walkJson(jsonElement);
 
