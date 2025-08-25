@@ -1,6 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.11-SNAPSHOT"
-    id "maven-publish"
+    id "fabric-loom" version "${fabric_loom_version}"
 }
 
 version = project.mod_version
@@ -14,16 +13,6 @@ repositories {
     maven {
         name = "Terraformers"
         url = "https://maven.terraformersmc.com/"
-    }
-}
-
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "componentviewer" {
-            sourceSet sourceSets.client
-        }
     }
 }
 
@@ -55,6 +44,8 @@ java {
 }
 
 jar {
+    inputs.property "archivesName", project.base.archivesName
+
     from "LICENSE"
 }
 
@@ -63,14 +54,5 @@ sourcesJar {
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
-    }
-}
-
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
     }
 }

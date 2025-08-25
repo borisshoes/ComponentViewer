@@ -25,7 +25,7 @@
     },
     "mixins": [
         {
-            "config": "componentviewer.client.mixins.json",
+            "config": "componentviewer.mixins.json",
             "environment": "client"
         }
     ],
