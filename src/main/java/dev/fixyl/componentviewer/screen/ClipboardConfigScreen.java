@@ -24,15 +24,15 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class ClipboardConfigScreen extends ConfigScreen {
 
-    public ClipboardConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.clipboard.title");
+    public ClipboardConfigScreen(Screen lastScreen) {
+        super(lastScreen, "componentviewer.config.clipboard.title");
     }
 
     @Override

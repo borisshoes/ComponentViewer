@@ -32,11 +32,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -44,14 +44,14 @@ public abstract class AdvancedOption<T> {
 
     private static final String ID_REGEX = "^[a-z]++(?:_[a-z]++)*+(?:\\.[a-z]++(?:_[a-z]++)*+)*+$";
 
-    protected SimpleOption<T> simpleOption;
+    protected OptionInstance<T> option;
 
     protected final String id;
     protected final T defaultValue;
     protected final String translationKey;
-    protected final SimpleOption.TooltipFactory<T> tooltipFactory;
-    @Nullable protected final Function<T, String> translationKeyOverwrite;
-    @Nullable protected final BooleanSupplier dependencyFulfillmentSupplier;
+    protected final OptionInstance.TooltipSupplier<T> tooltipSupplier;
+    protected final @Nullable Function<T, String> translationKeyOverwrite;
+    protected final @Nullable BooleanSupplier dependencyFulfillmentSupplier;
     protected final Consumer<T> changeCallback;
 
     protected AdvancedOption(AdvancedOptionBuilder<T, ?, ?> builder) {
@@ -64,17 +64,21 @@ public abstract class AdvancedOption<T> {
         this.id = builder.id;
         this.defaultValue = Objects.requireNonNull(builder.defaultValue, "Default value not specified");
         this.translationKey = Objects.toString(builder.translationKey);
-        this.tooltipFactory = (builder.descriptionTranslationKey != null) ? SimpleOption.constantTooltip(Text.translatable(builder.descriptionTranslationKey)) : SimpleOption.emptyTooltip();
+        this.tooltipSupplier = (
+            (builder.descriptionTranslationKey == null)
+                ? OptionInstance.noTooltip()
+                : OptionInstance.cachedConstantTooltip(Component.translatable(builder.descriptionTranslationKey))
+        );
         this.translationKeyOverwrite = builder.translationKeyOverwrite;
         this.dependencyFulfillmentSupplier = builder.dependencyFulfillmentSupplier;
         this.changeCallback = Objects.requireNonNullElse(builder.changeCallback, value -> {});
     }
 
     protected final void postConstruct() {
-        this.simpleOption = this.createSimpleOption(
+        this.option = this.createOptionInstance(
             this.translationKey,
-            this.tooltipFactory,
-            AdvancedOption.createValueTextGetter(this.translationKeyOverwrite, this::getDefaultValueTextGetter),
+            this.tooltipSupplier,
+            AdvancedOption.createCaptionBasedToString(this.translationKeyOverwrite, this::getDefaultCaptionBasedToString),
             this.defaultValue,
             this.changeCallback
         );
@@ -99,7 +103,7 @@ public abstract class AdvancedOption<T> {
     }
 
     public T getValue() {
-        return this.simpleOption.getValue();
+        return this.option.get();
     }
 
     public T getDefaultValue() {
@@ -112,20 +116,20 @@ public abstract class AdvancedOption<T> {
             return;
         }
 
-        this.simpleOption.setValue(value);
+        this.option.set(value);
     }
 
     public void resetValue() {
-        this.simpleOption.setValue(this.defaultValue);
+        this.option.set(this.defaultValue);
     }
 
     public Tooltip getTooltip() {
-        return this.tooltipFactory.apply(this.getValue());
+        return this.tooltipSupplier.apply(this.getValue());
     }
 
-    public ClickableWidget createWidget(int x, int y, int width, Consumer<T> changeCallback) {
-        return this.simpleOption.createWidget(
-            MinecraftClient.getInstance().options,
+    public AbstractWidget createWidget(int x, int y, int width, Consumer<T> changeCallback) {
+        return this.option.createButton(
+            Minecraft.getInstance().options,
             x,
             y,
             width,
@@ -141,11 +145,11 @@ public abstract class AdvancedOption<T> {
         return !this.isDependent() || this.dependencyFulfillmentSupplier.getAsBoolean();
     }
 
-    protected abstract SimpleOption<T> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<T> tooltipFactory, SimpleOption.ValueTextGetter<T> valueTextGetter, T defaultValue, Consumer<T> changeCallback);
+    protected abstract OptionInstance<T> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<T> tooltipSupplier, OptionInstance.CaptionBasedToString<T> captionBasedToString, T defaultValue, Consumer<T> changeCallback);
 
-    protected abstract SimpleOption.ValueTextGetter<T> getDefaultValueTextGetter();
+    protected abstract OptionInstance.CaptionBasedToString<T> getDefaultCaptionBasedToString();
 
-    private static <T> SimpleOption.ValueTextGetter<T> createValueTextGetter(@Nullable Function<T, String> translationKeyOverwrite, Supplier<SimpleOption.ValueTextGetter<T>> defaultSupplier) {
+    private static <T> OptionInstance.CaptionBasedToString<T> createCaptionBasedToString(@Nullable Function<T, String> translationKeyOverwrite, Supplier<OptionInstance.CaptionBasedToString<T>> defaultSupplier) {
         if (translationKeyOverwrite == null) {
             return defaultSupplier.get();
         }
@@ -154,10 +158,10 @@ public abstract class AdvancedOption<T> {
             String translationKey = translationKeyOverwrite.apply(value);
 
             if (translationKey == null) {
-                return Text.literal(Objects.toString(null));
+                return Component.literal(Objects.toString(null));
             }
 
-            return Text.translatable(translationKey, value);
+            return Component.translatable(translationKey, value);
         };
     }
 

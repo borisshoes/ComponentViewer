@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.util.OptionEnum;
 
-public enum TooltipFormatting implements TranslatableOption {
+public enum TooltipFormatting implements OptionEnum {
 
     @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltip.formatting.snbt"),
     @SerializedName("json") JSON(1, "componentviewer.config.tooltip.formatting.json"),
@@ -48,7 +48,7 @@ public enum TooltipFormatting implements TranslatableOption {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getKey() {
         return this.translationKey;
     }
 }

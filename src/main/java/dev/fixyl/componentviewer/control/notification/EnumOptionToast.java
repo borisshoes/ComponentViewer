@@ -26,33 +26,33 @@ package dev.fixyl.componentviewer.control.notification;
 
 import java.util.Objects;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TranslatableOption;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.OptionEnum;
 
 import org.jetbrains.annotations.Nullable;
 
 import dev.fixyl.componentviewer.config.option.EnumOption;
 
-public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements Toast {
+public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
-    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 2000L;
 
     private static final int TEXT_LEFT_MARGIN = 8;
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR = ColorHelper.fullAlpha(Formatting.DARK_AQUA.getColorValue());
-    private static final int SECOND_ROW_COLOR = ColorHelper.fullAlpha(Formatting.WHITE.getColorValue());
+    private static final int FIRST_ROW_COLOR = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
+    private static final int SECOND_ROW_COLOR = ARGB.opaque(ChatFormatting.WHITE.getColor());
 
     private final EnumOption<E> option;
     private final String translationKey;
@@ -75,45 +75,45 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
     }
 
     @Override
-    public Toast.Visibility getVisibility() {
+    public Toast.Visibility getWantedVisibility() {
         return this.visibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long elapsedTime) {
+    public void update(ToastManager toastManager, long visibilityTime) {
         if (this.shouldResetTimer) {
             this.shouldResetTimer = false;
-            this.totalDuration = elapsedTime + DURATION;
+            this.totalDuration = visibilityTime + DURATION;
         }
 
         double actualDuration = (this.totalDuration - DURATION) + DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
-        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
+        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     @Override
-    public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
-        drawContext.drawGuiTexture(
+    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
+        guiGraphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
-            BACKGROUND_TEXTURE,
+            BACKGROUND_SPRITE,
             0,
             0,
-            this.getWidth(),
-            this.getHeight()
+            this.width(),
+            this.height()
         );
 
-        drawContext.drawText(
-            textRenderer,
-            Text.translatable(this.translationKey),
+        guiGraphics.drawString(
+            font,
+            Component.translatable(this.translationKey),
             TEXT_LEFT_MARGIN,
             TEXT_FIRST_ROW,
             FIRST_ROW_COLOR,
             false
         );
 
-        drawContext.drawText(
-            textRenderer,
-            Text.translatable(this.option.getValue().getTranslationKey()),
+        guiGraphics.drawString(
+            font,
+            Component.translatable(this.option.getValue().getKey()),
             TEXT_LEFT_MARGIN,
             TEXT_SECOND_ROW,
             SECOND_ROW_COLOR,
@@ -121,15 +121,15 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
         );
     }
 
-    public static <E extends Enum<E> & TranslatableOption> EnumOptionToast<E> dispatch(EnumOption<E> option, @Nullable String translationKey) {
+    public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @Nullable String translationKey) {
         EnumOptionToast<E> toast = new EnumOptionToast<>(option, translationKey);
 
-        MinecraftClient.getInstance().getToastManager().add(toast);
+        Minecraft.getInstance().getToastManager().addToast(toast);
 
         return toast;
     }
 
-    public static <E extends Enum<E> & TranslatableOption> EnumOptionToast<E> dispatch(EnumOption<E> option) {
+    public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option) {
         return EnumOptionToast.dispatch(option, null);
     }
 }

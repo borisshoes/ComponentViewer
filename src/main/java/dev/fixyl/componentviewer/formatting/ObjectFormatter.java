@@ -34,30 +34,30 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.component.Component;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class ObjectFormatter implements Formatter {
 
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
-        Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
-        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
-        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.HEX, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
+        Map.entry(TokenType.ANY, Style.EMPTY.withColor(ChatFormatting.AQUA)),
+        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(TokenType.STRING, Style.EMPTY.withColor(ChatFormatting.GREEN)),
+        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(TokenType.HEX, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(TokenType.NULL, Style.EMPTY.withColor(ChatFormatting.BLUE))
     );
 
     private static final Map<Character, Character> BRACKET_PAIR = Map.of(
@@ -67,7 +67,7 @@ public class ObjectFormatter implements Formatter {
     );
 
     private final ResultCache<String> stringResultCache;
-    private final ResultCache<List<Text>> textResultCache;
+    private final ResultCache<List<Component>> textResultCache;
 
     private final Tokenizer tokenizer;
     private final Map<Integer, String> newLinePrefixCache;
@@ -87,8 +87,8 @@ public class ObjectFormatter implements Formatter {
     private State state;
 
     private boolean formatAsText;
-    private List<Text> textList;
-    private MutableText textLine;
+    private List<Component> textList;
+    private MutableComponent textLine;
     private StringBuilder stringBuilder;
 
     public ObjectFormatter() {
@@ -102,12 +102,12 @@ public class ObjectFormatter implements Formatter {
     }
 
     @Override
-    public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
+    public <T> String componentToString(TypedDataComponent<T> component, int indentation, String linePrefix) {
         return this.valueToString(component.value().toString(), indentation, linePrefix);
     }
 
     @Override
-    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Component> componentToText(TypedDataComponent<T> component, int indentation, boolean colored, String linePrefix) {
         return this.valueToText(component.value().toString(), indentation, colored, linePrefix);
     }
 
@@ -117,7 +117,7 @@ public class ObjectFormatter implements Formatter {
     }
 
     @Override
-    public List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix) {
+    public List<Component> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix) {
         return this.valueToText(itemStack.toString(), indentation, colored, linePrefix);
     }
 
@@ -133,19 +133,19 @@ public class ObjectFormatter implements Formatter {
         }, value, indentation, linePrefix);
     }
 
-    private List<Text> valueToText(String value, int indentation, boolean colored, String linePrefix) {
+    private List<Component> valueToText(String value, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (indentation <= 0 && !colored) {
-                return List.of(Text.literal(linePrefix + value).fillStyle(NO_COLOR_STYLE));
+                return List.of(Component.literal(linePrefix + value).withStyle(NO_COLOR_STYLE));
             }
 
             List<Token> tokenList = this.tokenizer.tokenize(value);
 
             if (indentation <= 0) {
-                MutableText line = Text.literal(linePrefix);
+                MutableComponent line = Component.literal(linePrefix);
 
                 for (Token token : tokenList) {
-                    line.append(Text.literal(token.content()).fillStyle(TOKEN_STYLES.get(token.tokenType())));
+                    line.append(Component.literal(token.content()).withStyle(TOKEN_STYLES.get(token.tokenType())));
                 }
 
                 return List.of(line);
@@ -165,15 +165,15 @@ public class ObjectFormatter implements Formatter {
         return this.stringBuilder.toString();
     }
 
-    private List<Text> formatTokensAsText(List<Token> tokens, int indentation, boolean colored, String linePrefix) {
+    private List<Component> formatTokensAsText(List<Token> tokens, int indentation, boolean colored, String linePrefix) {
         this.formatAsText = true;
 
         this.textList = new ArrayList<>();
-        this.textLine = Text.literal(linePrefix);
+        this.textLine = Component.literal(linePrefix);
         this.colored = colored;
 
         if (!this.colored) {
-            this.textLine.fillStyle(NO_COLOR_STYLE);
+            this.textLine.withStyle(NO_COLOR_STYLE);
         }
 
         this.formatTokens(tokens, indentation, linePrefix);
@@ -285,10 +285,10 @@ public class ObjectFormatter implements Formatter {
 
         if (this.formatAsText) {
             this.textList.add(this.textLine);
-            this.textLine = Text.literal(this.getNewLinePrefix());
+            this.textLine = Component.literal(this.getNewLinePrefix());
 
             if (!this.colored) {
-                this.textLine.fillStyle(NO_COLOR_STYLE);
+                this.textLine.withStyle(NO_COLOR_STYLE);
             }
         } else {
             this.stringBuilder.append(System.lineSeparator()).append(this.getNewLinePrefix());
@@ -306,7 +306,7 @@ public class ObjectFormatter implements Formatter {
         }
 
         if (this.formatAsText) {
-            this.textLine.append(Text.literal(tokenContent).fillStyle((this.colored) ? TOKEN_STYLES.get(this.currentToken.tokenType()) : NO_COLOR_STYLE));
+            this.textLine.append(Component.literal(tokenContent).withStyle((this.colored) ? TOKEN_STYLES.get(this.currentToken.tokenType()) : NO_COLOR_STYLE));
         } else {
             this.stringBuilder.append(tokenContent);
         }

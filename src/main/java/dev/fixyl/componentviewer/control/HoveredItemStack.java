@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.control;
 
 import java.util.Optional;
 
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +44,7 @@ public class HoveredItemStack {
     private @Nullable Selection componentSelection;
 
     private boolean componentTypeChanged;
-    private @Nullable ComponentType<?> previousSelectedComponentType;
+    private @Nullable DataComponentType<?> previousSelectedComponentType;
 
     public HoveredItemStack(ItemStack itemStack, Configs configs) {
         this.itemStack = itemStack;
@@ -142,8 +142,8 @@ public class HoveredItemStack {
     }
 
     /**
-     * Get the {@link Component} instance wrapped in an {@link Optional} which is currently
-     * selected by the player.
+     * Get the {@link TypedDataComponent} instance wrapped in an {@link Optional}
+     * which is currently selected by the player.
      * <p>
      * The {@link Optional} will be empty if no component selection exists, meaning
      * {@link HoveredItemStack#getComponentSelection() getComponentSelection()}
@@ -158,7 +158,7 @@ public class HoveredItemStack {
      * @see HoveredItemStack#getComponentSelection()
      */
     @SuppressWarnings("java:S1452")
-    public Optional<Component<?>> getSelectedComponent() {
+    public Optional<TypedDataComponent<?>> getSelectedComponent() {
         Optional<Selection> optionalComponentSelection = this.getComponentSelection();
 
         if (optionalComponentSelection.isEmpty()) {

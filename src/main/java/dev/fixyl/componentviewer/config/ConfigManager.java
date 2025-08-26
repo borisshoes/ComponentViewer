@@ -46,8 +46,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import org.slf4j.Logger;
 
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
@@ -64,11 +62,11 @@ public final class ConfigManager {
 
     private final Logger logger;
 
-    public ConfigManager(String configFilename, Logger logger) {
+    public ConfigManager(File configFile, Logger logger) {
         this.optionIds = new HashSet<>();
         this.options = new TreeSet<>(Comparator.comparing(AdvancedOption::getId));
 
-        this.configFile = FabricLoader.getInstance().getConfigDir().resolve(configFilename).toFile();
+        this.configFile = configFile;
         this.configAdapter = new ConfigAdapter();
         this.gson = new GsonBuilder()
             .registerTypeAdapter(ConfigHelper.class, this.configAdapter)

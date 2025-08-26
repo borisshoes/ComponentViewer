@@ -27,10 +27,10 @@ package dev.fixyl.componentviewer.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.Component;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.control.notification.CopyToast;
 import dev.fixyl.componentviewer.formatting.Formatter;
@@ -47,7 +47,7 @@ public class Clipboard {
         this.snbtFormatter = new SnbtFormatter();
     }
 
-    public <T> void copyComponentValue(Component<T> component, Formatter formatter, int indentation, boolean successNotification) {
+    public <T> void copyComponentValue(TypedDataComponent<T> component, Formatter formatter, int indentation, boolean successNotification) {
         try {
             String componentString = formatter.componentToString(component, indentation);
             this.setClipboard(componentString);
@@ -82,11 +82,9 @@ public class Clipboard {
             commandString.append('/');
         }
 
-        commandString.append(GIVE_COMMAND_BASE)
-                     .append(' ')
-                     .append(targetSelector)
-                     .append(' ')
-                     .append(Registries.ITEM.getEntry(itemStack.getItem()).getIdAsString());
+        commandString.append(GIVE_COMMAND_BASE).append(' ')
+            .append(targetSelector).append(' ')
+            .append(BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
 
         Components components = Components.getChangedComponents(itemStack);
 
@@ -101,8 +99,7 @@ public class Clipboard {
         }
 
         if (includeCount) {
-            commandString.append(' ')
-                         .append(itemStack.getCount());
+            commandString.append(' ').append(itemStack.getCount());
         }
 
         this.setClipboard(commandString.toString());
@@ -113,7 +110,7 @@ public class Clipboard {
     }
 
     private void setClipboard(String content) {
-        MinecraftClient.getInstance().keyboard.setClipboard(content);
+        Minecraft.getInstance().keyboardHandler.setClipboard(content);
     }
 
     private List<String> createGiveCommandComponentList(Components components) {
@@ -122,23 +119,21 @@ public class Clipboard {
         StringBuilder componentString = new StringBuilder();
 
         for (int index = 0; index < components.size(); index++) {
-            Component<?> component = components.get(index);
+            TypedDataComponent<?> component = components.get(index);
 
-            // Skip components that are not encoded and therefore
+            // Skip components that can't be encoded and therefore
             // cannot be used in give commands
-            if (component.type().getCodec() == null) {
+            if (component.type().codec() == null) {
                 continue;
             }
 
             componentString.setLength(0);
 
             if (components.isRemovedComponent(index)) {
-                componentString.append('!')
-                               .append(component.type());
+                componentString.append('!').append(component.type());
             } else {
-                componentString.append(component.type())
-                               .append('=')
-                               .append(this.snbtFormatter.componentToString(component, 0));
+                componentString.append(component.type()).append('=')
+                    .append(this.snbtFormatter.componentToString(component, 0));
             }
 
             componentList.add(componentString.toString());

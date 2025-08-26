@@ -24,23 +24,23 @@
 
 package dev.fixyl.componentviewer.control.notification;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
 public class CopyToast implements Toast {
 
-    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 3000L;
 
     private static final int ITEM_LEFT_MARGIN = 8;
@@ -50,10 +50,10 @@ public class CopyToast implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR_SUCCESS = ColorHelper.fullAlpha(Formatting.DARK_GREEN.getColorValue());
-    private static final int SECOND_ROW_COLOR_SUCCESS = ColorHelper.fullAlpha(Formatting.GOLD.getColorValue());
-    private static final int FIRST_ROW_COLOR_FAILURE = ColorHelper.fullAlpha(Formatting.RED.getColorValue());
-    private static final int SECOND_ROW_COLOR_FAILURE = ColorHelper.fullAlpha(Formatting.DARK_AQUA.getColorValue());
+    private static final int FIRST_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.DARK_GREEN.getColor());
+    private static final int SECOND_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.GOLD.getColor());
+    private static final int FIRST_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.RED.getColor());
+    private static final int SECOND_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
 
     private final CopyToast.Type toastType;
     private final @Nullable ItemStack itemStack;
@@ -89,48 +89,48 @@ public class CopyToast implements Toast {
     }
 
     @Override
-    public Toast.Visibility getVisibility() {
+    public Toast.Visibility getWantedVisibility() {
         return this.visibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long elapsedTime) {
+    public void update(ToastManager toastManager, long visibilityTime) {
         double actualDuration = DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
-        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
+        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     @Override
-    public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
-        drawContext.drawGuiTexture(
+    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
+        guiGraphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
-            BACKGROUND_TEXTURE,
+            BACKGROUND_SPRITE,
             0,
             0,
-            this.getWidth(),
-            this.getHeight()
+            this.width(),
+            this.height()
         );
 
         if (this.itemStack != null) {
-            drawContext.drawItemWithoutEntity(
+            guiGraphics.renderFakeItem(
                 this.itemStack,
                 ITEM_LEFT_MARGIN,
                 ITEM_TOP_MARGIN
             );
         }
 
-        drawContext.drawText(
-            textRenderer,
-            Text.translatable(this.translationKey),
+        guiGraphics.drawString(
+            font,
+            Component.translatable(this.translationKey),
             this.textLeftMargin,
             TEXT_FIRST_ROW,
             this.firstRowColor,
             false
         );
 
-        drawContext.drawText(
-            textRenderer,
-            Text.translatable(this.toastType.translationKey),
+        guiGraphics.drawString(
+            font,
+            Component.translatable(this.toastType.translationKey),
             this.textLeftMargin,
             TEXT_SECOND_ROW,
             this.secondRowColor,
@@ -139,7 +139,7 @@ public class CopyToast implements Toast {
     }
 
     @Override
-    public CopyToast.Type getType() {
+    public CopyToast.Type getToken() {
         return this.toastType;
     }
 
@@ -161,7 +161,7 @@ public class CopyToast implements Toast {
     public static CopyToast dispatch(CopyToast.Type type, @Nullable ItemStack itemStack) {
         CopyToast toast = new CopyToast(type, itemStack);
 
-        MinecraftClient.getInstance().getToastManager().add(toast);
+        Minecraft.getInstance().getToastManager().addToast(toast);
 
         return toast;
     }

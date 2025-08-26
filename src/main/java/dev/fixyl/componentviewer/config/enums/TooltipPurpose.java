@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.util.OptionEnum;
 
-public enum TooltipPurpose implements TranslatableOption {
+public enum TooltipPurpose implements OptionEnum {
 
     @SerializedName("components") COMPONENTS(0, "componentviewer.config.tooltip.purpose.components"),
     @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.tooltip.purpose.item_stack");
@@ -47,7 +47,7 @@ public enum TooltipPurpose implements TranslatableOption {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getKey() {
         return this.translationKey;
     }
 }

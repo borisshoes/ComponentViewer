@@ -24,11 +24,9 @@
 
 package dev.fixyl.componentviewer.mixin;
 
-import static org.lwjgl.glfw.GLFW.*;
-
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.world.InteractionResult;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,17 +35,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.fixyl.componentviewer.event.MixinEvents;
 
-@Mixin(value = Keyboard.class)
-public final class KeyboardMixin {
+@Mixin(value = MouseHandler.class, priority = Integer.MIN_VALUE)
+public final class MouseHandlerMixin {
 
-    private KeyboardMixin() {}
+    private MouseHandlerMixin() {}
 
-    @Inject(method = "onKey(JIIII)V", at = @At(value = "HEAD"))
-    private void onKey(long window, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
-        if (window != MinecraftClient.getInstance().getWindow().getHandle() || action == GLFW_RELEASE) {
+    @Inject(method = "onScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
+    private void onScroll(long windowPointer, double xOffset, double yOffset, CallbackInfo callback) {
+        Minecraft minecraftClient = Minecraft.getInstance();
+
+        if (windowPointer != minecraftClient.getWindow().getWindow()) {
             return;
         }
 
-        MixinEvents.KEYBOARD_EVENT.invoker().onKeyboard(InputUtil.fromKeyCode(key, scancode), modifiers);
+        InteractionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScroll(xOffset, yOffset);
+
+        if (result == InteractionResult.SUCCESS) {
+            minecraftClient.getFramerateLimitTracker().onInputReceived();
+            callback.cancel();
+        }
     }
 }

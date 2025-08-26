@@ -24,15 +24,15 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class TooltipConfigScreen extends ConfigScreen {
 
-    public TooltipConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.tooltip.title");
+    public TooltipConfigScreen(Screen lastScreen) {
+        super(lastScreen, "componentviewer.config.tooltip.title");
     }
 
     @Override

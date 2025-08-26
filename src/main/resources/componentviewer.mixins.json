@@ -4,10 +4,10 @@
     "compatibilityLevel": "JAVA_21",
     "client": [
         "ScreenMixin",
-        "CreativeInventoryScreenMixin",
-        "AnimatedResultButtonMixin",
-        "KeyboardMixin",
-        "MouseMixin"
+        "CreativeModeInventoryScreenMixin",
+        "RecipeButtonMixin",
+        "KeyboardHandlerMixin",
+        "MouseHandlerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

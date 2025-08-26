@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.mixin;
 
 import java.util.List;
 
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,14 +39,14 @@ import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;
 import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(value = CreativeInventoryScreen.class, priority = Integer.MAX_VALUE)
-public final class CreativeInventoryScreenMixin {
+@Mixin(value = CreativeModeInventoryScreen.class, priority = Integer.MAX_VALUE)
+public final class CreativeModeInventoryScreenMixin {
 
-    private CreativeInventoryScreenMixin() {}
+    private CreativeModeInventoryScreenMixin() {}
 
-    @Inject(method = "getTooltipFromItem(Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
-    private void getTooltipFromItem(ItemStack stack, CallbackInfoReturnable<List<Text>> callback) {
-        List<Text> tooltipLines = Lists.makeMutable(callback.getReturnValue());
+    @Inject(method = "getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
+    private void getTooltipFromContainerItem(ItemStack stack, CallbackInfoReturnable<List<Component>> callback) {
+        List<Component> tooltipLines = Lists.makeMutable(callback.getReturnValue());
         MixinEvents.TOOLTIP_EVENT.invoker().onTooltip(stack, new Tooltip(tooltipLines));
         callback.setReturnValue(tooltipLines);
     }

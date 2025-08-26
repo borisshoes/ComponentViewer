@@ -24,12 +24,12 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public class MainConfigScreen extends ConfigScreen {
 
-    public MainConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.title");
+    public MainConfigScreen(Screen lastScreen) {
+        super(lastScreen, "componentviewer.config.title");
     }
 
     @Override

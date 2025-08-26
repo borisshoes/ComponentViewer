@@ -24,12 +24,13 @@
 
 package dev.fixyl.componentviewer.event;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-import net.minecraft.client.util.InputUtil.Key;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
 
 import dev.fixyl.componentviewer.control.Tooltip;
 
@@ -45,20 +46,20 @@ public final class MixinEvents {
 
     public static final Event<KeyboardCallback> KEYBOARD_EVENT = EventFactory.createArrayBacked(KeyboardCallback.class, listeners -> (key, modifiers) -> {
         for (KeyboardCallback listener : listeners) {
-            listener.onKeyboard(key, modifiers);
+            listener.onKeyPress(key, modifiers);
         }
     });
 
-    public static final Event<MouseScrollCallback> MOUSE_EVENT = EventFactory.createArrayBacked(MouseScrollCallback.class, listeners -> (horizontal, vertical) -> {
+    public static final Event<MouseScrollCallback> MOUSE_EVENT = EventFactory.createArrayBacked(MouseScrollCallback.class, listeners -> (xOffset, yOffset) -> {
         for (MouseScrollCallback listener : listeners) {
-            ActionResult result = listener.onMouseScroll(horizontal, vertical);
+            InteractionResult result = listener.onMouseScroll(xOffset, yOffset);
 
-            if (result != ActionResult.PASS) {
+            if (result != InteractionResult.PASS) {
                 return result;
             }
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     });
 
     @FunctionalInterface
@@ -68,11 +69,11 @@ public final class MixinEvents {
 
     @FunctionalInterface
     public static interface KeyboardCallback {
-        public void onKeyboard(Key key, int modifiers);
+        public void onKeyPress(Key key, int modifiers);
     }
 
     @FunctionalInterface
     public static interface MouseScrollCallback {
-        public ActionResult onMouseScroll(double horizontal, double vertical);
+        public InteractionResult onMouseScroll(double xOffset, double yOffset);
     }
 }

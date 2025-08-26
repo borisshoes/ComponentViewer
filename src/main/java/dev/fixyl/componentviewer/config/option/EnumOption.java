@@ -31,11 +31,11 @@ import java.util.function.IntFunction;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.util.TranslatableOption;
-import net.minecraft.util.function.ValueLists;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.OptionEnum;
 
-public class EnumOption<E extends Enum<E> & TranslatableOption> extends AdvancedOption<E> {
+public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E> {
 
     private final Class<E> enumClass;
     private final IntFunction<E> enumByIdFunction;
@@ -44,7 +44,7 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
         super(builder);
 
         this.enumClass = this.defaultValue.getDeclaringClass();
-        this.enumByIdFunction = ValueLists.createIndexToValueFunction(E::getId, this.getEnumConstants(), ValueLists.OutOfBoundsHandling.WRAP);
+        this.enumByIdFunction = ByIdMap.continuous(E::getId, this.getEnumConstants(), ByIdMap.OutOfBoundsStrategy.WRAP);
 
         this.postConstruct();
     }
@@ -59,37 +59,37 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
     }
 
     public void cycleValue() {
-        int nextId = this.simpleOption.getValue().getId() + 1;
+        int nextId = this.option.get().getId() + 1;
         E nextValue = this.getEnumById(nextId);
-        this.simpleOption.setValue(nextValue);
+        this.option.set(nextValue);
     }
 
     @Override
-    protected SimpleOption<E> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<E> tooltipFactory, SimpleOption.ValueTextGetter<E> valueTextGetter, E defaultValue, Consumer<E> changeCallback) {
-        return new SimpleOption<>(
+    protected OptionInstance<E> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<E> tooltipSupplier, OptionInstance.CaptionBasedToString<E> captionBasedToString, E defaultValue, Consumer<E> changeCallback) {
+        return new OptionInstance<>(
             translationkey,
-            tooltipFactory,
-            valueTextGetter,
-            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
+            tooltipSupplier,
+            captionBasedToString,
+            new OptionInstance.Enum<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
             defaultValue,
             changeCallback
         );
     }
 
     @Override
-    protected SimpleOption.ValueTextGetter<E> getDefaultValueTextGetter() {
-        return SimpleOption.enumValueText();
+    protected OptionInstance.CaptionBasedToString<E> getDefaultCaptionBasedToString() {
+        return OptionInstance.forOptionEnum();
     }
 
     private E getEnumById(int id) {
         return this.enumByIdFunction.apply(id);
     }
 
-    public static <E extends Enum<E> & TranslatableOption> EnumOptionBuilder<E> create(String id) {
+    public static <E extends Enum<E> & OptionEnum> EnumOptionBuilder<E> create(String id) {
         return new EnumOptionBuilder<>(id);
     }
 
-    public static class EnumOptionBuilder<E extends Enum<E> & TranslatableOption> extends AdvancedOptionBuilder<E, EnumOption<E>, EnumOptionBuilder<E>> {
+    public static class EnumOptionBuilder<E extends Enum<E> & OptionEnum> extends AdvancedOptionBuilder<E, EnumOption<E>, EnumOptionBuilder<E>> {
 
         public EnumOptionBuilder(String id) {
             super(id);

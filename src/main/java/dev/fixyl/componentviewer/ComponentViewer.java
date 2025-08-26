@@ -26,6 +26,7 @@ package dev.fixyl.componentviewer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public final class ComponentViewer implements ClientModInitializer {
         ComponentViewer.setInstance(this);
 
         this.logger = LoggerFactory.getLogger(this.getClass());
-        this.configs = new Configs(this.logger);
+        this.configs = new Configs(FabricLoader.getInstance().getConfigDir(), this.logger);
     }
 
     @Override
@@ -55,13 +56,13 @@ public final class ComponentViewer implements ClientModInitializer {
         ControlFlow controlFlow = new ControlFlow(this.configs);
         ClientTickEvents.START_CLIENT_TICK.register(client -> controlFlow.onClientTick());
         MixinEvents.TOOLTIP_EVENT.register(controlFlow::onTooltip);
-        MixinEvents.MOUSE_EVENT.register((horizontal, vertical) -> controlFlow.onMouseScroll(vertical));
+        MixinEvents.MOUSE_EVENT.register((xOffset, yOffset) -> controlFlow.onMouseScroll(yOffset));
         KeyComboEvents.CYCLE_COMPONENT_EVENT.register(controlFlow::onCycleComponent);
         KeyComboEvents.COPY_ACTION_EVENT.register(controlFlow::onCopyAction);
 
         KeyBindings keyBindings = new KeyBindings();
         ClientTickEvents.END_CLIENT_TICK.register(keyBindings::onClientTick);
-        MixinEvents.KEYBOARD_EVENT.register((key, modifiers) -> keyBindings.onKey(key));
+        MixinEvents.KEYBOARD_EVENT.register((key, modifiers) -> keyBindings.onKeyPress(key));
     }
 
     public static ComponentViewer getInstance() {

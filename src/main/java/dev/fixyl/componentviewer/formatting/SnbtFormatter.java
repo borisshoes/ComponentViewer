@@ -30,14 +30,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.visitor.NbtTextFormatter;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.text.MutableText;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TextComponentTagVisitor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,10 +51,10 @@ public class SnbtFormatter implements CodecBasedFormatter {
     private static final String LF = "\n";
 
     private static final String NO_CODEC_REPR = "{}";
-    private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
+    private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(ChatFormatting.WHITE);
 
     private final ResultCache<String> stringResultCache;
-    private final ResultCache<List<Text>> textResultCache;
+    private final ResultCache<List<Component>> textResultCache;
 
     public SnbtFormatter() {
         this.stringResultCache = new ResultCache<>();
@@ -78,56 +81,62 @@ public class SnbtFormatter implements CodecBasedFormatter {
     }
 
     @Override
-    public <T> List<Text> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (codec != null) {
-                Text text = SnbtFormatter.getFormattedText(value, codec, indentation);
+                Component text = SnbtFormatter.getFormattedText(value, codec, indentation);
                 return SnbtFormatter.convertToTextList(text, colored, linePrefix);
             }
 
-            Text noCodecText = Text.literal(NO_CODEC_REPR).fillStyle((colored) ? NO_CODEC_REPR_STYLE : NO_COLOR_STYLE);
+            Component noCodecText = Component.literal(NO_CODEC_REPR).withStyle((colored) ? NO_CODEC_REPR_STYLE : NO_COLOR_STYLE);
 
             if (linePrefix.isEmpty()) {
                 return List.of(noCodecText);
             }
 
-            MutableText startOfLine = Text.literal(linePrefix);
+            MutableComponent startOfLine = Component.literal(linePrefix);
             if (!colored) {
-                startOfLine.fillStyle(NO_COLOR_STYLE);
+                startOfLine.withStyle(NO_COLOR_STYLE);
             }
 
             return List.of(startOfLine.append(noCodecText));
         }, value, codec, indentation, colored, linePrefix));
     }
 
-    private static <T> Text getFormattedText(T value, Codec<T> codec, int indentation) {
+    private static <T> Component getFormattedText(T value, Codec<T> codec, int indentation) {
         String prefix = " ".repeat(indentation);
 
-        NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(prefix);
+        LocalPlayer player = Minecraft.getInstance().player;
+        DynamicOps<Tag> ops = (
+            (player == null)
+                ? NbtOps.INSTANCE
+                : player.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+        );
 
-        NbtElement nbtElement = codec.encodeStart(NbtOps.INSTANCE, value).getOrThrow(FormattingException::new);
+        Tag nbtTag = codec.encodeStart(ops, value).getOrThrow(FormattingException::new);
+        TextComponentTagVisitor textComponentTagVisitor = new TextComponentTagVisitor(prefix);
 
-        return nbtTextFormatter.apply(nbtElement);
+        return textComponentTagVisitor.visit(nbtTag);
     }
 
-    private static List<Text> convertToTextList(Text text, boolean colored, String linePrefix) {
-        List<Text> textList = new ArrayList<>();
+    private static List<Component> convertToTextList(Component text, boolean colored, String linePrefix) {
+        List<Component> textList = new ArrayList<>();
 
-        MutableText startOfLine = Text.literal(linePrefix);
+        MutableComponent startOfLine = Component.literal(linePrefix);
         if (!colored) {
-            startOfLine.fillStyle(NO_COLOR_STYLE);
+            startOfLine.withStyle(NO_COLOR_STYLE);
         }
 
         // This must be encapsulated in an array, otherwise
         // the re-assigning inside the for-loop wouldn't work
-        MutableText[] textLine = { startOfLine.copy() };
+        MutableComponent[] textLine = { startOfLine.copy() };
 
         text.visit((style, string) -> {
             String[] stringArray = string.split("(?=\\n)|(?<=\\n)");
 
             for (String stringSegment : stringArray) {
                 if (!stringSegment.equals(LF)) {
-                    textLine[0].append(Text.literal(stringSegment).fillStyle((colored) ? style : NO_COLOR_STYLE));
+                    textLine[0].append(Component.literal(stringSegment).withStyle((colored) ? style : NO_COLOR_STYLE));
                     continue;
                 }
 

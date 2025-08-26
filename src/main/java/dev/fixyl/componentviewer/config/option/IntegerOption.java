@@ -27,10 +27,8 @@ package dev.fixyl.componentviewer.config.option;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import com.mojang.serialization.Codec;
-
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.network.chat.Component;
 
 public class IntegerOption extends AdvancedOption<Integer> {
 
@@ -67,21 +65,23 @@ public class IntegerOption extends AdvancedOption<Integer> {
     }
 
     @Override
-    protected SimpleOption<Integer> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<Integer> tooltipFactory, SimpleOption.ValueTextGetter<Integer> valueTextGetter, Integer defaultValue, Consumer<Integer> changeCallback) {
-        return new SimpleOption<>(
+    protected OptionInstance<Integer> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<Integer> tooltipSupplier, OptionInstance.CaptionBasedToString<Integer> captionBasedToString, Integer defaultValue, Consumer<Integer> changeCallback) {
+        OptionInstance.IntRange intRange = new OptionInstance.IntRange(this.minValue, this.maxValue);
+
+        return new OptionInstance<>(
             translationkey,
-            tooltipFactory,
-            valueTextGetter,
-            new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
-            Codec.intRange(this.minValue, this.maxValue),
+            tooltipSupplier,
+            captionBasedToString,
+            intRange,
+            intRange.codec(),
             defaultValue,
             changeCallback
         );
     }
 
     @Override
-    protected SimpleOption.ValueTextGetter<Integer> getDefaultValueTextGetter() {
-        return (optionText, value) -> Text.empty();
+    protected OptionInstance.CaptionBasedToString<Integer> getDefaultCaptionBasedToString() {
+        return (optionText, value) -> Component.empty();
     }
 
     public static IntegerOptionBuilder create(String id) {

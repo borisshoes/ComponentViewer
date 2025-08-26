@@ -24,15 +24,15 @@
 
 package dev.fixyl.componentviewer.keyboard.keybinding;
 
-import net.minecraft.client.toast.Toast;
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.util.OptionEnum;
 
 import org.jetbrains.annotations.Nullable;
 
 import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.control.notification.EnumOptionToast;
 
-public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extends AdvancedKeyBinding {
+public class EnumOptionKeyBinding<E extends Enum<E> & OptionEnum> extends AdvancedKeyBinding {
 
     private final EnumOption<E> option;
 
@@ -45,7 +45,7 @@ public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extend
     }
 
     public void cycleValueOnPressed() {
-        if (this.optionToast != null && this.optionToast.getVisibility() == Toast.Visibility.HIDE) {
+        if (this.optionToast != null && this.optionToast.getWantedVisibility() == Toast.Visibility.HIDE) {
             this.optionToast = null;
         }
 
@@ -53,7 +53,7 @@ public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extend
             this.option.cycleValue();
 
             if (this.optionToast == null) {
-                this.optionToast = EnumOptionToast.dispatch(option, this.getTranslationKey());
+                this.optionToast = EnumOptionToast.dispatch(option, this.getName());
             } else {
                 this.optionToast.resetTimer();
             }

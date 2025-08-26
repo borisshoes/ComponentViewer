@@ -27,21 +27,21 @@ package dev.fixyl.componentviewer.control;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.component.Component;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
 
 /**
- * A {@link Tooltip} is a wrapper around a {@link List} holding {@link Text} instances.
+ * A {@link Tooltip} is a wrapper around a {@link List} holding {@link Component} instances.
  * The main purpose is to provide easy methods for altering a tooltip's content
  * without having raw access to the entire {@link List} instance.
  * <p>
@@ -53,14 +53,14 @@ import dev.fixyl.componentviewer.formatting.FormattingException;
  */
 public class Tooltip {
 
-    private static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);
+    private static final Style HEADER_STYLE = Style.EMPTY.withColor(ChatFormatting.GRAY);
 
-    private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
-    private static final Style SELECTED_COMPONENT_STYLE = Style.EMPTY.withColor(Formatting.DARK_GREEN);
+    private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
+    private static final Style SELECTED_COMPONENT_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style REMOVED_COMPONENT_STYLE = Style.EMPTY.withStrikethrough(true);
     private static final Style NOT_REGISTERED_COMPONENT_STYLE = Style.EMPTY.withItalic(true);
 
-    private static final Style ERROR_STYLE = Style.EMPTY.withColor(Formatting.RED);
+    private static final Style ERROR_STYLE = Style.EMPTY.withColor(ChatFormatting.RED);
 
     private static final String CONTENT_INDENTATION = " ";
 
@@ -78,15 +78,15 @@ public class Tooltip {
         TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.empty"
     );
 
-    private final List<Text> lines;
+    private final List<Component> lines;
 
     /**
      * Construct a new {@link Tooltip} instance using the provided {@link List}
-     * of {@link Text} elements.
+     * of {@link Component} elements.
      *
-     * @param lines the lines of the tooltip as a list of text
+     * @param lines the lines of the tooltip as a list of text components
      */
-    public Tooltip(List<Text> lines) {
+    public Tooltip(List<Component> lines) {
         this.lines = lines;
     }
 
@@ -100,7 +100,7 @@ public class Tooltip {
     }
 
     /**
-     * Check whether the tooltip holds any text.
+     * Check whether the tooltip holds any text components.
      *
      * @return {@code true} if empty, {@code false} otherwise
      */
@@ -109,8 +109,8 @@ public class Tooltip {
     }
 
     /**
-     * Clear the tooltip's content. This effectively removes any text,
-     * currently held by the tooltip.
+     * Clear the tooltip's content. This effectively removes any
+     * text component, currently held by the tooltip.
      *
      * @return the same tooltip instance
      */
@@ -126,7 +126,7 @@ public class Tooltip {
      * @return the same tooltip instance
      */
     public Tooltip addSpacer() {
-        this.lines.add(Text.empty());
+        this.lines.add(Component.empty());
 
         return this;
     }
@@ -138,7 +138,7 @@ public class Tooltip {
      * @return the same tooltip instance
      */
     public Tooltip addHeader(String translationKey) {
-        this.lines.add(Text.translatable(translationKey).fillStyle(HEADER_STYLE));
+        this.lines.add(Component.translatable(translationKey).withStyle(HEADER_STYLE));
 
         return this;
     }
@@ -177,32 +177,32 @@ public class Tooltip {
 
         // Add all component types
         for (int index = 0; index < components.size(); index++) {
-            Identifier identifier = Registries.DATA_COMPONENT_TYPE.getId(components.get(index).type());
-            MutableText componentTypeText = (
-                (identifier == null)
-                    ? Text.translatable(NOT_REGISTERED_TRANSLATION_KEY)
-                        .fillStyle(COMPONENT_STYLE)
-                        .fillStyle(NOT_REGISTERED_COMPONENT_STYLE)
-                    : Text.literal(identifier.toString())
-                        .fillStyle(COMPONENT_STYLE)
+            ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(components.get(index).type());
+            MutableComponent componentTypeText = (
+                (resourceLocation == null)
+                    ? Component.translatable(NOT_REGISTERED_TRANSLATION_KEY)
+                        .withStyle(COMPONENT_STYLE)
+                        .withStyle(NOT_REGISTERED_COMPONENT_STYLE)
+                    : Component.literal(resourceLocation.toString())
+                        .withStyle(COMPONENT_STYLE)
             );
 
             if (index == indexOfSelected) {
-                componentTypeText.fillStyle(SELECTED_COMPONENT_STYLE);
+                componentTypeText.withStyle(SELECTED_COMPONENT_STYLE);
             }
 
             if (components.isRemovedComponent(index)) {
-                componentTypeText.fillStyle(REMOVED_COMPONENT_STYLE);
+                componentTypeText.withStyle(REMOVED_COMPONENT_STYLE);
             }
 
-            this.lines.add(Text.literal((index == indexOfSelected) ? indentationOfSelected : CONTENT_INDENTATION).append(componentTypeText));
+            this.lines.add(Component.literal((index == indexOfSelected) ? indentationOfSelected : CONTENT_INDENTATION).append(componentTypeText));
         }
 
         return this;
     }
 
     /**
-     * Add a {@link Component}'s value, formatted using the specified {@link Formatter},
+     * Add a {@link TypedDataComponent}'s value, formatted using the specified {@link Formatter},
      * to the tooltip.
      * <p>
      * If formatting fails, meaning the formatter throws a {@link FormattingException},
@@ -215,7 +215,7 @@ public class Tooltip {
      * @param coloredFormatting whether the formatter is instructed to format using colors
      * @return the same tooltip instance
      */
-    public <T> Tooltip addComponentValue(Component<T> component, Formatter formatter, int formattingIndentation, boolean coloredFormatting) {
+    public <T> Tooltip addComponentValue(TypedDataComponent<T> component, Formatter formatter, int formattingIndentation, boolean coloredFormatting) {
         this.addHeader("componentviewer.tooltip.purpose.components.value");
 
         try {
@@ -256,6 +256,6 @@ public class Tooltip {
     }
 
     private void addFormattingException() {
-        this.lines.add(Text.literal(CONTENT_INDENTATION).append(Text.translatable("componentviewer.tooltip.formatting_exception").fillStyle(ERROR_STYLE)));
+        this.lines.add(Component.literal(CONTENT_INDENTATION).append(Component.translatable("componentviewer.tooltip.formatting_exception").withStyle(ERROR_STYLE)));
     }
 }

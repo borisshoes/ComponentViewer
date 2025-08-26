@@ -24,6 +24,7 @@
 
 package dev.fixyl.componentviewer.config;
 
+import java.nio.file.Path;
 import java.util.EnumSet;
 
 import org.slf4j.Logger;
@@ -49,8 +50,8 @@ public final class Configs implements Options {
 
     private final ConfigManager configManager;
 
-    public Configs(Logger logger) {
-        this.configManager = new ConfigManager(CONFIG_FILENAME, logger);
+    public Configs(Path configDir, Logger logger) {
+        this.configManager = new ConfigManager(configDir.resolve(CONFIG_FILENAME).toFile(), logger);
         this.configManager.addOptions(this);
         this.configManager.readFromFile();
     }

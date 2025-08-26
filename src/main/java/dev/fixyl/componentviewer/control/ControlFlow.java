@@ -24,12 +24,12 @@
 
 package dev.fixyl.componentviewer.control;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.component.Component;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,7 @@ public final class ControlFlow {
 
     private final Configs configs;
     private final Clipboard clipboard;
-    private final MinecraftClient client;
+    private final Minecraft minecraftClient;
 
     private final Formatter snbtFormatter;
     private final Formatter jsonFormatter;
@@ -66,7 +66,7 @@ public final class ControlFlow {
     public ControlFlow(Configs configs) {
         this.configs = configs;
         this.clipboard = new Clipboard();
-        this.client = MinecraftClient.getInstance();
+        this.minecraftClient = Minecraft.getInstance();
 
         this.snbtFormatter = new SnbtFormatter();
         this.jsonFormatter = new JsonFormatter();
@@ -131,19 +131,19 @@ public final class ControlFlow {
         }
     }
 
-    public ActionResult onMouseScroll(double distance) {
+    public InteractionResult onMouseScroll(double scrollDistance) {
         if (
             this.isComponentSelectionShown()
             && this.configs.controlsAllowScrolling.getBooleanValue()
         ) {
             this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
-                selection.updateByScrolling(distance)
+                selection.updateByScrolling(scrollDistance)
             );
 
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public void onCopyAction() {
@@ -182,7 +182,7 @@ public final class ControlFlow {
             return false;
         }
 
-        return this.client.options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
+        return this.minecraftClient.options.advancedItemTooltips || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
     private void keepSelection(HoveredItemStack newHoveredItemStack) {
@@ -225,7 +225,7 @@ public final class ControlFlow {
             return;
         }
 
-        Component<?> selectedComponent = this.hoveredItemStack.getSelectedComponent().orElseThrow();
+        TypedDataComponent<?> selectedComponent = this.hoveredItemStack.getSelectedComponent().orElseThrow();
 
         tooltip.addSpacer().addComponentValue(
             selectedComponent,
@@ -244,7 +244,7 @@ public final class ControlFlow {
         );
     }
 
-    private <T> void copyComponentValue(Component<T> component) {
+    private <T> void copyComponentValue(TypedDataComponent<T> component) {
         this.clipboard.copyComponentValue(
             component,
             this.getClipboardFormatter(component),
@@ -276,11 +276,11 @@ public final class ControlFlow {
         return this.getTooltipFormatter(null);
     }
 
-    private <T> Formatter getTooltipFormatter(@Nullable Component<T> component) {
+    private <T> Formatter getTooltipFormatter(@Nullable TypedDataComponent<T> component) {
         return switch (this.configs.tooltipFormatting.getValue()) {
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component != null && component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> (component != null && component.value() instanceof CustomData) ? this.snbtFormatter : this.objectFormatter;
         };
     }
 
@@ -288,12 +288,12 @@ public final class ControlFlow {
         return this.getClipboardFormatter(null);
     }
 
-    private <T> Formatter getClipboardFormatter(@Nullable Component<T> component) {
+    private <T> Formatter getClipboardFormatter(@Nullable TypedDataComponent<T> component) {
         return switch (this.configs.clipboardFormatting.getValue()) {
             case SYNC -> this.getTooltipFormatter(component);
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component != null && component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> (component != null && component.value() instanceof CustomData) ? this.snbtFormatter : this.objectFormatter;
         };
     }
 
@@ -312,7 +312,7 @@ public final class ControlFlow {
             case EVERYONE -> "@a";
             case NEAREST -> "@p";
             case SELF -> "@s";
-            case PLAYER -> this.client.getGameProfile().getName();
+            case PLAYER -> this.minecraftClient.getGameProfile().getName();
         };
     }
 }

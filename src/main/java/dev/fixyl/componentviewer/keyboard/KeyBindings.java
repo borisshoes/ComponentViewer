@@ -28,12 +28,13 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import static dev.fixyl.componentviewer.control.Selection.CycleType.*;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil.Key;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
@@ -69,7 +70,7 @@ public final class KeyBindings {
         );
     }
 
-    public void onClientTick(MinecraftClient minecraftClient) {
+    public void onClientTick(Minecraft minecraftClient) {
         this.configScreenKey.onPressed(() -> minecraftClient.setScreen(new MainConfigScreen(null)));
 
         this.tooltipDisplayConfigKey.cycleValueOnPressed();
@@ -81,12 +82,12 @@ public final class KeyBindings {
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
     }
 
-    public void onKey(Key key) {
+    public void onKeyPress(Key key) {
         KeyComboEvents.CycleComponentCallback cycleInvoker = KeyComboEvents.CYCLE_COMPONENT_EVENT.invoker();
         KeyComboEvents.CopyActionCallback copyInvoker = KeyComboEvents.COPY_ACTION_EVENT.invoker();
 
         // TODO: Make this primitive once primitive pattern matching is a thing
-        switch (Integer.valueOf(key.getCode())) {
+        switch (Integer.valueOf(key.getValue())) {
             case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponent(NEXT);
             case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponent(PREVIOUS);
             case GLFW_KEY_HOME -> cycleInvoker.onCycleComponent(FIRST);
@@ -99,8 +100,8 @@ public final class KeyBindings {
         }
     }
 
-    private static void register(KeyBinding... keyBindings) {
-        for (KeyBinding keyBinding : keyBindings) {
+    private static void register(KeyMapping... keyBindings) {
+        for (KeyMapping keyBinding : keyBindings) {
             KeyBindingHelper.registerKeyBinding(keyBinding);
         }
     }

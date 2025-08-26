@@ -41,12 +41,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -60,16 +63,16 @@ public class JsonFormatter implements CodecBasedFormatter {
     private static final String STRING_ESCAPE_REPLACEMENT = "\\\\$0";
 
     private static final Map<JsonType, Style> JSON_STYLES = Map.ofEntries(
-        Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(JsonType.KEY, Style.EMPTY.withColor(Formatting.AQUA)),
-        Map.entry(JsonType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
-        Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(JsonType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
+        Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
+        Map.entry(JsonType.KEY, Style.EMPTY.withColor(ChatFormatting.AQUA)),
+        Map.entry(JsonType.STRING, Style.EMPTY.withColor(ChatFormatting.GREEN)),
+        Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(ChatFormatting.GOLD)),
+        Map.entry(JsonType.NULL, Style.EMPTY.withColor(ChatFormatting.BLUE))
     );
 
     private final ResultCache<String> stringResultCache;
-    private final ResultCache<List<Text>> textResultCache;
+    private final ResultCache<List<Component>> textResultCache;
 
     private final Map<Integer, String> newLinePrefixCache;
 
@@ -80,8 +83,8 @@ public class JsonFormatter implements CodecBasedFormatter {
     private String indentPrefix;
     private boolean isNewLinePrefixSet;
 
-    private List<Text> textList;
-    private MutableText textLine;
+    private List<Component> textList;
+    private MutableComponent textLine;
     private int indentLevel;
 
     public JsonFormatter() {
@@ -96,14 +99,14 @@ public class JsonFormatter implements CodecBasedFormatter {
     @Override
     public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
-            List<Text> formattedTextList = this.getFormattedTextList(value, codec, indentation, false, linePrefix);
+            List<Component> formattedTextList = this.getFormattedTextList(value, codec, indentation, false, linePrefix);
 
-            return formattedTextList.stream().map(Text::getString).collect(Collectors.joining(System.lineSeparator()));
+            return formattedTextList.stream().map(Component::getString).collect(Collectors.joining(System.lineSeparator()));
         }, value, codec, indentation, linePrefix);
     }
 
     @Override
-    public <T> List<Text> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(
             () -> this.getFormattedTextList(value, codec, indentation, colored, linePrefix),
             value, codec, indentation, colored, linePrefix
@@ -146,21 +149,28 @@ public class JsonFormatter implements CodecBasedFormatter {
         return this.newLinePrefixCache.computeIfAbsent(this.indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
     }
 
-    private <T> List<Text> getFormattedTextList(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    private <T> List<Component> getFormattedTextList(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         this.updateNewLinePrefix(indentation, linePrefix);
         this.colored = colored;
 
         this.textList = new ArrayList<>();
-        this.textLine = Text.literal(linePrefix);
+        this.textLine = Component.literal(linePrefix);
         this.indentLevel = 0;
 
         if (codec == null) {
-            this.textLine.append(Text.literal(NO_CODEC_REPR).fillStyle(this.getStyle()));
+            this.textLine.append(Component.literal(NO_CODEC_REPR).withStyle(this.getStyle()));
             this.textList.add(this.textLine);
             return this.textList;
         }
 
-        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, value).getOrThrow(FormattingException::new);
+        LocalPlayer player = Minecraft.getInstance().player;
+        DynamicOps<JsonElement> ops = (
+            (player == null)
+                ? JsonOps.INSTANCE
+                : player.registryAccess().createSerializationContext(JsonOps.INSTANCE)
+        );
+
+        JsonElement jsonElement = codec.encodeStart(ops, value).getOrThrow(FormattingException::new);
 
         this.walkJson(jsonElement);
 
@@ -193,7 +203,7 @@ public class JsonFormatter implements CodecBasedFormatter {
     }
 
     private void processJsonObject(JsonObject jsonObject) {
-        this.textLine.append(Text.literal("{").fillStyle(this.getStyle()));
+        this.textLine.append(Component.literal("{").withStyle(this.getStyle()));
 
         if (!jsonObject.isEmpty()) {
             this.createNewLine(1);
@@ -202,27 +212,27 @@ public class JsonFormatter implements CodecBasedFormatter {
             while (iterator.hasNext()) {
                 Entry<String, JsonElement> entry = iterator.next();
 
-                this.textLine.append(Text.literal("\"").fillStyle(this.getStyle()))
-                             .append(Text.literal(entry.getKey()).fillStyle(this.getStyle(JsonType.KEY)))
-                             .append(Text.literal("\": ").fillStyle(this.getStyle()));
+                this.textLine.append(Component.literal("\"").withStyle(this.getStyle()))
+                    .append(Component.literal(entry.getKey()).withStyle(this.getStyle(JsonType.KEY)))
+                    .append(Component.literal("\": ").withStyle(this.getStyle()));
                 this.walkJson(entry.getValue());
 
                 if (!iterator.hasNext()) {
                     break;
                 }
 
-                this.textLine.append(Text.literal(",").fillStyle(this.getStyle()));
+                this.textLine.append(Component.literal(",").withStyle(this.getStyle()));
                 this.createNewLine(0);
             }
 
             this.createNewLine(-1);
         }
 
-        this.textLine.append(Text.literal("}").fillStyle(this.getStyle()));
+        this.textLine.append(Component.literal("}").withStyle(this.getStyle()));
     }
 
     private void processJsonArray(JsonArray jsonArray) {
-        this.textLine.append(Text.literal("[").fillStyle(this.getStyle()));
+        this.textLine.append(Component.literal("[").withStyle(this.getStyle()));
 
         if (!jsonArray.isEmpty()) {
             this.createNewLine(1);
@@ -237,32 +247,32 @@ public class JsonFormatter implements CodecBasedFormatter {
                     break;
                 }
 
-                this.textLine.append(Text.literal(",").fillStyle(this.getStyle()));
+                this.textLine.append(Component.literal(",").withStyle(this.getStyle()));
                 this.createNewLine(0);
             }
 
             this.createNewLine(-1);
         }
 
-        this.textLine.append(Text.literal("]").fillStyle(this.getStyle()));
+        this.textLine.append(Component.literal("]").withStyle(this.getStyle()));
     }
 
     private void processJsonPrimitive(JsonPrimitive jsonPrimitive) {
         if (jsonPrimitive.isString()) {
-            this.textLine.append(Text.literal("\"").fillStyle(this.getStyle()))
-                         .append(Text.literal(JsonFormatter.escapeString(jsonPrimitive.getAsString())).fillStyle(this.getStyle(JsonType.STRING)))
-                         .append(Text.literal("\"").fillStyle(this.getStyle()));
+            this.textLine.append(Component.literal("\"").withStyle(this.getStyle()))
+                .append(Component.literal(JsonFormatter.escapeString(jsonPrimitive.getAsString())).withStyle(this.getStyle(JsonType.STRING)))
+                .append(Component.literal("\"").withStyle(this.getStyle()));
         } else if (jsonPrimitive.isNumber()) {
-            this.textLine.append(Text.literal(jsonPrimitive.getAsString()).fillStyle(this.getStyle(JsonType.NUMBER)));
+            this.textLine.append(Component.literal(jsonPrimitive.getAsString()).withStyle(this.getStyle(JsonType.NUMBER)));
         } else if (jsonPrimitive.isBoolean()) {
-            this.textLine.append(Text.literal(jsonPrimitive.getAsString()).fillStyle(this.getStyle(JsonType.BOOLEAN)));
+            this.textLine.append(Component.literal(jsonPrimitive.getAsString()).withStyle(this.getStyle(JsonType.BOOLEAN)));
         } else {
             throw new FormattingException("Unknown JSON primitive");
         }
     }
 
     private void processJsonNull() {
-        this.textLine.append(Text.literal("null").fillStyle(this.getStyle(JsonType.NULL)));
+        this.textLine.append(Component.literal("null").withStyle(this.getStyle(JsonType.NULL)));
     }
 
     private void createNewLine(int indentChange) {
@@ -270,9 +280,9 @@ public class JsonFormatter implements CodecBasedFormatter {
 
         if (this.indentation > 0) {
             this.textList.add(this.textLine);
-            this.textLine = Text.literal(this.getNewLinePrefix());
+            this.textLine = Component.literal(this.getNewLinePrefix());
         } else if (indentChange == 0) {
-            this.textLine.append(Text.literal(" "));
+            this.textLine.append(Component.literal(" "));
         }
     }
 

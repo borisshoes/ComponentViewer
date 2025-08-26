@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.util.OptionEnum;
 
-public enum ClipboardFormatting implements TranslatableOption {
+public enum ClipboardFormatting implements OptionEnum {
 
     @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
     @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
@@ -49,7 +49,7 @@ public enum ClipboardFormatting implements TranslatableOption {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getKey() {
         return this.translationKey;
     }
 }

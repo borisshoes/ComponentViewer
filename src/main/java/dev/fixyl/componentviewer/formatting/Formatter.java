@@ -26,29 +26,29 @@ package dev.fixyl.componentviewer.formatting;
 
 import java.util.List;
 
-import net.minecraft.component.Component;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 
 public interface Formatter {
 
-    public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
+    public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
 
-    public <T> String componentToString(Component<T> component, int indentation, String linePrefix);
+    public <T> String componentToString(TypedDataComponent<T> component, int indentation, String linePrefix);
 
-    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix);
+    public <T> List<Component> componentToText(TypedDataComponent<T> component, int indentation, boolean colored, String linePrefix);
 
     public String itemStackToString(ItemStack itemStack, int indentation, String linePrefix);
 
-    public List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix);
+    public List<Component> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix);
 
-    public default <T> String componentToString(Component<T> component, int indentation) {
+    public default <T> String componentToString(TypedDataComponent<T> component, int indentation) {
         return this.componentToString(component, indentation, "");
     }
 
-    public default <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored) {
+    public default <T> List<Component> componentToText(TypedDataComponent<T> component, int indentation, boolean colored) {
         return this.componentToText(component, indentation, colored, "");
     }
 
@@ -56,7 +56,7 @@ public interface Formatter {
         return this.itemStackToString(itemStack, indentation, "");
     }
 
-    public default List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored) {
+    public default List<Component> itemStackToText(ItemStack itemStack, int indentation, boolean colored) {
         return this.itemStackToText(itemStack, indentation, colored, "");
     }
 }

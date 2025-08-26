@@ -26,10 +26,10 @@ package dev.fixyl.componentviewer.mixin;
 
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,9 +45,9 @@ public final class ScreenMixin {
 
     private ScreenMixin() {}
 
-    @Inject(method = "getTooltipFromItem(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
-    private static void getTooltipFromItem(MinecraftClient client, ItemStack stack, CallbackInfoReturnable<List<Text>> callback) {
-        List<Text> tooltipLines = Lists.makeMutable(callback.getReturnValue());
+    @Inject(method = "getTooltipFromItem(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"), cancellable = true)
+    private static void getTooltipFromItem(Minecraft minecraftClient, ItemStack stack, CallbackInfoReturnable<List<Component>> callback) {
+        List<Component> tooltipLines = Lists.makeMutable(callback.getReturnValue());
         MixinEvents.TOOLTIP_EVENT.invoker().onTooltip(stack, new Tooltip(tooltipLines));
         callback.setReturnValue(tooltipLines);
     }

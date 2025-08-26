@@ -26,9 +26,9 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.util.OptionEnum;
 
-public enum ClipboardCopy implements TranslatableOption {
+public enum ClipboardCopy implements OptionEnum {
 
     @SerializedName("component_value") COMPONENT_VALUE(0, "componentviewer.config.clipboard.copy.component_value"),
     @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.clipboard.copy.item_stack"),
@@ -49,7 +49,7 @@ public enum ClipboardCopy implements TranslatableOption {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getKey() {
         return this.translationKey;
     }
 }

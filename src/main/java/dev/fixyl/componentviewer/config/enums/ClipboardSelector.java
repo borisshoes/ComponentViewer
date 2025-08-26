@@ -26,19 +26,19 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.TranslatableOption;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.OptionEnum;
 
-public enum ClipboardSelector implements TranslatableOption {
+public enum ClipboardSelector implements OptionEnum {
 
     @SerializedName("everyone") EVERYONE(0, "componentviewer.config.clipboard.selector.everyone"),
     @SerializedName("nearest") NEAREST(1, "componentviewer.config.clipboard.selector.nearest"),
     @SerializedName("self") SELF(2, "componentviewer.config.clipboard.selector.self"),
     @SerializedName("player") PLAYER(3, "componentviewer.config.clipboard.selector.player") {
         @Override
-        public Text getText() {
-            return Text.translatable(this.getTranslationKey(), MinecraftClient.getInstance().getGameProfile().getName());
+        public Component getCaption() {
+            return Component.translatable(this.getKey(), Minecraft.getInstance().getGameProfile().getName());
         }
     };
 
@@ -56,7 +56,7 @@ public enum ClipboardSelector implements TranslatableOption {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getKey() {
         return this.translationKey;
     }
 }

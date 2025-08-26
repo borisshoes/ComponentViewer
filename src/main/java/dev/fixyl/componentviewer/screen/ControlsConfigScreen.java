@@ -24,23 +24,23 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.KeybindsScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class ControlsConfigScreen extends ConfigScreen {
 
-    public ControlsConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.controls.title");
+    public ControlsConfigScreen(Screen lastScreen) {
+        super(lastScreen, "componentviewer.config.controls.title");
     }
 
     @Override
     protected void addElements() {
         Configs configs = ComponentViewer.getInstance().configs;
 
-        this.addRedirect("controls.keybinds", () -> new KeybindsScreen(this, this.gameOptions));
+        this.addRedirect("controls.keybinds", () -> new KeyBindsScreen(this, this.options));
         this.addConfigs(
             configs.controlsAllowScrolling
         );
