@@ -20,3 +20,10 @@ dependencies {
     modCompileOnly "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modCompileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
+
+loom {
+    runs {
+        remove client
+        remove server
+    }
+}
