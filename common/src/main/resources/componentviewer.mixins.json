@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "package": "dev.fixyl.componentviewer.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "ScreenMixin",
+        "CreativeModeInventoryScreenMixin",
+        "RecipeButtonMixin",
+        "KeyboardHandlerMixin",
+        "MouseHandlerMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
