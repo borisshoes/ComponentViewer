@@ -1,0 +1,21 @@
+plugins {
+    id "java-library"
+    id "fabric-loom" version "${fabric_loom_version}"
+}
+
+repositories {
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.org/"
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_mappings_version}@zip")
+    }
+
+    compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}

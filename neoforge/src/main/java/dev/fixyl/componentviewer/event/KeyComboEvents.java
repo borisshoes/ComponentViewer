@@ -22,34 +22,24 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.event;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.neoforged.bus.api.Event;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.control.Selection.CycleType;
 
-public class TooltipConfigScreen extends ConfigScreen {
+public final class KeyComboEvents {
 
-    public TooltipConfigScreen(Screen lastScreen) {
-        super(lastScreen, "componentviewer.config.tooltip.title");
+    private KeyComboEvents() {}
+
+    public static class CycleComponentEvent extends Event {
+
+        public final CycleType cycleType;
+
+        public CycleComponentEvent(CycleType cycleType) {
+            this.cycleType = cycleType;
+        }
     }
 
-    @Override
-    protected void addElements() {
-        Configs configs = ComponentViewer.getInstance().configs;
-
-        this.addConfigs(
-            configs.tooltipDisplay,
-            configs.tooltipPurpose,
-            configs.tooltipComponents,
-            configs.tooltipComponentValues,
-            configs.tooltipKeepSelection,
-            configs.tooltipFormatting,
-            configs.tooltipIndentation,
-            configs.tooltipColoredFormatting,
-            configs.tooltipInjectMethod,
-            configs.tooltipAdvancedTooltips
-        );
-    }
+    public static class CopyActionEvent extends Event {}
 }

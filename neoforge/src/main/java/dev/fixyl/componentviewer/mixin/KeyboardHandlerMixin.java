@@ -22,27 +22,35 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.mixin;
 
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import static org.lwjgl.glfw.GLFW.*;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Configs;
+import com.mojang.blaze3d.platform.InputConstants;
 
-public class ControlsConfigScreen extends ConfigScreen {
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.Minecraft;
 
-    public ControlsConfigScreen(Screen lastScreen) {
-        super(lastScreen, "componentviewer.config.controls.title");
-    }
+import net.neoforged.neoforge.common.NeoForge;
 
-    @Override
-    protected void addElements() {
-        Configs configs = ComponentViewer.getInstance().configs;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-        this.addRedirect("controls.keybinds", () -> new KeyBindsScreen(this, this.options));
-        this.addConfigs(
-            configs.controlsAllowScrolling
-        );
+import dev.fixyl.componentviewer.event.MixinEvents.KeyboardEvent;
+
+@Mixin(value = KeyboardHandler.class)
+public final class KeyboardHandlerMixin {
+
+    private KeyboardHandlerMixin() {}
+
+    @Inject(method = "keyPress(JIIII)V", at = @At(value = "HEAD"))
+    private void keyPress(long windowPointer, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
+        if (windowPointer != Minecraft.getInstance().getWindow().getWindow() || action == GLFW_RELEASE) {
+            return;
+        }
+
+        NeoForge.EVENT_BUS.post(new KeyboardEvent(InputConstants.getKey(key, scancode), modifiers));
     }
 }

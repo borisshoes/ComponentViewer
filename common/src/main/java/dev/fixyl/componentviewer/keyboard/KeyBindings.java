@@ -55,7 +55,11 @@ public final class KeyBindings {
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey;
     public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey;
 
+    private final Configs configs;
+
     public KeyBindings(Configs configs) {
+        this.configs = configs;
+
         this.configScreenKey = new AdvancedKeyBinding(
             "componentviewer.keybind.general.config_screen",
             GLFW_KEY_J,
@@ -119,7 +123,7 @@ public final class KeyBindings {
     }
 
     public void onClientTick(Minecraft minecraftClient) {
-        this.configScreenKey.onPressed(() -> minecraftClient.setScreen(new MainConfigScreen(null)));
+        this.configScreenKey.onPressed(() -> minecraftClient.setScreen(new MainConfigScreen(null, this.configs)));
 
         this.tooltipDisplayConfigKey.cycleValueOnPressed();
         this.tooltipPurposeConfigKey.cycleValueOnPressed();

@@ -26,27 +26,27 @@ package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screens.Screen;
 
-import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
-public class ClipboardConfigScreen extends ConfigScreen {
+public class TooltipConfigScreen extends ConfigScreen {
 
-    public ClipboardConfigScreen(Screen lastScreen) {
-        super(lastScreen, "componentviewer.config.clipboard.title");
+    public TooltipConfigScreen(Screen lastScreen, Configs configs) {
+        super(lastScreen, configs, "componentviewer.config.tooltip.title");
     }
 
     @Override
     protected void addElements() {
-        Configs configs = ComponentViewer.getInstance().configs;
-
         this.addConfigs(
-            configs.clipboardCopy,
-            configs.clipboardFormatting,
-            configs.clipboardIndentation,
-            configs.clipboardSelector,
-            configs.clipboardPrependSlash,
-            configs.clipboardIncludeCount,
-            configs.clipboardSuccessNotification
+            this.configs.tooltipDisplay,
+            this.configs.tooltipPurpose,
+            this.configs.tooltipComponents,
+            this.configs.tooltipComponentValues,
+            this.configs.tooltipKeepSelection,
+            this.configs.tooltipFormatting,
+            this.configs.tooltipIndentation,
+            this.configs.tooltipColoredFormatting,
+            this.configs.tooltipInjectMethod,
+            this.configs.tooltipAdvancedTooltips
         );
     }
 }

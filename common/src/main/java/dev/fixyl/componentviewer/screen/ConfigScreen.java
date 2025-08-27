@@ -40,21 +40,26 @@ import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.Nullable;
 
+import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 
 public abstract class ConfigScreen extends OptionsSubScreen {
 
     private static final int WIDGET_WIDTH = 150;
 
+    protected final Configs configs;
+
     private final List<AbstractWidget> queuedWidgets;
     private final Map<AbstractWidget, AdvancedOption<?>> advancedOptions;
 
-    protected ConfigScreen(Screen lastScreen, @Nullable String translationKey) {
+    protected ConfigScreen(Screen lastScreen, Configs configs, @Nullable String translationKey) {
         super(
             lastScreen,
             Minecraft.getInstance().options,
             Component.translatable(Objects.toString(translationKey))
         );
+
+        this.configs = configs;
 
         this.queuedWidgets = new ArrayList<>();
         this.advancedOptions = new HashMap<>();

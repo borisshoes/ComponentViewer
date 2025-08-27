@@ -22,17 +22,27 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.event;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.minecraft.world.InteractionResult;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
-public class ModMenu implements ModMenuApi {
+public abstract class InteractionResultEvent extends Event implements ICancellableEvent {
 
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    private InteractionResult result;
+
+    protected InteractionResultEvent() {
+        this.result = InteractionResult.PASS;
+    }
+
+    public void setResult(InteractionResult result) {
+        this.setCanceled(result != InteractionResult.PASS);
+        this.result = result;
+    }
+
+    public InteractionResult getResult() {
+        return this.result;
     }
 }
