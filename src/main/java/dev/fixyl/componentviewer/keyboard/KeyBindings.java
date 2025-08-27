@@ -26,17 +26,9 @@ package dev.fixyl.componentviewer.keyboard;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import static dev.fixyl.componentviewer.control.Selection.CycleType.*;
-
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 
-import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
@@ -45,9 +37,8 @@ import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
-import dev.fixyl.componentviewer.event.KeyComboEvents;
-import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
 import dev.fixyl.componentviewer.keyboard.keybinding.AdvancedKeyBinding;
+import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class KeyBindings {
@@ -55,10 +46,67 @@ public final class KeyBindings {
     private static final String GENERAL_CATEGORY = "componentviewer.keybind.general";
     private static final String CONFIG_CATEGORY = "componentviewer.keybind.config";
 
-    private final Configs configs = ComponentViewer.getInstance().configs;
+    public final AdvancedKeyBinding configScreenKey;
+    public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey;
+    public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey;
+    public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey;
+    public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey;
+    public final EnumOptionKeyBinding<TooltipInjectMethod> tooltipInjectMethodConfigKey;
+    public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey;
+    public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey;
 
-    public KeyBindings() {
-        KeyBindings.register(
+    public KeyBindings(Configs configs) {
+        this.configScreenKey = new AdvancedKeyBinding(
+            "componentviewer.keybind.general.config_screen",
+            GLFW_KEY_J,
+            GENERAL_CATEGORY
+        );
+        this.tooltipDisplayConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_display",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipDisplay
+        );
+        this.tooltipPurposeConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_purpose",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipPurpose
+        );
+        this.tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_components",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipComponents
+        );
+        this.tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_formatting",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipFormatting
+        );
+        this.tooltipInjectMethodConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_inject_method",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipInjectMethod
+        );
+        this.clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.clipboard_copy",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.clipboardCopy
+        );
+        this.clipboardFormattingConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.clipboard_formatting",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.clipboardFormatting
+        );
+    }
+
+    public KeyMapping[] getBindings() {
+        return new KeyMapping[] {
             this.configScreenKey,
             this.tooltipDisplayConfigKey,
             this.tooltipPurposeConfigKey,
@@ -67,7 +115,7 @@ public final class KeyBindings {
             this.tooltipInjectMethodConfigKey,
             this.clipboardCopyConfigKey,
             this.clipboardFormattingConfigKey
-        );
+        };
     }
 
     public void onClientTick(Minecraft minecraftClient) {
@@ -81,76 +129,4 @@ public final class KeyBindings {
         this.clipboardCopyConfigKey.cycleValueOnPressed();
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
     }
-
-    public void onKeyPress(Key key) {
-        KeyComboEvents.CycleComponentCallback cycleInvoker = KeyComboEvents.CYCLE_COMPONENT_EVENT.invoker();
-        KeyComboEvents.CopyActionCallback copyInvoker = KeyComboEvents.COPY_ACTION_EVENT.invoker();
-
-        // TODO: Make this primitive once primitive pattern matching is a thing
-        switch (Integer.valueOf(key.getValue())) {
-            case GLFW_KEY_DOWN, GLFW_KEY_RIGHT -> cycleInvoker.onCycleComponent(NEXT);
-            case GLFW_KEY_UP, GLFW_KEY_LEFT -> cycleInvoker.onCycleComponent(PREVIOUS);
-            case GLFW_KEY_HOME -> cycleInvoker.onCycleComponent(FIRST);
-            case GLFW_KEY_END -> cycleInvoker.onCycleComponent(LAST);
-            case Integer keyCode when (
-                keyCode == GLFW_KEY_C
-                && Screen.hasControlDown()
-            ) -> copyInvoker.onCopyAction();
-            default -> { /* Default not needed, skip all other keys */ }
-        }
-    }
-
-    private static void register(KeyMapping... keyBindings) {
-        for (KeyMapping keyBinding : keyBindings) {
-            KeyBindingHelper.registerKeyBinding(keyBinding);
-        }
-    }
-
-    public final AdvancedKeyBinding configScreenKey = new AdvancedKeyBinding(
-        "componentviewer.keybind.general.config_screen",
-        GLFW_KEY_J,
-        GENERAL_CATEGORY
-    );
-    public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.tooltip_display",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.tooltipDisplay
-    );
-    public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.tooltip_purpose",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.tooltipPurpose
-    );
-    public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.tooltip_components",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.tooltipComponents
-    );
-    public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.tooltip_formatting",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.tooltipFormatting
-    );
-    public final EnumOptionKeyBinding<TooltipInjectMethod> tooltipInjectMethodConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.tooltip_inject_method",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.tooltipInjectMethod
-    );
-    public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.clipboard_copy",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.clipboardCopy
-    );
-    public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey = new EnumOptionKeyBinding<>(
-        "componentviewer.keybind.config.clipboard_formatting",
-        GLFW_KEY_UNKNOWN,
-        CONFIG_CATEGORY,
-        this.configs.clipboardFormatting
-    );
 }

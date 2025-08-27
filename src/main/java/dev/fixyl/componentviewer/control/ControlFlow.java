@@ -46,9 +46,9 @@ import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 
 public final class ControlFlow {
 
+    private final Minecraft minecraftClient;
     private final Configs configs;
     private final Clipboard clipboard;
-    private final Minecraft minecraftClient;
 
     private final Formatter snbtFormatter;
     private final Formatter jsonFormatter;
@@ -63,10 +63,10 @@ public final class ControlFlow {
     private boolean isTooltipShown;
     private long lastTimeTooltipShown;
 
-    public ControlFlow(Configs configs) {
+    public ControlFlow(Minecraft minecraftClient, Configs configs) {
+        this.minecraftClient = minecraftClient;
         this.configs = configs;
         this.clipboard = new Clipboard();
-        this.minecraftClient = Minecraft.getInstance();
 
         this.snbtFormatter = new SnbtFormatter();
         this.jsonFormatter = new JsonFormatter();

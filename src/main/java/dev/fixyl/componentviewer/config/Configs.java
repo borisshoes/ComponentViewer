@@ -53,7 +53,14 @@ public final class Configs implements Options {
     public Configs(Path configDir, Logger logger) {
         this.configManager = new ConfigManager(configDir.resolve(CONFIG_FILENAME).toFile(), logger);
         this.configManager.addOptions(this);
+    }
+
+    public void loadFromDisk() {
         this.configManager.readFromFile();
+    }
+
+    public void saveToDisk() {
+        this.configManager.writeToFile();
     }
 
     @Override
@@ -78,10 +85,6 @@ public final class Configs implements Options {
             this.clipboardSuccessNotification,
             this.controlsAllowScrolling
         };
-    }
-
-    private <T> void changeCallback(T value) {
-        this.configManager.writeToFile();
     }
 
     public final EnumOption<TooltipDisplay> tooltipDisplay = EnumOption.<TooltipDisplay>create("tooltip.display")
@@ -216,4 +219,8 @@ public final class Configs implements Options {
         .setDescriptionTranslationKey("componentviewer.config.controls.allow_scrolling.description")
         .setChangeCallback(this::changeCallback)
         .build();
+
+    private <T> void changeCallback(T value) {
+        this.saveToDisk();
+    }
 }
