@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(":common")
+    implementation project(path: ":common", configuration: "namedElements")
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
