@@ -28,9 +28,14 @@ sourceSets {
 neoForge {
     version = project.neoforge_version
 
-    parchment {
-        minecraftVersion = project.parchment_minecraft_version
-        mappingsVersion = project.parchment_mappings_version
+    if (
+        project.findProperty("parchment_minecraft_version")
+        && project.findProperty("parchment_mappings_version")
+    ) {
+        parchment {
+            minecraftVersion = project.parchment_minecraft_version
+            mappingsVersion = project.parchment_mappings_version
+        }
     }
 
     runs {
