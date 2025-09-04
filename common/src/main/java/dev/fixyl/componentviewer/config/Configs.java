@@ -45,6 +45,7 @@ public final class Configs implements Options {
             this.tooltipDisplay,
             this.tooltipPurpose,
             this.tooltipComponents,
+            this.tooltipShowAmount,
             this.tooltipComponentValues,
             this.tooltipKeepSelection,
             this.tooltipFormatting,
@@ -80,6 +81,13 @@ public final class Configs implements Options {
         .setDefaultValue(TooltipComponents.ALL)
         .setTranslationKey("componentviewer.config.tooltip.components")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.components.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final BooleanOption tooltipShowAmount = BooleanOption.create("tooltip.show_amount")
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.tooltip.show_amount")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.show_amount.description")
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();

@@ -54,6 +54,12 @@ public class Tooltip {
         TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.empty"
     );
 
+    private static final Map<TooltipComponents, String> COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS = Map.of(
+        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all.with_amount",
+        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default.with_amount",
+        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.with_amount"
+    );
+
     private final List<Component> lines;
 
     /**
@@ -111,10 +117,11 @@ public class Tooltip {
      * Add a header, provided by the translation key, to the tooltip.
      *
      * @param translationKey the key to grab translated text from
+     * @param args the arguments for potential placeholders
      * @return the same tooltip instance
      */
-    public Tooltip addHeader(String translationKey) {
-        this.lines.add(Component.translatable(translationKey).withStyle(HEADER_STYLE));
+    public Tooltip addHeader(String translationKey, Object... args) {
+        this.lines.add(Component.translatable(translationKey, args).withStyle(HEADER_STYLE));
 
         return this;
     }
@@ -130,17 +137,23 @@ public class Tooltip {
      *
      * @param hoveredItemStack the hovered item stack to grab the selection and components from
      * @param showSelectedComponent whether the currently selected component is shown
+     * @param showAmount whether the component amount is displayed in the header
      * @return the same tooltip instance
      */
-    public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack, boolean showSelectedComponent) {
+    public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack, boolean showSelectedComponent, boolean showAmount) {
         Components components = hoveredItemStack.getComponents();
+        TooltipComponents componentsType = components.componentsType();
 
         if (components.isEmpty()) {
-            this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
+            this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentsType));
             return this;
         }
 
-        this.addHeader(COMPONENT_SELECTION_TRANSLATION_KEYS.get(components.componentsType()));
+        if (showAmount) {
+            this.addHeader(COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS.get(componentsType), components.size());
+        } else {
+            this.addHeader(COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentsType));
+        }
 
         // Double the indentation if more than one component needs to be displayed
         String indentationOfSelected = CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));

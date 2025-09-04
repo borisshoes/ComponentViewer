@@ -16,6 +16,7 @@ public class TooltipConfigScreen extends ConfigScreen {
             this.configs.tooltipDisplay,
             this.configs.tooltipPurpose,
             this.configs.tooltipComponents,
+            this.configs.tooltipShowAmount,
             this.configs.tooltipComponentValues,
             this.configs.tooltipKeepSelection,
             this.configs.tooltipFormatting,

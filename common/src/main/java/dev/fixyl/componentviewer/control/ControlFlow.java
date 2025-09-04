@@ -192,7 +192,11 @@ public final class ControlFlow {
     private void handleComponentPurpose(Tooltip tooltip) {
         boolean showComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
 
-        tooltip.addComponentSelection(this.hoveredItemStack, showComponentValues);
+        tooltip.addComponentSelection(
+            this.hoveredItemStack,
+            showComponentValues,
+            this.configs.tooltipShowAmount.getBooleanValue()
+        );
 
         if (this.hoveredItemStack.getComponents().isEmpty() || !showComponentValues) {
             return;
