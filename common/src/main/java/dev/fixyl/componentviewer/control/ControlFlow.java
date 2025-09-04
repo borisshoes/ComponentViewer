@@ -85,9 +85,7 @@ public final class ControlFlow {
 
         if (this.configs.tooltipInjectMethod.getValue() == TooltipInjectMethod.REPLACE) {
             tooltip.clear();
-        }
-
-        if (!tooltip.isEmpty()) {
+        } else if (!tooltip.isEmpty()) {
             tooltip.addSpacer();
         }
 
