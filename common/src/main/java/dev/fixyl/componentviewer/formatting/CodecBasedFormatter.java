@@ -8,19 +8,19 @@ import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.Nullable;
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 
 public interface CodecBasedFormatter extends Formatter {
 
-    public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix);
+    public <T> String codecToString(T value, @NullPermitted Codec<T> codec, int indentation, String linePrefix);
 
-    public <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix);
+    public <T> List<Component> codecToText(T value, @NullPermitted Codec<T> codec, int indentation, boolean colored, String linePrefix);
 
-    public default <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation) {
+    public default <T> String codecToString(T value, @NullPermitted Codec<T> codec, int indentation) {
         return this.codecToString(value, codec, indentation, "");
     }
 
-    public default <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored) {
+    public default <T> List<Component> codecToText(T value, @NullPermitted Codec<T> codec, int indentation, boolean colored) {
         return this.codecToText(value, codec, indentation, colored, "");
     }
 

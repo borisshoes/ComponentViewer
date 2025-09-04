@@ -18,8 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class SnbtFormatter implements CodecBasedFormatter {
@@ -38,7 +37,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
     }
 
     @Override
-    public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
+    public <T> String codecToString(T value, @NullPermitted Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             if (codec == null) {
                 return linePrefix + NO_CODEC_REPR;
@@ -57,7 +56,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
     }
 
     @Override
-    public <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Component> codecToText(T value, @NullPermitted Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (codec != null) {
                 Component text = SnbtFormatter.getFormattedText(value, codec, indentation);

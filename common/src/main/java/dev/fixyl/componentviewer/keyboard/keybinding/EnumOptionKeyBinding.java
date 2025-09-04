@@ -3,8 +3,7 @@ package dev.fixyl.componentviewer.keyboard.keybinding;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.util.OptionEnum;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.control.notification.EnumOptionToast;
 
@@ -12,7 +11,7 @@ public class EnumOptionKeyBinding<E extends Enum<E> & OptionEnum> extends Advanc
 
     private final EnumOption<E> option;
 
-    private @Nullable EnumOptionToast<E> optionToast;
+    private @NullPermitted EnumOptionToast<E> optionToast;
 
     public EnumOptionKeyBinding(String translationKey, int code, String category, EnumOption<E> option) {
         super(translationKey, code, category);

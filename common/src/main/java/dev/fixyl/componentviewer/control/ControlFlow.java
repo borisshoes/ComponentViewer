@@ -7,8 +7,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
@@ -32,8 +31,8 @@ public final class ControlFlow {
 
     private long clientTick;
 
-    private @Nullable HoveredItemStack hoveredItemStack;
-    private @Nullable ItemStack previousItemStack;
+    private HoveredItemStack hoveredItemStack;
+    private ItemStack previousItemStack;
 
     private long lastTimeItemStackHovered;
     private boolean isTooltipShown;
@@ -252,7 +251,7 @@ public final class ControlFlow {
         return this.getTooltipFormatter(null);
     }
 
-    private <T> Formatter getTooltipFormatter(@Nullable TypedDataComponent<T> component) {
+    private <T> Formatter getTooltipFormatter(@NullPermitted TypedDataComponent<T> component) {
         return switch (this.configs.tooltipFormatting.getValue()) {
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
@@ -264,7 +263,7 @@ public final class ControlFlow {
         return this.getClipboardFormatter(null);
     }
 
-    private <T> Formatter getClipboardFormatter(@Nullable TypedDataComponent<T> component) {
+    private <T> Formatter getClipboardFormatter(@NullPermitted TypedDataComponent<T> component) {
         return switch (this.configs.clipboardFormatting.getValue()) {
             case SYNC -> this.getTooltipFormatter(component);
             case SNBT -> this.snbtFormatter;

@@ -6,8 +6,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 
@@ -17,10 +16,10 @@ public class HoveredItemStack {
     private final Configs configs;
 
     private Components components;
-    private @Nullable Selection componentSelection;
+    private @NullPermitted Selection componentSelection;
 
     private boolean componentTypeChanged;
-    private @Nullable DataComponentType<?> previousSelectedComponentType;
+    private @NullPermitted DataComponentType<?> previousSelectedComponentType;
 
     public HoveredItemStack(ItemStack itemStack, Configs configs) {
         this.itemStack = itemStack;

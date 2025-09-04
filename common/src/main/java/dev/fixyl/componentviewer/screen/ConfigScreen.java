@@ -14,8 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 
@@ -28,7 +27,7 @@ public abstract class ConfigScreen extends OptionsSubScreen {
     private final List<AbstractWidget> queuedWidgets;
     private final Map<AbstractWidget, AdvancedOption<?>> advancedOptions;
 
-    protected ConfigScreen(Screen lastScreen, Configs configs, @Nullable String translationKey) {
+    protected ConfigScreen(Screen lastScreen, Configs configs, @NullPermitted String translationKey) {
         super(
             lastScreen,
             Minecraft.getInstance().options,
@@ -61,7 +60,7 @@ public abstract class ConfigScreen extends OptionsSubScreen {
         }
     }
 
-    protected final void addRedirect(@Nullable String translationKey, Supplier<Screen> screenSupplier) {
+    protected final void addRedirect(@NullPermitted String translationKey, Supplier<Screen> screenSupplier) {
         this.queuedWidgets.add(Button.builder(
             Component.translatable(Objects.toString(translationKey)),
             buttonWidget -> this.minecraft.setScreen(screenSupplier.get())

@@ -14,8 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.OptionEnum;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.option.EnumOption;
 
 public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
@@ -37,7 +36,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     private boolean shouldResetTimer;
     private Toast.Visibility visibility;
 
-    public EnumOptionToast(EnumOption<E> option, @Nullable String translationKey) {
+    public EnumOptionToast(EnumOption<E> option, @NullPermitted String translationKey) {
         this.option = option;
         this.translationKey = Objects.requireNonNullElse(translationKey, option.getTranslationKey());
 
@@ -97,7 +96,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
         );
     }
 
-    public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @Nullable String translationKey) {
+    public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @NullPermitted String translationKey) {
         EnumOptionToast<E> toast = new EnumOptionToast<>(option, translationKey);
 
         Minecraft.getInstance().getToastManager().addToast(toast);

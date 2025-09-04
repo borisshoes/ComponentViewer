@@ -14,7 +14,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-import org.jetbrains.annotations.Nullable;
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 
 public abstract class AdvancedOption<T> {
 
@@ -26,8 +26,8 @@ public abstract class AdvancedOption<T> {
     protected final T defaultValue;
     protected final String translationKey;
     protected final OptionInstance.TooltipSupplier<T> tooltipSupplier;
-    protected final @Nullable Function<T, String> translationKeyOverwrite;
-    protected final @Nullable BooleanSupplier dependencyFulfillmentSupplier;
+    protected final @NullPermitted Function<T, String> translationKeyOverwrite;
+    protected final @NullPermitted BooleanSupplier dependencyFulfillmentSupplier;
     protected final Consumer<T> changeCallback;
 
     protected AdvancedOption(AdvancedOptionBuilder<T, ?, ?> builder) {
@@ -86,7 +86,7 @@ public abstract class AdvancedOption<T> {
         return this.defaultValue;
     }
 
-    public void setValue(@Nullable T value) {
+    public void setValue(@NullPermitted T value) {
         if (value == null) {
             this.resetValue();
             return;
@@ -125,7 +125,7 @@ public abstract class AdvancedOption<T> {
 
     protected abstract OptionInstance.CaptionBasedToString<T> getDefaultCaptionBasedToString();
 
-    private static <T> OptionInstance.CaptionBasedToString<T> createCaptionBasedToString(@Nullable Function<T, String> translationKeyOverwrite, Supplier<OptionInstance.CaptionBasedToString<T>> defaultSupplier) {
+    private static <T> OptionInstance.CaptionBasedToString<T> createCaptionBasedToString(@NullPermitted Function<T, String> translationKeyOverwrite, Supplier<OptionInstance.CaptionBasedToString<T>> defaultSupplier) {
         if (translationKeyOverwrite == null) {
             return defaultSupplier.get();
         }
@@ -145,11 +145,11 @@ public abstract class AdvancedOption<T> {
 
         protected String id;
         protected T defaultValue;
-        protected @Nullable String translationKey;
-        protected @Nullable String descriptionTranslationKey;
-        protected @Nullable Function<T, String> translationKeyOverwrite;
-        protected @Nullable BooleanSupplier dependencyFulfillmentSupplier;
-        protected @Nullable Consumer<T> changeCallback;
+        protected @NullPermitted String translationKey;
+        protected @NullPermitted String descriptionTranslationKey;
+        protected @NullPermitted Function<T, String> translationKeyOverwrite;
+        protected @NullPermitted BooleanSupplier dependencyFulfillmentSupplier;
+        protected @NullPermitted Consumer<T> changeCallback;
 
         protected AdvancedOptionBuilder(String id) {
             this.id = id;
@@ -160,27 +160,27 @@ public abstract class AdvancedOption<T> {
             return this.self();
         }
 
-        public B setTranslationKey(@Nullable String translationKey) {
+        public B setTranslationKey(@NullPermitted String translationKey) {
             this.translationKey = translationKey;
             return this.self();
         }
 
-        public B setDescriptionTranslationKey(@Nullable String descriptionTranslationKey) {
+        public B setDescriptionTranslationKey(@NullPermitted String descriptionTranslationKey) {
             this.descriptionTranslationKey = descriptionTranslationKey;
             return this.self();
         }
 
-        public B setTranslationKeyOverwrite(@Nullable Function<T, String> translationKeyOverwrite) {
+        public B setTranslationKeyOverwrite(@NullPermitted Function<T, String> translationKeyOverwrite) {
             this.translationKeyOverwrite = translationKeyOverwrite;
             return this.self();
         }
 
-        public B setDependency(@Nullable BooleanSupplier dependencyFulfillmentSupplier) {
+        public B setDependency(@NullPermitted BooleanSupplier dependencyFulfillmentSupplier) {
             this.dependencyFulfillmentSupplier = dependencyFulfillmentSupplier;
             return this.self();
         }
 
-        public B setChangeCallback(@Nullable Consumer<T> changeCallback) {
+        public B setChangeCallback(@NullPermitted Consumer<T> changeCallback) {
             this.changeCallback = changeCallback;
             return this.self();
         }

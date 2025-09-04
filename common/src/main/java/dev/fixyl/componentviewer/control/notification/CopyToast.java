@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.Nullable;
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 
 public class CopyToast implements Toast {
 
@@ -32,7 +32,7 @@ public class CopyToast implements Toast {
     private static final int SECOND_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
 
     private final CopyToast.Type toastType;
-    private final @Nullable ItemStack itemStack;
+    private final @NullPermitted ItemStack itemStack;
 
     private final String translationKey;
     private final int firstRowColor;
@@ -41,7 +41,7 @@ public class CopyToast implements Toast {
 
     private Toast.Visibility visibility;
 
-    public CopyToast(CopyToast.Type type, @Nullable ItemStack itemStack) {
+    public CopyToast(CopyToast.Type type, @NullPermitted ItemStack itemStack) {
         this.toastType = type;
         this.itemStack = itemStack;
 
@@ -134,7 +134,7 @@ public class CopyToast implements Toast {
         }
     }
 
-    public static CopyToast dispatch(CopyToast.Type type, @Nullable ItemStack itemStack) {
+    public static CopyToast dispatch(CopyToast.Type type, @NullPermitted ItemStack itemStack) {
         CopyToast toast = new CopyToast(type, itemStack);
 
         Minecraft.getInstance().getToastManager().addToast(toast);

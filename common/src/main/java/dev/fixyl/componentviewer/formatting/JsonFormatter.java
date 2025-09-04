@@ -27,8 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
-import org.jetbrains.annotations.Nullable;
-
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class JsonFormatter implements CodecBasedFormatter {
@@ -73,7 +72,7 @@ public class JsonFormatter implements CodecBasedFormatter {
     }
 
     @Override
-    public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
+    public <T> String codecToString(T value, @NullPermitted Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             List<Component> formattedTextList = this.getFormattedTextList(value, codec, indentation, false, linePrefix);
 
@@ -82,7 +81,7 @@ public class JsonFormatter implements CodecBasedFormatter {
     }
 
     @Override
-    public <T> List<Component> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Component> codecToText(T value, @NullPermitted Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(
             () -> this.getFormattedTextList(value, codec, indentation, colored, linePrefix),
             value, codec, indentation, colored, linePrefix
@@ -125,7 +124,7 @@ public class JsonFormatter implements CodecBasedFormatter {
         return this.newLinePrefixCache.computeIfAbsent(this.indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
     }
 
-    private <T> List<Component> getFormattedTextList(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+    private <T> List<Component> getFormattedTextList(T value, @NullPermitted Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         this.updateNewLinePrefix(indentation, linePrefix);
         this.colored = colored;
 

@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -18,6 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.util.ResultCache;
 
@@ -75,7 +74,7 @@ public class Components {
      * @param componentType the instance representing a data component type
      * @return the index of the corresponding component, {@code -1} if no such component exists
      */
-    public <T> int indexOf(@Nullable DataComponentType<T> componentType) {
+    public <T> int indexOf(@NullPermitted DataComponentType<T> componentType) {
         if (componentType == null) {
             return -1;
         }
