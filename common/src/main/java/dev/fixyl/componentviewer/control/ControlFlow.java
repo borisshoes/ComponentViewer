@@ -59,6 +59,10 @@ public final class ControlFlow {
     }
 
     public void onTooltip(ItemStack itemStack, Tooltip tooltip) {
+        if (itemStack == null) {
+            return;
+        }
+
         if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
             HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
 
@@ -194,7 +198,7 @@ public final class ControlFlow {
 
         tooltip.addComponentSelection(
             this.hoveredItemStack,
-            showComponentValues,
+            !showComponentValues,
             this.configs.tooltipShowAmount.getBooleanValue()
         );
 

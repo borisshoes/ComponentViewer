@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
+import dev.fixyl.componentviewer.control.component.ItemStackComponents;
 import dev.fixyl.componentviewer.control.notification.CopyToast;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
@@ -62,7 +64,7 @@ public class Clipboard {
             .append(targetSelector).append(' ')
             .append(BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
 
-        Components components = Components.getChangedComponents(itemStack);
+        ItemStackComponents components = ItemStackComponents.getPatchedComponents(itemStack);
 
         if (!components.isEmpty()) {
             try {
@@ -89,27 +91,26 @@ public class Clipboard {
         Minecraft.getInstance().keyboardHandler.setClipboard(content);
     }
 
-    private List<String> createGiveCommandComponentList(Components components) {
+    private List<String> createGiveCommandComponentList(ItemStackComponents components) {
         List<String> componentList = new ArrayList<>(components.size());
 
         StringBuilder componentString = new StringBuilder();
 
-        for (int index = 0; index < components.size(); index++) {
-            TypedDataComponent<?> component = components.get(index);
-
+        for (DataComponentType<?> dataComponentType : components.getComponentTypes()) {
             // Skip components that can't be encoded and therefore
             // cannot be used in give commands
-            if (component.type().codec() == null) {
+            if (dataComponentType.codec() == null) {
                 continue;
             }
 
             componentString.setLength(0);
 
-            if (components.isRemovedComponent(index)) {
-                componentString.append('!').append(component.type());
+            if (components.wasRemoved(dataComponentType)) {
+                componentString.append('!').append(dataComponentType);
             } else {
-                componentString.append(component.type()).append('=')
-                    .append(this.snbtFormatter.componentToString(component, 0));
+                componentString.append(dataComponentType).append('=').append(
+                    this.snbtFormatter.componentToString(components.getTypedComponent(dataComponentType), 0)
+                );
             }
 
             componentList.add(componentString.toString());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
+import dev.fixyl.componentviewer.control.component.ItemStackComponents;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
 
@@ -131,42 +134,40 @@ public class Tooltip {
      * and the currently selected component.
      * If the hovered item stack doesn't have any components associated with it,
      * a single-line notice stating that is displayed instead.
-     * <p>
-     * The {@code showSelectedComponent} parameter can be used to toggle whether
-     * the selected component is even displayed.
      *
      * @param hoveredItemStack the hovered item stack to grab the selection and components from
-     * @param showSelectedComponent whether the currently selected component is shown
+     * @param hideSelectedComponent should the currently selected component be hidden
      * @param showAmount whether the component amount is displayed in the header
      * @return the same tooltip instance
      */
-    public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack, boolean showSelectedComponent, boolean showAmount) {
-        Components components = hoveredItemStack.getComponents();
-        TooltipComponents componentsType = components.componentsType();
+    public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack, boolean hideSelectedComponent, boolean showAmount) {
+        ItemStackComponents components = hoveredItemStack.getComponents();
+        TooltipComponents componentContext = components.getComponentContext();
 
         if (components.isEmpty()) {
-            this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentsType));
+            this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentContext));
             return this;
         }
 
         if (showAmount) {
-            this.addHeader(COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS.get(componentsType), components.size());
+            this.addHeader(COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS.get(componentContext), components.size());
         } else {
-            this.addHeader(COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentsType));
+            this.addHeader(COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentContext));
         }
 
         // Double the indentation if more than one component needs to be displayed
         String indentationOfSelected = CONTENT_INDENTATION.repeat(Math.min(components.size(), 2));
 
-        int indexOfSelected = (
-            (showSelectedComponent)
-                ? hoveredItemStack.getComponentSelection().orElseThrow().getSelectedIndex()
-                : -1
+        List<DataComponentType<?>> dataComponentTypes = components.getComponentTypes();
+        @NullPermitted DataComponentType<?> selectedDataComponentType = (
+            (hideSelectedComponent)
+                ? null
+                : dataComponentTypes.get(hoveredItemStack.getComponentSelection().orElseThrow().getSelectedIndex())
         );
 
         // Add all component types
-        for (int index = 0; index < components.size(); index++) {
-            ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(components.get(index).type());
+        for (DataComponentType<?> dataComponentType : dataComponentTypes) {
+            ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
             MutableComponent componentTypeText = (
                 (resourceLocation == null)
                     ? Component.translatable(NOT_REGISTERED_TRANSLATION_KEY)
@@ -176,15 +177,19 @@ public class Tooltip {
                         .withStyle(COMPONENT_STYLE)
             );
 
-            if (index == indexOfSelected) {
+            if (dataComponentType == selectedDataComponentType) {
                 componentTypeText.withStyle(SELECTED_COMPONENT_STYLE);
             }
 
-            if (components.isRemovedComponent(index)) {
+            if (components.wasRemoved(dataComponentType)) {
                 componentTypeText.withStyle(REMOVED_COMPONENT_STYLE);
             }
 
-            this.lines.add(Component.literal((index == indexOfSelected) ? indentationOfSelected : CONTENT_INDENTATION).append(componentTypeText));
+            this.lines.add(Component.literal(
+                (dataComponentType == selectedDataComponentType)
+                    ? indentationOfSelected
+                    : CONTENT_INDENTATION
+            ).append(componentTypeText));
         }
 
         return this;
