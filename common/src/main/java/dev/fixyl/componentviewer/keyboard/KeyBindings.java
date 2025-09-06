@@ -8,10 +8,12 @@ import net.minecraft.client.Minecraft;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
+import dev.fixyl.componentviewer.config.enums.ClipboardSelector;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
+import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.keyboard.keybinding.AdvancedKeyBinding;
 import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
@@ -26,10 +28,12 @@ public final class KeyBindings {
     public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey;
     public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey;
     public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey;
+    public final EnumOptionKeyBinding<TooltipKeepSelection> tooltipKeepSelectionConfigKey;
     public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey;
     public final EnumOptionKeyBinding<TooltipInjectMethod> tooltipInjectMethodConfigKey;
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey;
     public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey;
+    public final EnumOptionKeyBinding<ClipboardSelector> clipboardSelectorConfigKey;
 
     private final Configs configs;
 
@@ -59,6 +63,12 @@ public final class KeyBindings {
             CONFIG_CATEGORY,
             configs.tooltipComponents
         );
+        this.tooltipKeepSelectionConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.tooltip_keep_selection",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.tooltipKeepSelection
+        );
         this.tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
             "componentviewer.keybind.config.tooltip_formatting",
             GLFW_KEY_UNKNOWN,
@@ -83,6 +93,12 @@ public final class KeyBindings {
             CONFIG_CATEGORY,
             configs.clipboardFormatting
         );
+        this.clipboardSelectorConfigKey = new EnumOptionKeyBinding<>(
+            "componentviewer.keybind.config.clipboard_selector",
+            GLFW_KEY_UNKNOWN,
+            CONFIG_CATEGORY,
+            configs.clipboardSelector
+        );
     }
 
     public KeyMapping[] getBindings() {
@@ -91,10 +107,12 @@ public final class KeyBindings {
             this.tooltipDisplayConfigKey,
             this.tooltipPurposeConfigKey,
             this.tooltipComponentsConfigKey,
+            this.tooltipKeepSelectionConfigKey,
             this.tooltipFormattingConfigKey,
             this.tooltipInjectMethodConfigKey,
             this.clipboardCopyConfigKey,
-            this.clipboardFormattingConfigKey
+            this.clipboardFormattingConfigKey,
+            this.clipboardSelectorConfigKey
         };
     }
 
@@ -104,9 +122,11 @@ public final class KeyBindings {
         this.tooltipDisplayConfigKey.cycleValueOnPressed();
         this.tooltipPurposeConfigKey.cycleValueOnPressed();
         this.tooltipComponentsConfigKey.cycleValueOnPressed();
+        this.tooltipKeepSelectionConfigKey.cycleValueOnPressed();
         this.tooltipFormattingConfigKey.cycleValueOnPressed();
         this.tooltipInjectMethodConfigKey.cycleValueOnPressed();
         this.clipboardCopyConfigKey.cycleValueOnPressed();
         this.clipboardFormattingConfigKey.cycleValueOnPressed();
+        this.clipboardSelectorConfigKey.cycleValueOnPressed();
     }
 }

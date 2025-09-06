@@ -88,7 +88,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
         guiGraphics.drawString(
             font,
-            Component.translatable(this.option.getValue().getKey()),
+            this.option.getValue().getCaption(),
             TEXT_LEFT_MARGIN,
             TEXT_SECOND_ROW,
             SECOND_ROW_COLOR,
