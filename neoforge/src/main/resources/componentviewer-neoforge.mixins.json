@@ -7,7 +7,8 @@
         "CreativeModeInventoryScreenMixin",
         "RecipeButtonMixin",
         "KeyboardHandlerMixin",
-        "MouseHandlerMixin"
+        "MouseHandlerMixin",
+        "ToastManagerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

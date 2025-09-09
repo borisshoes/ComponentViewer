@@ -44,4 +44,6 @@ public final class MixinEvents {
             this.yOffset = yOffset;
         }
     }
+
+    public static class ClearToastManagerEvent extends Event {}
 }

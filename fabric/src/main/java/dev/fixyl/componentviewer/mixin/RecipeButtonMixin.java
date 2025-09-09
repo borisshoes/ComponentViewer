@@ -4,17 +4,17 @@ import static net.minecraft.world.item.TooltipFlag.*;
 
 import java.util.List;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.MixinEvents;

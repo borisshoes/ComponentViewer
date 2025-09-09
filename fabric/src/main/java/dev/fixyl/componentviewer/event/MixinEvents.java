@@ -38,18 +38,29 @@ public final class MixinEvents {
         return InteractionResult.PASS;
     });
 
+    public static final Event<ClearToastManagerCallback> CLEAR_TOAST_MANAGER_EVENT = EventFactory.createArrayBacked(ClearToastManagerCallback.class, listeners -> () -> {
+        for (ClearToastManagerCallback listener : listeners) {
+            listener.onClearToastManager();
+        }
+    });
+
     @FunctionalInterface
     public static interface TooltipCallback {
-        public void onTooltip(ItemStack itemStack, Tooltip tooltip);
+        void onTooltip(ItemStack itemStack, Tooltip tooltip);
     }
 
     @FunctionalInterface
     public static interface KeyboardCallback {
-        public void onKeyPress(Key key, int modifiers);
+        void onKeyPress(Key key, int modifiers);
     }
 
     @FunctionalInterface
     public static interface MouseScrollCallback {
-        public InteractionResult onMouseScroll(double xOffset, double yOffset);
+        InteractionResult onMouseScroll(double xOffset, double yOffset);
+    }
+
+    @FunctionalInterface
+    public static interface ClearToastManagerCallback {
+        void onClearToastManager();
     }
 }

@@ -1,4 +1,4 @@
-package dev.fixyl.componentviewer.control;
+package dev.fixyl.componentviewer.control.keyboard;
 
 import java.util.ArrayList;
 import java.util.List;

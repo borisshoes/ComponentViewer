@@ -1,7 +1,6 @@
 package dev.fixyl.componentviewer.control;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +12,7 @@ import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
+import dev.fixyl.componentviewer.control.keyboard.Clipboard;
 import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.JsonFormatter;
@@ -54,7 +54,7 @@ public final class ControlFlow {
         this.lastTimeTooltipShown = -1L;
     }
 
-    public void onClientTick() {
+    public void onStartClientTick() {
         this.clientTick++;
     }
 
@@ -155,7 +155,10 @@ public final class ControlFlow {
 
     private boolean shouldDisplayToolip() {
         TooltipDisplay tooltipDisplay = this.configs.tooltipDisplay.getValue();
-        if (tooltipDisplay == TooltipDisplay.NEVER || tooltipDisplay == TooltipDisplay.HOLD && !Screen.hasControlDown()) {
+        if (
+            tooltipDisplay == TooltipDisplay.NEVER
+            || tooltipDisplay == TooltipDisplay.HOLD && !this.configs.keyShowTooltip.isDownAnywhere()
+        ) {
             return false;
         }
 

@@ -13,32 +13,26 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.control.ControlFlow;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard;
+import dev.fixyl.componentviewer.control.keyboard.NeoForgeKeyboard;
 import dev.fixyl.componentviewer.event.KeyComboEvents;
 import dev.fixyl.componentviewer.event.MixinEvents;
-import dev.fixyl.componentviewer.keyboard.KeyBindings;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
+/**
+ * This mod's entry point and singleton for the NeoForge platform.
+ * <p>
+ * Handles initialization logic specific to NeoForge.
+ *
+ * @see ComponentViewer
+ */
 @Mod(value = "componentviewer", dist = Dist.CLIENT)
 @EventBusSubscriber(value = Dist.CLIENT)
-public final class ComponentViewer {
+public final class NeoForgeComponentViewer extends ComponentViewer {
 
-    private static ComponentViewer instance;
-
-    public final Logger logger;
-    public final Configs configs;
-    public final KeyBindings keyBindings;
-
-    public ComponentViewer(ModContainer modContainer) {
-        ComponentViewer.setInstance(this);
-
-        this.logger = LoggerFactory.getLogger(this.getClass());
-        this.configs = new Configs(FMLPaths.CONFIGDIR.get(), this.logger);
-        this.keyBindings = new KeyBindings(this.configs);
+    public NeoForgeComponentViewer(ModContainer modContainer) {
+        super(FMLPaths.CONFIGDIR.get());
 
         modContainer.registerExtensionPoint(
             IConfigScreenFactory.class,
@@ -50,38 +44,24 @@ public final class ComponentViewer {
     public static void onClientSetup(FMLClientSetupEvent clientSetupEvent) {
         Minecraft minecraftClient = Minecraft.getInstance();
         ComponentViewer instance = ComponentViewer.getInstance();
-        ControlFlow controlFlow = new ControlFlow(minecraftClient, instance.configs);
+
+        if (minecraftClient == null) {
+            throw new IllegalStateException("Minecraft hasn't been initialized yet, although it should!");
+        }
 
         instance.configs.loadFromDisk();
 
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> instance.keyBindings.onClientTick(minecraftClient));
+        ControlFlow controlFlow = new ControlFlow(minecraftClient, instance.configs);
+        Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance.configs);
 
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> controlFlow.onClientTick());
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> controlFlow.onStartClientTick());
         NeoForge.EVENT_BUS.addListener(MixinEvents.TooltipEvent.class, event -> controlFlow.onTooltip(event.itemStack, event.tooltip));
         NeoForge.EVENT_BUS.addListener(MixinEvents.MouseScrollEvent.class, event -> event.setResult(controlFlow.onMouseScroll(event.yOffset)));
         NeoForge.EVENT_BUS.addListener(KeyComboEvents.CycleComponentEvent.class, event -> controlFlow.onCycleComponent(event.cycleType));
         NeoForge.EVENT_BUS.addListener(KeyComboEvents.CopyActionEvent.class, event -> controlFlow.onCopyAction());
-    }
 
-    public static ComponentViewer getInstance() {
-        if (ComponentViewer.instance == null) {
-            throw new IllegalStateException(String.format(
-                "'%s' hasn't been instantiated yet!",
-                ComponentViewer.class.getName()
-            ));
-        }
-
-        return ComponentViewer.instance;
-    }
-
-    private static void setInstance(ComponentViewer instance) {
-        if (ComponentViewer.instance != null) {
-            throw new IllegalStateException(String.format(
-                "Cannot instantiate '%s' twice!",
-                ComponentViewer.class.getName()
-            ));
-        }
-
-        ComponentViewer.instance = instance;
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keyboard.onEndClientTick());
+        NeoForge.EVENT_BUS.addListener(MixinEvents.KeyboardEvent.class, event -> keyboard.onKeyPress(event.key));
+        NeoForge.EVENT_BUS.addListener(MixinEvents.ClearToastManagerEvent.class, event -> keyboard.clearAllOptionCycleToasts());
     }
 }

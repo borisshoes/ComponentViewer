@@ -23,11 +23,11 @@ public final class KeyComboEvents {
 
     @FunctionalInterface
     public static interface CycleComponentCallback {
-        public void onCycleComponent(Selection.CycleType cycleType);
+        void onCycleComponent(Selection.CycleType cycleType);
     }
 
     @FunctionalInterface
     public interface CopyActionCallback {
-        public void onCopyAction();
+        void onCopyAction();
     }
 }

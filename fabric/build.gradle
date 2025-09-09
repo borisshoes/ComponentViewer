@@ -57,6 +57,8 @@ loom {
         client { runDir = "../run" }
         server { runDir = "../run" }
     }
+
+    accessWidenerPath = file("src/main/resources/componentviewer-fabric.accesswidener")
 }
 
 processResources {

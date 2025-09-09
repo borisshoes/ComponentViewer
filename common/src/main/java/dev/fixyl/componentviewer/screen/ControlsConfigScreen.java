@@ -15,7 +15,9 @@ public class ControlsConfigScreen extends ConfigScreen {
     protected void addElements() {
         this.addRedirect("controls.keybinds", () -> new KeyBindsScreen(this, this.options));
         this.addConfigs(
-            this.configs.controlsAllowScrolling
+            this.configs.controlsAllowScrolling,
+            this.configs.controlsAlternativeCopyModifierKey,
+            this.configs.controlsAllowCyclingOptionsWhileInScreen
         );
     }
 }

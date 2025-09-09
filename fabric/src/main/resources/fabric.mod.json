@@ -17,12 +17,13 @@
     "environment": "client",
     "entrypoints": {
         "client": [
-            "dev.fixyl.componentviewer.ComponentViewer"
+            "dev.fixyl.componentviewer.FabricComponentViewer"
         ],
         "modmenu": [
             "dev.fixyl.componentviewer.modmenu.ModMenu"
         ]
     },
+    "accessWidener": "componentviewer-fabric.accesswidener",
     "mixins": [
         {
             "config": "componentviewer-fabric.mixins.json",

@@ -32,4 +32,6 @@ loom {
         remove client
         remove server
     }
+
+    accessWidenerPath = file("../fabric/src/main/resources/componentviewer-fabric.accesswidener")
 }

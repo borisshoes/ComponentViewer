@@ -1,7 +1,11 @@
 package dev.fixyl.componentviewer.config;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import java.nio.file.Path;
 import java.util.EnumSet;
+
+import net.minecraft.client.Minecraft;
 
 import org.slf4j.Logger;
 
@@ -14,13 +18,22 @@ import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
+import dev.fixyl.componentviewer.config.keymapping.ActionBoundKeyMapping;
+import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping;
+import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
+import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping.Category;
+import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping.ConflictContext;
+import dev.fixyl.componentviewer.config.keymapping.EnumOptionKeyMapping;
+import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
 import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.config.option.IntegerOption;
 import dev.fixyl.componentviewer.config.option.Options;
+import dev.fixyl.componentviewer.control.Selection.CycleType;
+import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
-public final class Configs implements Options {
+public final class Configs implements Options, KeyMappings {
 
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
@@ -41,27 +54,12 @@ public final class Configs implements Options {
 
     @Override
     public AdvancedOption<?>[] getOptions() {
-        return new AdvancedOption<?>[] {
-            this.tooltipDisplay,
-            this.tooltipPurpose,
-            this.tooltipComponents,
-            this.tooltipShowAmount,
-            this.tooltipComponentValues,
-            this.tooltipKeepSelection,
-            this.tooltipFormatting,
-            this.tooltipIndentation,
-            this.tooltipColoredFormatting,
-            this.tooltipInjectMethod,
-            this.tooltipAdvancedTooltips,
-            this.clipboardCopy,
-            this.clipboardFormatting,
-            this.clipboardIndentation,
-            this.clipboardSelector,
-            this.clipboardPrependSlash,
-            this.clipboardIncludeCount,
-            this.clipboardSuccessNotification,
-            this.controlsAllowScrolling
-        };
+        return this.options;
+    }
+
+    @Override
+    public AdvancedKeyMapping[] getKeyMappings() {
+        return this.keyMappings;
     }
 
     public final EnumOption<TooltipDisplay> tooltipDisplay = EnumOption.<TooltipDisplay>create("tooltip.display")
@@ -203,8 +201,164 @@ public final class Configs implements Options {
         .setDescriptionTranslationKey("componentviewer.config.controls.allow_scrolling.description")
         .setChangeCallback(this::changeCallback)
         .build();
+    public final BooleanOption controlsAlternativeCopyModifierKey = BooleanOption.create("controls.alternative_copy_modifier_key")
+        .setDefaultValue(false)
+        .setTranslationKey("componentviewer.config.controls.alternative_copy_modifier_key")
+        .setDescriptionTranslationKey("componentviewer.config.controls.alternative_copy_modifier_key.description")
+        .setChangeCallback(this::changeCallback)
+        .build();
+    public final BooleanOption controlsAllowCyclingOptionsWhileInScreen = BooleanOption.create("controls.allow_cycling_options_while_in_screen")
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.controls.allow_cycling_options_while_in_screen")
+        .setDescriptionTranslationKey("componentviewer.config.controls.allow_cycling_options_while_in_screen.description")
+        .setChangeCallback(this::changeCallback)
+        .build();
+
+    private final AdvancedOption<?>[] options = {
+        this.tooltipDisplay,
+        this.tooltipPurpose,
+        this.tooltipComponents,
+        this.tooltipShowAmount,
+        this.tooltipComponentValues,
+        this.tooltipKeepSelection,
+        this.tooltipFormatting,
+        this.tooltipIndentation,
+        this.tooltipColoredFormatting,
+        this.tooltipInjectMethod,
+        this.tooltipAdvancedTooltips,
+        this.clipboardCopy,
+        this.clipboardFormatting,
+        this.clipboardIndentation,
+        this.clipboardSelector,
+        this.clipboardPrependSlash,
+        this.clipboardIncludeCount,
+        this.clipboardSuccessNotification,
+        this.controlsAllowScrolling,
+        this.controlsAlternativeCopyModifierKey,
+        this.controlsAllowCyclingOptionsWhileInScreen
+    };
 
     private <T> void changeCallback(T value) {
         this.saveToDisk();
     }
+
+    public final ActionBoundKeyMapping keyConfigScreen = new ActionBoundKeyMapping(
+        "componentviewer.keybind.general.config_screen",
+        GLFW_KEY_J,
+        Category.GENERAL,
+        ConflictContext.IN_GAME,
+        () -> {
+            Minecraft minecraftClient = Minecraft.getInstance();
+
+            if (minecraftClient != null) {
+                minecraftClient.setScreen(new MainConfigScreen(null, this));
+            }
+        }
+    );
+    public final AdvancedKeyMapping keyShowTooltip = new AdvancedKeyMapping(
+        "componentviewer.keybind.general.show_tooltip",
+        GLFW_KEY_LEFT_ALT,
+        Category.GENERAL,
+        ConflictContext.IN_SCREEN
+    );
+    public final CycleSelectionKeyMapping keyNextComponent = new CycleSelectionKeyMapping(
+        "componentviewer.keybind.general.next_component",
+        GLFW_KEY_DOWN,
+        Category.GENERAL,
+        ConflictContext.IN_SCREEN,
+        CycleType.NEXT
+    );
+    public final CycleSelectionKeyMapping keyPreviousComponent = new CycleSelectionKeyMapping(
+        "componentviewer.keybind.general.previous_component",
+        GLFW_KEY_UP,
+        Category.GENERAL,
+        ConflictContext.IN_SCREEN,
+        CycleType.PREVIOUS
+    );
+    public final CycleSelectionKeyMapping keyFirstComponent = new CycleSelectionKeyMapping(
+        "componentviewer.keybind.general.first_component",
+        GLFW_KEY_HOME,
+        Category.GENERAL,
+        ConflictContext.IN_SCREEN,
+        CycleType.FIRST
+    );
+    public final CycleSelectionKeyMapping keyLastComponent = new CycleSelectionKeyMapping(
+        "componentviewer.keybind.general.last_component",
+        GLFW_KEY_END,
+        Category.GENERAL,
+        ConflictContext.IN_SCREEN,
+        CycleType.LAST
+    );
+    public final EnumOptionKeyMapping<TooltipDisplay> keyTooltipDisplayConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_display",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipDisplay
+    );
+    public final EnumOptionKeyMapping<TooltipPurpose> keyTooltipPurposeConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_purpose",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipPurpose
+    );
+    public final EnumOptionKeyMapping<TooltipComponents> keyTooltipComponentsConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_components",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipComponents
+    );
+    public final EnumOptionKeyMapping<TooltipKeepSelection> keyTooltipKeepSelectionConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_keep_selection",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipKeepSelection
+    );
+    public final EnumOptionKeyMapping<TooltipFormatting> keyTooltipFormattingConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_formatting",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipFormatting
+    );
+    public final EnumOptionKeyMapping<TooltipInjectMethod> keyTooltipInjectMethodConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.tooltip_inject_method",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.tooltipInjectMethod
+    );
+    public final EnumOptionKeyMapping<ClipboardCopy> keyClipboardCopyConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.clipboard_copy",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.clipboardCopy
+    );
+    public final EnumOptionKeyMapping<ClipboardFormatting> keyClipboardFormattingConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.clipboard_formatting",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.clipboardFormatting
+    );
+    public final EnumOptionKeyMapping<ClipboardSelector> keyClipboardSelectorConfig = new EnumOptionKeyMapping<>(
+        "componentviewer.keybind.config.clipboard_selector",
+        GLFW_KEY_UNKNOWN,
+        Category.CONFIG,
+        this.clipboardSelector
+    );
+
+    private final AdvancedKeyMapping[] keyMappings = {
+        this.keyConfigScreen,
+        this.keyShowTooltip,
+        this.keyNextComponent,
+        this.keyPreviousComponent,
+        this.keyFirstComponent,
+        this.keyLastComponent,
+        this.keyTooltipDisplayConfig,
+        this.keyTooltipPurposeConfig,
+        this.keyTooltipComponentsConfig,
+        this.keyTooltipKeepSelectionConfig,
+        this.keyTooltipFormattingConfig,
+        this.keyTooltipInjectMethodConfig,
+        this.keyClipboardCopyConfig,
+        this.keyClipboardFormattingConfig,
+        this.keyClipboardSelectorConfig
+    };
 }

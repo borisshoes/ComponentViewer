@@ -1,10 +1,20 @@
 package dev.fixyl.componentviewer.config.option;
 
+/**
+ * Defines an object which holds various types of options
+ * or configurations.
+ */
 public interface Options {
 
-    // Suppress the generic wildcard warning for SonarQube
-    // since it's an array of mixed types and the actual
-    // type doesn't matter
+    /**
+     * Get all options this instance holds.
+     *
+     * @implNote
+     * SonarQube warning for returning a wildcard generic in non-private methods is suppressed.
+     * Every option can have a different data type. The exact type is therefore not known.
+     *
+     * @return an array of all options
+     */
     @SuppressWarnings("java:S1452")
-    public AdvancedOption<?>[] getOptions();
+    AdvancedOption<?>[] getOptions();
 }
