@@ -81,7 +81,6 @@ public abstract class Keyboard {
         }
 
         if (this.isCyclingOptionsPossible()) {
-            // TODO: Fix this not working correctly at all times, cause the Toast hangs around and never gets cleared which doesnt allow new ones to spawn
             for (EnumOptionKeyMapping<?> enumOptionKey : this.enumOptionKeys) {
                 enumOptionKey.cycleEnumIfKeyMatches(key);
             }
