@@ -45,7 +45,7 @@ public abstract class ComponentViewer implements DisablableMod {
             case NEVER -> false;
             case IN_SURVIVAL -> this.currentlyInSurvival();
             case ON_SERVER -> this.currentlyOnServer();
-            case BOTH -> this.currentlyInSurvival() || this.currentlyOnServer();
+            case BOTH -> this.currentlyInSurvival() && this.currentlyOnServer();
         };
     }
 
