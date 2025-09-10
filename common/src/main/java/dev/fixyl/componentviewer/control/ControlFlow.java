@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
+import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
@@ -19,9 +20,18 @@ import dev.fixyl.componentviewer.formatting.JsonFormatter;
 import dev.fixyl.componentviewer.formatting.ObjectFormatter;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 
+/**
+ * Represents basically the entire main control flow
+ * of this mod. Nearly all method calls and object creations
+ * originate from this class in some way or another.
+ * <p>
+ * Therefore, this class is more or less the brain of this mod,
+ * defining most decisions, especially ones regarding configs.
+ */
 public final class ControlFlow {
 
     private final Minecraft minecraftClient;
+    private final DisablableMod disablableMod;
     private final Configs configs;
     private final Clipboard clipboard;
 
@@ -38,8 +48,9 @@ public final class ControlFlow {
     private boolean isTooltipShown;
     private long lastTimeTooltipShown;
 
-    public ControlFlow(Minecraft minecraftClient, Configs configs) {
+    public ControlFlow(Minecraft minecraftClient, DisablableMod disablableMod, Configs configs) {
         this.minecraftClient = minecraftClient;
+        this.disablableMod = disablableMod;
         this.configs = configs;
         this.clipboard = new Clipboard();
 
@@ -59,7 +70,7 @@ public final class ControlFlow {
     }
 
     public void onTooltip(ItemStack itemStack, Tooltip tooltip) {
-        if (itemStack == null) {
+        if (itemStack == null || this.disablableMod.isModDisabled()) {
             return;
         }
 

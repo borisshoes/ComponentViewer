@@ -42,7 +42,7 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent clientSetupEvent) {
-        Minecraft minecraftClient = Minecraft.getInstance();
+        Minecraft minecraftClient = ComponentViewer.getMinecraftClient();
         ComponentViewer instance = ComponentViewer.getInstance();
 
         if (minecraftClient == null) {
@@ -51,8 +51,8 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
 
         instance.configs.loadFromDisk();
 
-        ControlFlow controlFlow = new ControlFlow(minecraftClient, instance.configs);
-        Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance.configs);
+        ControlFlow controlFlow = new ControlFlow(minecraftClient, instance, instance.configs);
+        Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance, instance.configs);
 
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> controlFlow.onStartClientTick());
         NeoForge.EVENT_BUS.addListener(MixinEvents.TooltipEvent.class, event -> controlFlow.onTooltip(event.itemStack, event.tooltip));

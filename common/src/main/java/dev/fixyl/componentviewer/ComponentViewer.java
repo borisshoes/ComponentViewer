@@ -5,6 +5,10 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.server.IntegratedServer;
+
 import dev.fixyl.componentviewer.config.Configs;
 
 /**
@@ -15,7 +19,7 @@ import dev.fixyl.componentviewer.config.Configs;
  * Must be extended to implement platform-specific
  * initialization logic, like registering event listeners.
  */
-public abstract class ComponentViewer {
+public abstract class ComponentViewer implements DisablableMod {
 
     private static ComponentViewer instance;
 
@@ -33,6 +37,16 @@ public abstract class ComponentViewer {
 
         this.logger = LoggerFactory.getLogger(this.getClass());
         this.configs = new Configs(configDir, this.logger);
+    }
+
+    @Override
+    public boolean isModDisabled() {
+        return switch (this.configs.generalDisableMod.getValue()) {
+            case NEVER -> false;
+            case IN_SURVIVAL -> this.currentlyInSurvival();
+            case ON_SERVER -> this.currentlyOnServer();
+            case BOTH -> this.currentlyInSurvival() || this.currentlyOnServer();
+        };
     }
 
     /**
@@ -60,5 +74,32 @@ public abstract class ComponentViewer {
         }
 
         ComponentViewer.instance = instance;
+    }
+
+    protected static Minecraft getMinecraftClient() {
+        Minecraft minecraftClient = Minecraft.getInstance();
+
+        if (minecraftClient == null) {
+            throw new IllegalStateException(
+                "Minecraft hasn't been initialized yet, although it should!"
+            );
+        }
+
+        return minecraftClient;
+    }
+
+    private boolean currentlyInSurvival() {
+        LocalPlayer player = ComponentViewer.getMinecraftClient().player;
+        return player != null && player.gameMode().isSurvival();
+    }
+
+    private boolean currentlyOnServer() {
+        Minecraft minecraftClient = ComponentViewer.getMinecraftClient();
+        IntegratedServer integratedServer = minecraftClient.getSingleplayerServer();
+
+        return (
+            minecraftClient.getCurrentServer() != null
+            || integratedServer != null && integratedServer.isPublished()
+        );
     }
 }

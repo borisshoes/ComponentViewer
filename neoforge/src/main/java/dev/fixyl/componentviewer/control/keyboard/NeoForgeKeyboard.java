@@ -10,6 +10,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping;
 import dev.fixyl.componentviewer.control.Selection.CycleType;
@@ -25,8 +26,14 @@ import dev.fixyl.componentviewer.event.KeyComboEvents.CycleComponentEvent;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class NeoForgeKeyboard extends Keyboard {
 
-    public NeoForgeKeyboard(Minecraft minecraftClient, Configs configs) {
-        super(minecraftClient, configs, configs.controlsAlternativeCopyModifierKey, configs.controlsAllowCyclingOptionsWhileInScreen);
+    public NeoForgeKeyboard(Minecraft minecraftClient, DisablableMod disablableMod, Configs configs) {
+        super(
+            minecraftClient,
+            disablableMod,
+            configs,
+            configs.controlsAlternativeCopyModifierKey,
+            configs.controlsAllowCyclingOptionsWhileInScreen
+        );
     }
 
     @Override

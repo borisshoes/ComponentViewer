@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
 import dev.fixyl.componentviewer.config.enums.ClipboardSelector;
+import dev.fixyl.componentviewer.config.enums.GeneralDisableMod;
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
@@ -62,6 +63,12 @@ public final class Configs implements Options, KeyMappings {
         return this.keyMappings;
     }
 
+    public final EnumOption<GeneralDisableMod> generalDisableMod = EnumOption.<GeneralDisableMod>create("general.disable_mod")
+        .setDefaultValue(GeneralDisableMod.NEVER)
+        .setTranslationKey("componentviewer.config.general.disable_mod")
+        .setDescriptionTranslationKey("componentviewer.config.general.disable_mod.description")
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<TooltipDisplay> tooltipDisplay = EnumOption.<TooltipDisplay>create("tooltip.display")
         .setDefaultValue(TooltipDisplay.HOLD)
         .setTranslationKey("componentviewer.config.tooltip.display")
@@ -96,7 +103,7 @@ public final class Configs implements Options, KeyMappings {
         .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();
-    public final EnumOption<TooltipKeepSelection> tooltipKeepSelection = EnumOption.<TooltipKeepSelection>create("tooltip.selection")
+    public final EnumOption<TooltipKeepSelection> tooltipKeepSelection = EnumOption.<TooltipKeepSelection>create("tooltip.keep_selection")
         .setDefaultValue(TooltipKeepSelection.TYPE)
         .setTranslationKey("componentviewer.config.tooltip.keep_selection")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.keep_selection.description")
@@ -215,6 +222,7 @@ public final class Configs implements Options, KeyMappings {
         .build();
 
     private final AdvancedOption<?>[] options = {
+        this.generalDisableMod,
         this.tooltipDisplay,
         this.tooltipPurpose,
         this.tooltipComponents,

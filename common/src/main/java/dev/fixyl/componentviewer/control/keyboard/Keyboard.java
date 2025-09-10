@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.InputConstants.Key;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
+import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.EnumOptionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
@@ -27,6 +28,7 @@ import dev.fixyl.componentviewer.screen.ConfigScreen;
 public abstract class Keyboard {
 
     protected final Minecraft minecraftClient;
+    protected final DisablableMod disablableMod;
 
     protected final List<TickedKeyMapping> tickedKeys;
     protected final List<CycleSelectionKeyMapping> cycleSelectionKeys;
@@ -41,8 +43,15 @@ public abstract class Keyboard {
     private BooleanOption alternativeCopyModifierKey;
     private BooleanOption allowCyclingOptionsWhileInScreen;
 
-    protected Keyboard(Minecraft minecarftClient, KeyMappings keyMappings, BooleanOption alternativeCopyModifierKey, BooleanOption allowCyclingOptionsWhileInScreen) {
+    protected Keyboard(
+        Minecraft minecarftClient,
+        DisablableMod disablableMod,
+        KeyMappings keyMappings,
+        BooleanOption alternativeCopyModifierKey,
+        BooleanOption allowCyclingOptionsWhileInScreen
+    ) {
         this.minecraftClient = minecarftClient;
+        this.disablableMod = disablableMod;
 
         this.tickedKeys = keyMappings.getSubClassKeyMappings(TickedKeyMapping.class);
         this.cycleSelectionKeys = keyMappings.getSubClassKeyMappings(CycleSelectionKeyMapping.class);
@@ -56,6 +65,12 @@ public abstract class Keyboard {
      * This method should be called once per client-tick.
      * <p>
      * Specifically, after all other client-logic has run.
+     *
+     * @implNote
+     * Ticked key mappings are not disabled when this mod
+     * is disabled. This is to allow opening the config
+     * screen, and to allow potential option cycling
+     * key mappings to update their toast references normally.
      */
     public void onEndClientTick() {
         for (TickedKeyMapping tickedKey : this.tickedKeys) {
@@ -70,6 +85,10 @@ public abstract class Keyboard {
      * @param key the key that was pressed or held
      */
     public void onKeyPress(Key key) {
+        if (this.disablableMod.isModDisabled()) {
+            return;
+        }
+
         for (CycleSelectionKeyMapping cycleKey : this.cycleSelectionKeys) {
             if (cycleKey.matchesKey(key)) {
                 this.invokeCycleComponentEvent(cycleKey.getCycleType());

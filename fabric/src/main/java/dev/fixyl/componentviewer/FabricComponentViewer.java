@@ -27,16 +27,12 @@ public final class FabricComponentViewer extends ComponentViewer implements Clie
 
     @Override
     public void onInitializeClient() {
-        Minecraft minecraftClient = Minecraft.getInstance();
-
-        if (minecraftClient == null) {
-            throw new IllegalStateException("Minecraft hasn't been initialized yet, although it should!");
-        }
+        Minecraft minecraftClient = ComponentViewer.getMinecraftClient();
 
         this.configs.loadFromDisk();
 
-        ControlFlow controlFlow = new ControlFlow(minecraftClient, this.configs);
-        Keyboard keyboard = new FabricKeyboard(minecraftClient, this.configs);
+        ControlFlow controlFlow = new ControlFlow(minecraftClient, this, this.configs);
+        Keyboard keyboard = new FabricKeyboard(minecraftClient, this, this.configs);
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> controlFlow.onStartClientTick());
         MixinEvents.TOOLTIP_EVENT.register(controlFlow::onTooltip);

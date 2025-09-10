@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
+import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
 import dev.fixyl.componentviewer.control.Selection.CycleType;
@@ -18,8 +19,14 @@ import dev.fixyl.componentviewer.event.KeyComboEvents;
  */
 public class FabricKeyboard extends Keyboard {
 
-    public FabricKeyboard(Minecraft minecraftClient, Configs configs) {
-        super(minecraftClient, configs, configs.controlsAlternativeCopyModifierKey, configs.controlsAllowCyclingOptionsWhileInScreen);
+    public FabricKeyboard(Minecraft minecraftClient, DisablableMod disablableMod, Configs configs) {
+        super(
+            minecraftClient,
+            disablableMod,
+            configs,
+            configs.controlsAlternativeCopyModifierKey,
+            configs.controlsAllowCyclingOptionsWhileInScreen
+        );
 
         FabricKeyboard.registerKeyMappings(configs);
     }
