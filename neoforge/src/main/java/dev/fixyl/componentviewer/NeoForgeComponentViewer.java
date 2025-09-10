@@ -45,10 +45,6 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
         Minecraft minecraftClient = ComponentViewer.getMinecraftClient();
         ComponentViewer instance = ComponentViewer.getInstance();
 
-        if (minecraftClient == null) {
-            throw new IllegalStateException("Minecraft hasn't been initialized yet, although it should!");
-        }
-
         instance.configs.loadFromDisk();
 
         ControlFlow controlFlow = new ControlFlow(minecraftClient, instance, instance.configs);
