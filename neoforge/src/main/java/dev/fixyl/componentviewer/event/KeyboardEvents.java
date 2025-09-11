@@ -4,9 +4,9 @@ import net.neoforged.bus.api.Event;
 
 import dev.fixyl.componentviewer.control.Selection.CycleType;
 
-public final class KeyComboEvents {
+public final class KeyboardEvents {
 
-    private KeyComboEvents() {}
+    private KeyboardEvents() {}
 
     public static class CycleComponentEvent extends Event {
 

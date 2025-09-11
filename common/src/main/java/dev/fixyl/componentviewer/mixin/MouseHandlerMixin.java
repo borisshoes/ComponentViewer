@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.fixyl.componentviewer.event.MixinEvents;
+import dev.fixyl.componentviewer.ComponentViewer;
 
 @Mixin(value = MouseHandler.class, priority = Integer.MIN_VALUE)
 public final class MouseHandlerMixin {
@@ -24,7 +24,9 @@ public final class MouseHandlerMixin {
             return;
         }
 
-        InteractionResult result = MixinEvents.MOUSE_EVENT.invoker().onMouseScroll(xOffset, yOffset);
+        InteractionResult result = ComponentViewer.dispatchEventWithResultSafely(
+            dispatcher -> dispatcher.invokeMouseScrollEvent(xOffset, yOffset)
+        ).orElse(InteractionResult.PASS);
 
         if (result == InteractionResult.SUCCESS) {
             minecraftClient.getFramerateLimitTracker().onInputReceived();

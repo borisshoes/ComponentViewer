@@ -23,12 +23,12 @@ public final class MixinEvents {
         }
     }
 
-    public static class KeyboardEvent extends Event {
+    public static class KeyPressEvent extends Event {
 
         public final Key key;
         public final int modifiers;
 
-        public KeyboardEvent(Key key, int modifiers) {
+        public KeyPressEvent(Key key, int modifiers) {
             this.key = key;
             this.modifiers = modifiers;
         }

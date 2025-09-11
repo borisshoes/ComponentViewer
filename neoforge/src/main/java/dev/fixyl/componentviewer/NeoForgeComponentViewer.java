@@ -16,8 +16,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import dev.fixyl.componentviewer.control.ControlFlow;
 import dev.fixyl.componentviewer.control.keyboard.Keyboard;
 import dev.fixyl.componentviewer.control.keyboard.NeoForgeKeyboard;
-import dev.fixyl.componentviewer.event.KeyComboEvents;
+import dev.fixyl.componentviewer.event.KeyboardEvents;
 import dev.fixyl.componentviewer.event.MixinEvents;
+import dev.fixyl.componentviewer.event.NeoForgeEventDispatcher;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 /**
@@ -32,7 +33,7 @@ import dev.fixyl.componentviewer.screen.MainConfigScreen;
 public final class NeoForgeComponentViewer extends ComponentViewer {
 
     public NeoForgeComponentViewer(ModContainer modContainer) {
-        super(FMLPaths.CONFIGDIR.get());
+        super(new NeoForgeEventDispatcher(), FMLPaths.CONFIGDIR.get());
 
         modContainer.registerExtensionPoint(
             IConfigScreenFactory.class,
@@ -48,16 +49,16 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
         instance.configs.loadFromDisk();
 
         ControlFlow controlFlow = new ControlFlow(minecraftClient, instance, instance.configs);
-        Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance, instance.configs);
+        Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance, instance.eventDispatcher, instance.configs);
 
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> controlFlow.onStartClientTick());
         NeoForge.EVENT_BUS.addListener(MixinEvents.TooltipEvent.class, event -> controlFlow.onTooltip(event.itemStack, event.tooltip));
         NeoForge.EVENT_BUS.addListener(MixinEvents.MouseScrollEvent.class, event -> event.setResult(controlFlow.onMouseScroll(event.yOffset)));
-        NeoForge.EVENT_BUS.addListener(KeyComboEvents.CycleComponentEvent.class, event -> controlFlow.onCycleComponent(event.cycleType));
-        NeoForge.EVENT_BUS.addListener(KeyComboEvents.CopyActionEvent.class, event -> controlFlow.onCopyAction());
+        NeoForge.EVENT_BUS.addListener(KeyboardEvents.CycleComponentEvent.class, event -> controlFlow.onCycleComponent(event.cycleType));
+        NeoForge.EVENT_BUS.addListener(KeyboardEvents.CopyActionEvent.class, event -> controlFlow.onCopyAction());
 
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keyboard.onEndClientTick());
-        NeoForge.EVENT_BUS.addListener(MixinEvents.KeyboardEvent.class, event -> keyboard.onKeyPress(event.key));
+        NeoForge.EVENT_BUS.addListener(MixinEvents.KeyPressEvent.class, event -> keyboard.onKeyPress(event.key));
         NeoForge.EVENT_BUS.addListener(MixinEvents.ClearToastManagerEvent.class, event -> keyboard.clearAllOptionCycleToasts());
     }
 }

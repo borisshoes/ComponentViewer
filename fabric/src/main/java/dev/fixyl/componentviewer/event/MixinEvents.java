@@ -20,13 +20,13 @@ public final class MixinEvents {
         }
     });
 
-    public static final Event<KeyboardCallback> KEYBOARD_EVENT = EventFactory.createArrayBacked(KeyboardCallback.class, listeners -> (key, modifiers) -> {
-        for (KeyboardCallback listener : listeners) {
+    public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> (key, modifiers) -> {
+        for (KeyPressCallback listener : listeners) {
             listener.onKeyPress(key, modifiers);
         }
     });
 
-    public static final Event<MouseScrollCallback> MOUSE_EVENT = EventFactory.createArrayBacked(MouseScrollCallback.class, listeners -> (xOffset, yOffset) -> {
+    public static final Event<MouseScrollCallback> MOUSE_SCROLL_EVENT = EventFactory.createArrayBacked(MouseScrollCallback.class, listeners -> (xOffset, yOffset) -> {
         for (MouseScrollCallback listener : listeners) {
             InteractionResult result = listener.onMouseScroll(xOffset, yOffset);
 
@@ -50,7 +50,7 @@ public final class MixinEvents {
     }
 
     @FunctionalInterface
-    public static interface KeyboardCallback {
+    public static interface KeyPressCallback {
         void onKeyPress(Key key, int modifiers);
     }
 

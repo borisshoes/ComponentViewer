@@ -15,7 +15,7 @@ displayURL="https://modrinth.com/mod/component-viewer"
 authors="fixyldev"
 
 [[mixins]]
-config="componentviewer-neoforge.mixins.json"
+config="componentviewer-common.mixins.json"
 
 [[dependencies.componentviewer]]
     modId="minecraft"

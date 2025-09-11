@@ -15,20 +15,22 @@ import dev.fixyl.componentviewer.config.keymapping.EnumOptionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
 import dev.fixyl.componentviewer.config.keymapping.TickedKeyMapping;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
-import dev.fixyl.componentviewer.control.Selection.CycleType;
+import dev.fixyl.componentviewer.event.EventDispatcher;
 import dev.fixyl.componentviewer.screen.ConfigScreen;
 
 /**
  * The base keyboard class which handles all logic related to
  * key presses and key mappings in general.
  * <p>
- * This class handles platform agnostic logic only and needs to be
- * extended to add platform specific logic, like event handling.
+ * This class handles platform-agnostic logic only and needs to be
+ * extended to add platform-specific logic, like registering
+ * key mappings.
  */
 public abstract class Keyboard {
 
     protected final Minecraft minecraftClient;
     protected final DisablableMod disablableMod;
+    protected final EventDispatcher eventDispatcher;
 
     protected final List<TickedKeyMapping> tickedKeys;
     protected final List<CycleSelectionKeyMapping> cycleSelectionKeys;
@@ -46,12 +48,14 @@ public abstract class Keyboard {
     protected Keyboard(
         Minecraft minecarftClient,
         DisablableMod disablableMod,
+        EventDispatcher eventDispatcher,
         KeyMappings keyMappings,
         BooleanOption alternativeCopyModifierKey,
         BooleanOption allowCyclingOptionsWhileInScreen
     ) {
         this.minecraftClient = minecarftClient;
         this.disablableMod = disablableMod;
+        this.eventDispatcher = eventDispatcher;
 
         this.tickedKeys = keyMappings.getSubClassKeyMappings(TickedKeyMapping.class);
         this.cycleSelectionKeys = keyMappings.getSubClassKeyMappings(CycleSelectionKeyMapping.class);
@@ -91,12 +95,12 @@ public abstract class Keyboard {
 
         for (CycleSelectionKeyMapping cycleKey : this.cycleSelectionKeys) {
             if (cycleKey.matchesKey(key)) {
-                this.invokeCycleComponentEvent(cycleKey.getCycleType());
+                this.eventDispatcher.invokeCycleComponentEvent(cycleKey.getCycleType());
             }
         }
 
         if (this.isCopy(key)) {
-            this.invokeCopyActionEvent();
+            this.eventDispatcher.invokeCopyActionEvent();
         }
 
         if (this.isCyclingOptionsPossible()) {
@@ -117,9 +121,6 @@ public abstract class Keyboard {
             enumOptionKey.clearToast();
         }
     }
-
-    protected abstract void invokeCycleComponentEvent(CycleType cycleType);
-    protected abstract void invokeCopyActionEvent();
 
     private boolean isCopy(Key key) {
         return key.getValue() == GLFW_KEY_C && (

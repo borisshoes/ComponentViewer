@@ -5,9 +5,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 import dev.fixyl.componentviewer.control.Selection;
 
-public final class KeyComboEvents {
+public final class KeyboardEvents {
 
-    private KeyComboEvents() {}
+    private KeyboardEvents() {}
 
     public static final Event<CycleComponentCallback> CYCLE_COMPONENT_EVENT = EventFactory.createArrayBacked(CycleComponentCallback.class, listeners -> cycleType -> {
         for (CycleComponentCallback listener : listeners) {
@@ -27,7 +27,7 @@ public final class KeyComboEvents {
     }
 
     @FunctionalInterface
-    public interface CopyActionCallback {
+    public static interface CopyActionCallback {
         void onCopyAction();
     }
 }

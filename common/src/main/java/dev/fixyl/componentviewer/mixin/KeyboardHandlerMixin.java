@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import dev.fixyl.componentviewer.event.MixinEvents;
+import dev.fixyl.componentviewer.ComponentViewer;
 
 @Mixin(value = KeyboardHandler.class)
 public final class KeyboardHandlerMixin {
@@ -25,6 +25,8 @@ public final class KeyboardHandlerMixin {
             return;
         }
 
-        MixinEvents.KEYBOARD_EVENT.invoker().onKeyPress(InputConstants.getKey(key, scancode), modifiers);
+        ComponentViewer.dispatchEventSafely(dispatcher ->
+            dispatcher.invokeKeyPressEvent(InputConstants.getKey(key, scancode), modifiers)
+        );
     }
 }
