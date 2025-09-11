@@ -29,8 +29,8 @@ neoForge {
     version = project.neoforge_version
 
     if (
-        project.findProperty("parchment_minecraft_version")
-        && project.findProperty("parchment_mappings_version")
+        project.parchment_minecraft_version?.trim()
+        && project.parchment_mappings_version?.trim()
     ) {
         parchment {
             minecraftVersion = project.parchment_minecraft_version

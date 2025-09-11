@@ -29,8 +29,8 @@ dependencies {
         officialMojangMappings()
 
         if (
-            project.findProperty("parchment_minecraft_version")
-            && project.findProperty("parchment_mappings_version")
+            project.parchment_minecraft_version?.trim()
+            && project.parchment_mappings_version?.trim()
         ) {
             parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_mappings_version}@zip")
         }

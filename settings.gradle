@@ -17,4 +17,10 @@ rootProject.name = "componentviewer"
 
 include "common"
 include "fabric"
-include "neoforge"
+
+if (
+    neoforge_version?.trim()
+    && moddev_version?.trim()
+) {
+    include "neoforge"
+}
