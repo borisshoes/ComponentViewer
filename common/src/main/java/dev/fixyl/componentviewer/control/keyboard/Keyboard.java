@@ -4,10 +4,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.List;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 
 import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
@@ -86,26 +84,26 @@ public abstract class Keyboard {
      * This method should be called each time a key is pressed
      * or held. That key is then passed as an argument.
      *
-     * @param key the key that was pressed or held
+     * @param keyEvent the key as a key event that was pressed or held
      */
-    public void onKeyPress(Key key) {
+    public void onKeyPress(KeyEvent keyEvent) {
         if (this.disablableMod.isModDisabled()) {
             return;
         }
 
         for (CycleSelectionKeyMapping cycleKey : this.cycleSelectionKeys) {
-            if (cycleKey.matchesKey(key)) {
+            if (cycleKey.matchesKeyEvent(keyEvent)) {
                 this.eventDispatcher.invokeCycleComponentEvent(cycleKey.getCycleType());
             }
         }
 
-        if (this.isCopy(key)) {
+        if (this.isCopy(keyEvent)) {
             this.eventDispatcher.invokeCopyActionEvent();
         }
 
         if (this.isCyclingOptionsPossible()) {
             for (EnumOptionKeyMapping<?> enumOptionKey : this.enumOptionKeys) {
-                enumOptionKey.cycleEnumIfKeyMatches(key);
+                enumOptionKey.cycleEnumIfKeyEventMatches(keyEvent);
             }
         }
     }
@@ -122,11 +120,11 @@ public abstract class Keyboard {
         }
     }
 
-    private boolean isCopy(Key key) {
-        return key.getValue() == GLFW_KEY_C && (
+    private boolean isCopy(KeyEvent keyEvent) {
+        return keyEvent.input() == GLFW_KEY_C && (
             (this.alternativeCopyModifierKey.getBooleanValue())
-                ? Screen.hasAltDown()
-                : Screen.hasControlDown()
+                ? keyEvent.hasAltDown()
+                : keyEvent.hasControlDown()
         );
     }
 

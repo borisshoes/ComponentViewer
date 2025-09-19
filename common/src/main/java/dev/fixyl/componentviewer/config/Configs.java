@@ -22,7 +22,6 @@ import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.config.keymapping.ActionBoundKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
-import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping.Category;
 import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping.ConflictContext;
 import dev.fixyl.componentviewer.config.keymapping.EnumOptionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
@@ -251,9 +250,9 @@ public final class Configs implements Options, KeyMappings {
     }
 
     public final ActionBoundKeyMapping keyConfigScreen = new ActionBoundKeyMapping(
-        "componentviewer.keybind.general.config_screen",
+        "key.category.componentviewer.general.config_screen",
         GLFW_KEY_J,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_GAME,
         () -> {
             Minecraft minecraftClient = Minecraft.getInstance();
@@ -264,91 +263,91 @@ public final class Configs implements Options, KeyMappings {
         }
     );
     public final AdvancedKeyMapping keyShowTooltip = new AdvancedKeyMapping(
-        "componentviewer.keybind.general.show_tooltip",
+        "key.category.componentviewer.general.show_tooltip",
         GLFW_KEY_LEFT_ALT,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_SCREEN
     );
     public final CycleSelectionKeyMapping keyNextComponent = new CycleSelectionKeyMapping(
-        "componentviewer.keybind.general.next_component",
+        "key.category.componentviewer.general.next_component",
         GLFW_KEY_DOWN,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_SCREEN,
         CycleType.NEXT
     );
     public final CycleSelectionKeyMapping keyPreviousComponent = new CycleSelectionKeyMapping(
-        "componentviewer.keybind.general.previous_component",
+        "key.category.componentviewer.general.previous_component",
         GLFW_KEY_UP,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_SCREEN,
         CycleType.PREVIOUS
     );
     public final CycleSelectionKeyMapping keyFirstComponent = new CycleSelectionKeyMapping(
-        "componentviewer.keybind.general.first_component",
+        "key.category.componentviewer.general.first_component",
         GLFW_KEY_HOME,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_SCREEN,
         CycleType.FIRST
     );
     public final CycleSelectionKeyMapping keyLastComponent = new CycleSelectionKeyMapping(
-        "componentviewer.keybind.general.last_component",
+        "key.category.componentviewer.general.last_component",
         GLFW_KEY_END,
-        Category.GENERAL,
+        AdvancedKeyMapping.GENERAL_CATEGORY,
         ConflictContext.IN_SCREEN,
         CycleType.LAST
     );
     public final EnumOptionKeyMapping<TooltipDisplay> keyTooltipDisplayConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_display",
+        "key.category.componentviewer.config.tooltip_display",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipDisplay
     );
     public final EnumOptionKeyMapping<TooltipPurpose> keyTooltipPurposeConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_purpose",
+        "key.category.componentviewer.config.tooltip_purpose",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipPurpose
     );
     public final EnumOptionKeyMapping<TooltipComponents> keyTooltipComponentsConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_components",
+        "key.category.componentviewer.config.tooltip_components",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipComponents
     );
     public final EnumOptionKeyMapping<TooltipKeepSelection> keyTooltipKeepSelectionConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_keep_selection",
+        "key.category.componentviewer.config.tooltip_keep_selection",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipKeepSelection
     );
     public final EnumOptionKeyMapping<TooltipFormatting> keyTooltipFormattingConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_formatting",
+        "key.category.componentviewer.config.tooltip_formatting",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipFormatting
     );
     public final EnumOptionKeyMapping<TooltipInjectMethod> keyTooltipInjectMethodConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.tooltip_inject_method",
+        "key.category.componentviewer.config.tooltip_inject_method",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipInjectMethod
     );
     public final EnumOptionKeyMapping<ClipboardCopy> keyClipboardCopyConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.clipboard_copy",
+        "key.category.componentviewer.config.clipboard_copy",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardCopy
     );
     public final EnumOptionKeyMapping<ClipboardFormatting> keyClipboardFormattingConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.clipboard_formatting",
+        "key.category.componentviewer.config.clipboard_formatting",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardFormatting
     );
     public final EnumOptionKeyMapping<ClipboardSelector> keyClipboardSelectorConfig = new EnumOptionKeyMapping<>(
-        "componentviewer.keybind.config.clipboard_selector",
+        "key.category.componentviewer.config.clipboard_selector",
         GLFW_KEY_UNKNOWN,
-        Category.CONFIG,
+        AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardSelector
     );
 

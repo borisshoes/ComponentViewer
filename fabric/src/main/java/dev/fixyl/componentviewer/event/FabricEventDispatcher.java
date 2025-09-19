@@ -1,7 +1,6 @@
 package dev.fixyl.componentviewer.event;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,8 +15,8 @@ public class FabricEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public void invokeKeyPressEvent(Key key, int modifiers) {
-        MixinEvents.KEY_PRESS_EVENT.invoker().onKeyPress(key, modifiers);
+    public void invokeKeyPressEvent(KeyEvent keyEvent) {
+        MixinEvents.KEY_PRESS_EVENT.invoker().onKeyPress(keyEvent);
     }
 
     @Override

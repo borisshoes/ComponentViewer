@@ -1,7 +1,6 @@
 package dev.fixyl.componentviewer.event;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,8 +17,8 @@ public class NeoForgeEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public void invokeKeyPressEvent(Key key, int modifiers) {
-        NeoForge.EVENT_BUS.post(new MixinEvents.KeyPressEvent(key, modifiers));
+    public void invokeKeyPressEvent(KeyEvent keyEvent) {
+        NeoForge.EVENT_BUS.post(new MixinEvents.KeyPressEvent(keyEvent));
     }
 
     @Override

@@ -17,10 +17,10 @@ public final class MouseHandlerMixin {
     private MouseHandlerMixin() {}
 
     @Inject(method = "onScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
-    private void onScroll(long windowPointer, double xOffset, double yOffset, CallbackInfo callback) {
+    private void onScroll(long windowHandle, double xOffset, double yOffset, CallbackInfo callback) {
         Minecraft minecraftClient = Minecraft.getInstance();
 
-        if (windowPointer != minecraftClient.getWindow().getWindow()) {
+        if (windowHandle != minecraftClient.getWindow().handle()) {
             return;
         }
 

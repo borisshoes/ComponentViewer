@@ -1,7 +1,6 @@
 package dev.fixyl.componentviewer.event;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.bus.api.Event;
@@ -25,12 +24,10 @@ public final class MixinEvents {
 
     public static class KeyPressEvent extends Event {
 
-        public final Key key;
-        public final int modifiers;
+        public final KeyEvent keyEvent;
 
-        public KeyPressEvent(Key key, int modifiers) {
-            this.key = key;
-            this.modifiers = modifiers;
+        public KeyPressEvent(KeyEvent keyEvent) {
+            this.keyEvent = keyEvent;
         }
     }
 

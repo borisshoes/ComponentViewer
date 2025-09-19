@@ -1,10 +1,9 @@
 package dev.fixyl.componentviewer.event;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
 
@@ -20,9 +19,9 @@ public final class MixinEvents {
         }
     });
 
-    public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> (key, modifiers) -> {
+    public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> keyEvent -> {
         for (KeyPressCallback listener : listeners) {
-            listener.onKeyPress(key, modifiers);
+            listener.onKeyPress(keyEvent);
         }
     });
 
@@ -51,7 +50,7 @@ public final class MixinEvents {
 
     @FunctionalInterface
     public static interface KeyPressCallback {
-        void onKeyPress(Key key, int modifiers);
+        void onKeyPress(KeyEvent keyEvent);
     }
 
     @FunctionalInterface

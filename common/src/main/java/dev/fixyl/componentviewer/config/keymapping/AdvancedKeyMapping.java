@@ -2,10 +2,11 @@ package dev.fixyl.componentviewer.config.keymapping;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -15,16 +16,17 @@ import net.minecraft.client.Minecraft;
  */
 public class AdvancedKeyMapping extends KeyMapping {
 
+    public static final Category GENERAL_CATEGORY = AdvancedKeyMapping.registerCategory("general");
+    public static final Category CONFIG_CATEGORY = AdvancedKeyMapping.registerCategory("config");
+
+    private static final String CATEGORY_NAMESPACE = "componentviewer";
+
     private final ConflictContext conflictContext;
 
-    public AdvancedKeyMapping(String translationKey, int keyCode, String category, ConflictContext conflictContext) {
+    public AdvancedKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext) {
         super(translationKey, keyCode, category);
 
         this.conflictContext = conflictContext;
-    }
-
-    public AdvancedKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext) {
-        this(translationKey, keyCode, category.getKey(), conflictContext);
     }
 
     public AdvancedKeyMapping(String translationKey, int keyCode, Category category) {
@@ -44,14 +46,14 @@ public class AdvancedKeyMapping extends KeyMapping {
     }
 
     /**
-     * Check whether the provided key is the same as the one
-     * currently associated with this key mapping.
+     * Check whether the provided key event represents a key that is
+     * the same as the one currently associated with this key mapping.
      *
-     * @param key the key to match
-     * @return {@code true} if the key matches, {@code false} otherwise
+     * @param keyEvent the key event to match
+     * @return {@code true} if the key event matches, {@code false} otherwise
      */
-    public boolean matchesKey(Key key) {
-        return this.key.equals(key);
+    public boolean matchesKeyEvent(KeyEvent keyEvent) {
+        return this.key.getValue() == keyEvent.key();
     }
 
     /**
@@ -75,23 +77,7 @@ public class AdvancedKeyMapping extends KeyMapping {
             return false;
         }
 
-        return InputConstants.isKeyDown(window.getWindow(), this.key.getValue());
-    }
-
-    public enum Category {
-
-        GENERAL("componentviewer.keybind.general"),
-        CONFIG("componentviewer.keybind.config");
-
-        private final String translationKey;
-
-        private Category(String translationKey) {
-            this.translationKey = translationKey;
-        }
-
-        public String getKey() {
-            return this.translationKey;
-        }
+        return InputConstants.isKeyDown(window, this.key.getValue());
     }
 
     /**
@@ -116,5 +102,11 @@ public class AdvancedKeyMapping extends KeyMapping {
         public static ConflictContext getDefault() {
             return UNIVERSAL;
         }
+    }
+
+    private static Category registerCategory(String id) {
+        return Category.register(
+            ResourceLocation.fromNamespaceAndPath(CATEGORY_NAMESPACE, id)
+        );
     }
 }

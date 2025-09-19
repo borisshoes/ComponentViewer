@@ -38,13 +38,20 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    if (project.modmenu_version?.trim()) {
+        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    }
 }
 
 sourceSets {
     main {
         java {
             srcDir "../common/src/main/java"
+
+            if (!project.modmenu_version?.trim()) {
+                exclude "dev/fixyl/componentviewer/modmenu/**"
+            }
         }
         resources {
             srcDir "../common/src/main/resources"
