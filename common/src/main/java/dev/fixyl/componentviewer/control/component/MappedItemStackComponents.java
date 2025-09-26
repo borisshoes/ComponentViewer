@@ -32,7 +32,7 @@ final class MappedItemStackComponents extends ItemStackComponents {
 
     @Override
     public List<DataComponentType<?>> getComponentTypes() {
-        return this.dataComponentMap.get().keySet().stream().sorted(COMPARATOR).toList();
+        return this.dataComponentMap.get().keySet().stream().sorted(REGISTRY_ID_COMPARATOR).toList();
     }
 
     @Override

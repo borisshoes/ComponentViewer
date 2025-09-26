@@ -1,5 +1,6 @@
 package dev.fixyl.componentviewer.control.component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
@@ -34,10 +35,15 @@ final class PatchedItemStackComponents extends ItemStackComponents {
 
     @Override
     public List<DataComponentType<?>> getComponentTypes() {
-        return this.dataComponentPatch.get().entrySet()
+        DataComponentPatch currentPatch = this.dataComponentPatch.get();
+
+        return currentPatch.entrySet()
             .stream()
             .<DataComponentType<?>>map(Entry::getKey)
-            .sorted(COMPARATOR)
+            .sorted(REGISTRY_ID_COMPARATOR)
+            .sorted(Comparator.comparing(dataComponentType ->
+                PatchedItemStackComponents.wasRemovedWithPatch(dataComponentType, currentPatch)
+            ))
             .toList();
     }
 
@@ -59,10 +65,17 @@ final class PatchedItemStackComponents extends ItemStackComponents {
         return optionalValue.orElseThrow();
     }
 
-    @SuppressWarnings("java:S2789")
     @Override
     public <T> boolean wasRemoved(DataComponentType<T> dataComponentType) {
-        Optional<? extends T> optionalValue = this.dataComponentPatch.get().get(dataComponentType);
+        return PatchedItemStackComponents.wasRemovedWithPatch(
+            dataComponentType,
+            this.dataComponentPatch.get()
+        );
+    }
+
+    @SuppressWarnings("java:S2789")
+    private static <T> boolean wasRemovedWithPatch(DataComponentType<T> dataComponentType, DataComponentPatch dataComponentPatch) {
+        Optional<? extends T> optionalValue = dataComponentPatch.get(dataComponentType);
 
         if (optionalValue == null) {
             return false;

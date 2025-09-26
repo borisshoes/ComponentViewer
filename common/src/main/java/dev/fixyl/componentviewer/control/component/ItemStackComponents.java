@@ -27,7 +27,7 @@ import dev.fixyl.componentviewer.config.enums.TooltipComponents;
  */
 public abstract sealed class ItemStackComponents permits MappedItemStackComponents, PatchedItemStackComponents {
 
-    protected static final Comparator<DataComponentType<?>> COMPARATOR = Comparator.comparing(
+    protected static final Comparator<DataComponentType<?>> REGISTRY_ID_COMPARATOR = Comparator.comparing(
         dataComponentType -> {
             ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
             return (resourceLocation == null) ? "" : resourceLocation.toString();
@@ -79,7 +79,10 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
     /**
      * Get an immutable {@link List} holding all {@link DataComponentType} instances
      * in alphabetical order, sorted by their {@link ResourceLocation} in the registry.
+     * <p>
      * Data component types, that aren't registered, come first.
+     * <p>
+     * Data component types, flagged as removed, come last.
      *
      * @implNote
      * SonarQube warning for returning a wildcard generic in non-private methods is suppressed.
