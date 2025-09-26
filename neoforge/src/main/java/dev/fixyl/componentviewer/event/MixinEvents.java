@@ -11,6 +11,8 @@ public final class MixinEvents {
 
     private MixinEvents() {}
 
+    public static class StartRenderEvent extends Event {}
+
     public static class TooltipEvent extends Event {
 
         public final ItemStack itemStack;

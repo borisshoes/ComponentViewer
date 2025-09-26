@@ -35,7 +35,7 @@ public final class FabricComponentViewer extends ComponentViewer implements Clie
         ControlFlow controlFlow = new ControlFlow(minecraftClient, this, this.configs);
         Keyboard keyboard = new FabricKeyboard(minecraftClient, this, this.eventDispatcher, this.configs);
 
-        ClientTickEvents.START_CLIENT_TICK.register(client -> controlFlow.onStartClientTick());
+        MixinEvents.START_RENDER_EVENT.register(controlFlow::onStartRender);
         MixinEvents.TOOLTIP_EVENT.register(controlFlow::onTooltip);
         MixinEvents.MOUSE_SCROLL_EVENT.register((xOffset, yOffset) -> controlFlow.onMouseScroll(yOffset));
         KeyboardEvents.CYCLE_COMPONENT_EVENT.register(controlFlow::onCycleComponent);

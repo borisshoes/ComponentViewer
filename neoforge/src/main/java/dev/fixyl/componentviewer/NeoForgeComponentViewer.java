@@ -51,7 +51,7 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
         ControlFlow controlFlow = new ControlFlow(minecraftClient, instance, instance.configs);
         Keyboard keyboard = new NeoForgeKeyboard(minecraftClient, instance, instance.eventDispatcher, instance.configs);
 
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> controlFlow.onStartClientTick());
+        NeoForge.EVENT_BUS.addListener(MixinEvents.StartRenderEvent.class, event -> controlFlow.onStartRender());
         NeoForge.EVENT_BUS.addListener(MixinEvents.TooltipEvent.class, event -> controlFlow.onTooltip(event.itemStack, event.tooltip));
         NeoForge.EVENT_BUS.addListener(MixinEvents.MouseScrollEvent.class, event -> event.setResult(controlFlow.onMouseScroll(event.yOffset)));
         NeoForge.EVENT_BUS.addListener(KeyboardEvents.CycleComponentEvent.class, event -> controlFlow.onCycleComponent(event.cycleType));

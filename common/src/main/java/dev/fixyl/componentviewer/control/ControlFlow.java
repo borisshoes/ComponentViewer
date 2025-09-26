@@ -39,7 +39,7 @@ public final class ControlFlow {
     private final Formatter jsonFormatter;
     private final Formatter objectFormatter;
 
-    private long clientTick;
+    private long renderTick;
 
     private HoveredItemStack hoveredItemStack;
     private ItemStack previousItemStack;
@@ -58,15 +58,20 @@ public final class ControlFlow {
         this.jsonFormatter = new JsonFormatter();
         this.objectFormatter = new ObjectFormatter();
 
-        this.clientTick = 0L;
+        this.renderTick = 0L;
 
         this.lastTimeItemStackHovered = -1L;
         this.isTooltipShown = false;
         this.lastTimeTooltipShown = -1L;
     }
 
-    public void onStartClientTick() {
-        this.clientTick++;
+    /**
+     * Increment the internal render tick counter.
+     * <p>
+     * Call this once at the beginning of each render tick!
+     */
+    public void onStartRender() {
+        this.renderTick++;
     }
 
     public void onTooltip(ItemStack itemStack, Tooltip tooltip) {
@@ -89,11 +94,11 @@ public final class ControlFlow {
             this.previousItemStack = itemStack;
         }
 
-        this.lastTimeItemStackHovered = this.clientTick;
+        this.lastTimeItemStackHovered = this.renderTick;
 
         this.isTooltipShown = this.shouldDisplayToolip();
         if (this.isTooltipShown) {
-            this.lastTimeTooltipShown = this.clientTick;
+            this.lastTimeTooltipShown = this.renderTick;
         } else {
             return;
         }
@@ -151,11 +156,11 @@ public final class ControlFlow {
     }
 
     public boolean isItemStackHovered() {
-        return this.lastTimeItemStackHovered == this.clientTick;
+        return this.lastTimeItemStackHovered == this.renderTick;
     }
 
     public boolean isTooltipShown() {
-        return this.isTooltipShown && this.lastTimeTooltipShown == this.clientTick;
+        return this.isTooltipShown && this.lastTimeTooltipShown == this.renderTick;
     }
 
     private boolean isComponentSelectionShown() {

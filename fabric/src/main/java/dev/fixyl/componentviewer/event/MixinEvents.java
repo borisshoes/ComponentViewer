@@ -13,6 +13,12 @@ public final class MixinEvents {
 
     private MixinEvents() {}
 
+    public static final Event<StartRenderCallback> START_RENDER_EVENT = EventFactory.createArrayBacked(StartRenderCallback.class, listeners -> () -> {
+        for (StartRenderCallback listener : listeners) {
+            listener.onStartRender();
+        }
+    });
+
     public static final Event<TooltipCallback> TOOLTIP_EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip) -> {
         for (TooltipCallback listener : listeners) {
             listener.onTooltip(itemStack, tooltip);
@@ -42,6 +48,11 @@ public final class MixinEvents {
             listener.onClearToastManager();
         }
     });
+
+    @FunctionalInterface
+    public static interface StartRenderCallback {
+        void onStartRender();
+    }
 
     @FunctionalInterface
     public static interface TooltipCallback {

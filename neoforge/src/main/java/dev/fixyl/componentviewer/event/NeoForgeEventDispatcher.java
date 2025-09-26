@@ -12,6 +12,11 @@ import dev.fixyl.componentviewer.control.Tooltip;
 public class NeoForgeEventDispatcher implements EventDispatcher {
 
     @Override
+    public void invokeStartRenderEvent() {
+        NeoForge.EVENT_BUS.post(new MixinEvents.StartRenderEvent());
+    }
+
+    @Override
     public void invokeTooltipEvent(ItemStack itemStack, Tooltip tooltip) {
         NeoForge.EVENT_BUS.post(new MixinEvents.TooltipEvent(itemStack, tooltip));
     }

@@ -10,6 +10,11 @@ import dev.fixyl.componentviewer.control.Tooltip;
 public class FabricEventDispatcher implements EventDispatcher {
 
     @Override
+    public void invokeStartRenderEvent() {
+        MixinEvents.START_RENDER_EVENT.invoker().onStartRender();
+    }
+
+    @Override
     public void invokeTooltipEvent(ItemStack itemStack, Tooltip tooltip) {
         MixinEvents.TOOLTIP_EVENT.invoker().onTooltip(itemStack, tooltip);
     }

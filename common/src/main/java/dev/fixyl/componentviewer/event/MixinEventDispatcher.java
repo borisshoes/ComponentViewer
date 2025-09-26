@@ -12,6 +12,7 @@ import dev.fixyl.componentviewer.control.Tooltip;
  */
 public interface MixinEventDispatcher {
 
+    void invokeStartRenderEvent();
     void invokeTooltipEvent(ItemStack itemStack, Tooltip tooltip);
     void invokeKeyPressEvent(KeyEvent keyEvent);
     InteractionResult invokeMouseScrollEvent(double xOffset, double yOffset);

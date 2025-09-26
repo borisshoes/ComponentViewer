@@ -3,6 +3,7 @@
     "package": "dev.fixyl.componentviewer.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
+        "GameRendererMixin",
         "ScreenMixin",
         "CreativeModeInventoryScreenMixin",
         "RecipeButtonMixin",
