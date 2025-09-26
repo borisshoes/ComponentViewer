@@ -51,7 +51,7 @@ public abstract class ComponentViewer implements DisablableMod {
 
     @Override
     public boolean isModDisabled() {
-        return switch (this.configs.generalDisableMod.getValue()) {
+        return switch (this.configs.disableMod.getValue()) {
             case NEVER -> false;
             case IN_SURVIVAL -> this.currentlyInSurvival();
             case ON_SERVER -> this.currentlyOnServer();

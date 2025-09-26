@@ -16,8 +16,8 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class AdvancedKeyMapping extends KeyMapping {
 
-    public static final Category GENERAL_CATEGORY = AdvancedKeyMapping.registerCategory("general");
-    public static final Category CONFIG_CATEGORY = AdvancedKeyMapping.registerCategory("config");
+    public static final Category GENERAL_CATEGORY = AdvancedKeyMapping.registerCategory("controls");
+    public static final Category CONFIG_CATEGORY = AdvancedKeyMapping.registerCategory("controls.cycle_configs");
 
     private static final String CATEGORY_NAMESPACE = "componentviewer";
 

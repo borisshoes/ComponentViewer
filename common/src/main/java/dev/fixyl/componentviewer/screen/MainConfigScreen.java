@@ -15,6 +15,6 @@ public class MainConfigScreen extends ConfigScreen {
         this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this, this.configs));
         this.addRedirect("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this, this.configs));
         this.addRedirect("componentviewer.config.controls", () -> new ControlsConfigScreen(this, this.configs));
-        this.addConfig(this.configs.generalDisableMod);
+        this.addConfig(this.configs.disableMod);
     }
 }
