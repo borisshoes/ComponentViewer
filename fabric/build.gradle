@@ -40,7 +40,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     if (project.modmenu_version?.trim()) {
-        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        // TODO: Revert this back to 'modImplementation'. This is just a temporary fix
+        // so that this mod compiles with ModMenu support, although ModMenu has no
+        // release for 1.21.9 yet.
+        modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
     }
 }
 
