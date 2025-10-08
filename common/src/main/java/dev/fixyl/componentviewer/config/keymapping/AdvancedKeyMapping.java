@@ -53,7 +53,7 @@ public class AdvancedKeyMapping extends KeyMapping {
      * @return {@code true} if the key event matches, {@code false} otherwise
      */
     public boolean matchesKeyEvent(KeyEvent keyEvent) {
-        return this.key.getValue() == keyEvent.key();
+        return this.key.equals(InputConstants.getKey(keyEvent));
     }
 
     /**
