@@ -37,8 +37,6 @@ public final class Configs implements Options, KeyMappings {
 
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
-    private static final int KEY_NONE = UNKNOWN.getValue();
-
     private final ConfigManager configManager;
 
     public Configs(Path configDir, Logger logger) {
@@ -300,55 +298,55 @@ public final class Configs implements Options, KeyMappings {
     );
     public final EnumOptionKeyMapping<TooltipDisplay> keyTooltipDisplayConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_display",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipDisplay
     );
     public final EnumOptionKeyMapping<TooltipPurpose> keyTooltipPurposeConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_purpose",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipPurpose
     );
     public final EnumOptionKeyMapping<TooltipComponents> keyTooltipComponentsConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_components",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipComponents
     );
     public final EnumOptionKeyMapping<TooltipKeepSelection> keyTooltipKeepSelectionConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_keep_selection",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipKeepSelection
     );
     public final EnumOptionKeyMapping<TooltipFormatting> keyTooltipFormattingConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_formatting",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipFormatting
     );
     public final EnumOptionKeyMapping<TooltipInjectMethod> keyTooltipInjectMethodConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_inject_method",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.tooltipInjectMethod
     );
     public final EnumOptionKeyMapping<ClipboardCopy> keyClipboardCopyConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_copy",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardCopy
     );
     public final EnumOptionKeyMapping<ClipboardFormatting> keyClipboardFormattingConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_formatting",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardFormatting
     );
     public final EnumOptionKeyMapping<ClipboardSelector> keyClipboardSelectorConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_selector",
-        KEY_NONE,
+        UNKNOWN,
         AdvancedKeyMapping.CONFIG_CATEGORY,
         this.clipboardSelector
     );

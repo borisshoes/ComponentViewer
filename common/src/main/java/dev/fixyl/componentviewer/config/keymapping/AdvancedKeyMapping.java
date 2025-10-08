@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.KeyMapping;
@@ -31,6 +32,16 @@ public class AdvancedKeyMapping extends KeyMapping {
 
     public AdvancedKeyMapping(String translationKey, int keyCode, Category category) {
         this(translationKey, keyCode, category, ConflictContext.getDefault());
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, Category category, ConflictContext conflictContext) {
+        super(translationKey, key.getType(), key.getValue(), category);
+
+        this.conflictContext = conflictContext;
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, Category category) {
+        this(translationKey, key, category, ConflictContext.getDefault());
     }
 
     /**
