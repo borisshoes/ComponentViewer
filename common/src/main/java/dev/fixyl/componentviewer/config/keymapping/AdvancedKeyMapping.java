@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.KeyMapping;
@@ -33,6 +34,16 @@ public class AdvancedKeyMapping extends KeyMapping {
         this(translationKey, keyCode, category, ConflictContext.getDefault());
     }
 
+    public AdvancedKeyMapping(String translationKey, Key key, Category category, ConflictContext conflictContext) {
+        super(translationKey, key.getType(), key.getValue(), category);
+
+        this.conflictContext = conflictContext;
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, Category category) {
+        this(translationKey, key, category, ConflictContext.getDefault());
+    }
+
     /**
      * Get the {@link ConflictContext} in which this key mapping
      * consideres itself conflicting with others.
@@ -53,7 +64,7 @@ public class AdvancedKeyMapping extends KeyMapping {
      * @return {@code true} if the key event matches, {@code false} otherwise
      */
     public boolean matchesKeyEvent(KeyEvent keyEvent) {
-        return this.key.getValue() == keyEvent.key();
+        return this.key.equals(InputConstants.getKey(keyEvent));
     }
 
     /**

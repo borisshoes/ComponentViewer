@@ -1,5 +1,7 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
 import net.minecraft.client.gui.components.toasts.Toast.Visibility;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.OptionEnum;
@@ -22,6 +24,18 @@ public class EnumOptionKeyMapping<E extends Enum<E> & OptionEnum> extends Advanc
 
     public EnumOptionKeyMapping(String translationKey, int keyCode, Category category, EnumOption<E> option) {
         super(translationKey, keyCode, category);
+
+        this.option = option;
+    }
+
+    public EnumOptionKeyMapping(String translationKey, Key key, Category category, ConflictContext conflictContext, EnumOption<E> option) {
+        super(translationKey, key, category, conflictContext);
+
+        this.option = option;
+    }
+
+    public EnumOptionKeyMapping(String translationKey, Key key, Category category, EnumOption<E> option) {
+        super(translationKey, key, category);
 
         this.option = option;
     }
