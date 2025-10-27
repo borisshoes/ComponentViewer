@@ -3,6 +3,7 @@ package dev.fixyl.componentviewer.control.keyboard;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyMapping.Category;
 import net.minecraft.client.Minecraft;
 
 import dev.fixyl.componentviewer.DisablableMod;
@@ -32,6 +33,10 @@ public class FabricKeyboard extends Keyboard {
     }
 
     private static void registerKeyMappings(KeyMappings keyMappings) {
+        for (Category category : keyMappings.getKeyMappingCategories()) {
+            Category.register(category.id());
+        }
+
         for (KeyMapping keyMapping : keyMappings.getKeyMappings()) {
             KeyBindingHelper.registerKeyBinding(keyMapping);
         }

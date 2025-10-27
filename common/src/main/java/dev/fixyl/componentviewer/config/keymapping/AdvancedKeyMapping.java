@@ -7,7 +7,6 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -16,11 +15,6 @@ import net.minecraft.resources.ResourceLocation;
  * This key mapping is the baseline for key mappings used by this mod.
  */
 public class AdvancedKeyMapping extends KeyMapping {
-
-    public static final Category GENERAL_CATEGORY = AdvancedKeyMapping.registerCategory("controls");
-    public static final Category CONFIG_CATEGORY = AdvancedKeyMapping.registerCategory("controls.cycle_configs");
-
-    private static final String CATEGORY_NAMESPACE = "componentviewer";
 
     private final ConflictContext conflictContext;
 
@@ -113,11 +107,5 @@ public class AdvancedKeyMapping extends KeyMapping {
         public static ConflictContext getDefault() {
             return UNIVERSAL;
         }
-    }
-
-    private static Category registerCategory(String id) {
-        return Category.register(
-            ResourceLocation.fromNamespaceAndPath(CATEGORY_NAMESPACE, id)
-        );
     }
 }
