@@ -88,7 +88,7 @@ public class AdvancedKeyMapping extends KeyMapping {
         return switch (this.key.getType()) {
             case KEYSYM -> InputConstants.isKeyDown(window, this.key.getValue());
             case MOUSE -> GLFW.glfwGetMouseButton(window.handle(), this.key.getValue()) == GLFW_PRESS;
-            case SCANCODE -> false;
+            case SCANCODE -> false;  // TODO: Find a fix that scancode-only keys can also be checked
         };
     }
 
