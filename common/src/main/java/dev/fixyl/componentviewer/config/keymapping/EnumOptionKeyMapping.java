@@ -3,7 +3,6 @@ package dev.fixyl.componentviewer.config.keymapping;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.gui.components.toasts.Toast.Visibility;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.OptionEnum;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
@@ -71,13 +70,13 @@ public class EnumOptionKeyMapping<E extends Enum<E> & OptionEnum> extends Advanc
 
     /**
      * Cycle the associated enum option to the next value,
-     * if the key, prepresented by the provided key event,
-     * matches the one currently associated with this key mapping.
+     * if the provided key matches the one currently
+     * associated with this key mapping.
      *
-     * @param keyEvent the key event to check for
+     * @param key the key to check for
      */
-    public void cycleEnumIfKeyEventMatches(KeyEvent keyEvent) {
-        if (this.matchesKeyEvent(keyEvent)) {
+    public void cycleEnumIfKeyMatches(Key key) {
+        if (this.matchesKey(key)) {
             this.cycleEnum();
         }
     }

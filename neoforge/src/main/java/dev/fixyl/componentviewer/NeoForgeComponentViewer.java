@@ -59,6 +59,7 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
 
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keyboard.onEndClientTick());
         NeoForge.EVENT_BUS.addListener(MixinEvents.KeyPressEvent.class, event -> keyboard.onKeyPress(event.keyEvent));
+        NeoForge.EVENT_BUS.addListener(MixinEvents.ButtonPressEvent.class, event -> keyboard.onButtonPress(event.mouseButtonInfo));
         NeoForge.EVENT_BUS.addListener(MixinEvents.ClearToastManagerEvent.class, event -> keyboard.clearAllOptionCycleToasts());
     }
 }

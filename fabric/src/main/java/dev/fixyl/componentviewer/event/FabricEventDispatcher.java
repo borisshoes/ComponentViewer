@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.event;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,6 +23,11 @@ public class FabricEventDispatcher implements EventDispatcher {
     @Override
     public void invokeKeyPressEvent(KeyEvent keyEvent) {
         MixinEvents.KEY_PRESS_EVENT.invoker().onKeyPress(keyEvent);
+    }
+
+    @Override
+    public void invokeButtonPressEvent(MouseButtonInfo mouseButtonInfo) {
+        MixinEvents.BUTTON_PRESS_EVENT.invoker().onButtonPress(mouseButtonInfo);
     }
 
     @Override

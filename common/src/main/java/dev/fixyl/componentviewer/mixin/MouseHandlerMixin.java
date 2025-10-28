@@ -1,7 +1,10 @@
 package dev.fixyl.componentviewer.mixin;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.InteractionResult;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +18,17 @@ import dev.fixyl.componentviewer.ComponentViewer;
 public final class MouseHandlerMixin {
 
     private MouseHandlerMixin() {}
+
+    @Inject(method = "onButton(JLnet/minecraft/client/input/MouseButtonInfo;I)V", at = @At(value = "HEAD"))
+    private void onButton(long windowHandle, MouseButtonInfo mouseButtonInfo, int action, CallbackInfo callback) {
+        if (windowHandle != Minecraft.getInstance().getWindow().handle() || action == GLFW_RELEASE) {
+            return;
+        }
+
+        ComponentViewer.dispatchEventSafely(dispatcher ->
+            dispatcher.invokeButtonPressEvent(mouseButtonInfo)
+        );
+    }
 
     @Inject(method = "onScroll(JDD)V", at = @At(value = "HEAD"), cancellable = true)
     private void onScroll(long windowHandle, double xOffset, double yOffset, CallbackInfo callback) {

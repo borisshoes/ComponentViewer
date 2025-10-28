@@ -1,12 +1,15 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
+import static org.lwjgl.glfw.GLFW.*;
+
+import org.lwjgl.glfw.GLFW;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -51,14 +54,14 @@ public class AdvancedKeyMapping extends KeyMapping {
     }
 
     /**
-     * Check whether the provided key event represents a key that is
-     * the same as the one currently associated with this key mapping.
+     * Check whether the provided key matches the one that is currently
+     * associated with this key mapping.
      *
-     * @param keyEvent the key event to match
-     * @return {@code true} if the key event matches, {@code false} otherwise
+     * @param key the key to match
+     * @return {@code true} if the key matches, {@code false} otherwise
      */
-    public boolean matchesKeyEvent(KeyEvent keyEvent) {
-        return this.key.equals(InputConstants.getKey(keyEvent));
+    public boolean matchesKey(Key key) {
+        return this.key.equals(key);
     }
 
     /**
@@ -82,7 +85,11 @@ public class AdvancedKeyMapping extends KeyMapping {
             return false;
         }
 
-        return InputConstants.isKeyDown(window, this.key.getValue());
+        return switch (this.key.getType()) {
+            case KEYSYM -> InputConstants.isKeyDown(window, this.key.getValue());
+            case MOUSE -> GLFW.glfwGetMouseButton(window.handle(), this.key.getValue()) == GLFW_PRESS;
+            case SCANCODE -> false;
+        };
     }
 
     /**

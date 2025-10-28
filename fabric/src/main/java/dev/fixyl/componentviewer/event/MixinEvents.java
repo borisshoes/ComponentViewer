@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
 
@@ -28,6 +29,12 @@ public final class MixinEvents {
     public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> keyEvent -> {
         for (KeyPressCallback listener : listeners) {
             listener.onKeyPress(keyEvent);
+        }
+    });
+
+    public static final Event<ButtonPressCallback> BUTTON_PRESS_EVENT = EventFactory.createArrayBacked(ButtonPressCallback.class, listeners -> mouseButtonInfo -> {
+        for (ButtonPressCallback listener : listeners) {
+            listener.onButtonPress(mouseButtonInfo);
         }
     });
 
@@ -62,6 +69,11 @@ public final class MixinEvents {
     @FunctionalInterface
     public static interface KeyPressCallback {
         void onKeyPress(KeyEvent keyEvent);
+    }
+
+    @FunctionalInterface
+    public static interface ButtonPressCallback {
+        void onButtonPress(MouseButtonInfo mouseButtonInfo);
     }
 
     @FunctionalInterface

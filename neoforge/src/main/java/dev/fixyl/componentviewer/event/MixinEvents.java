@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.event;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.bus.api.Event;
@@ -30,6 +31,15 @@ public final class MixinEvents {
 
         public KeyPressEvent(KeyEvent keyEvent) {
             this.keyEvent = keyEvent;
+        }
+    }
+
+    public static class ButtonPressEvent extends Event {
+
+        public final MouseButtonInfo mouseButtonInfo;
+
+        public ButtonPressEvent(MouseButtonInfo mouseButtonInfo) {
+            this.mouseButtonInfo = mouseButtonInfo;
         }
     }
 

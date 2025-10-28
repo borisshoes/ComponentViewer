@@ -4,8 +4,13 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.List;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import com.mojang.blaze3d.platform.InputConstants.Type;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 import dev.fixyl.componentviewer.DisablableMod;
 import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
@@ -81,7 +86,7 @@ public abstract class Keyboard {
     }
 
     /**
-     * This method should be called each time a key is pressed
+     * This method should be called each time a keyboard key is pressed
      * or held. That key is then passed as an argument.
      *
      * @param keyEvent the key as a key event that was pressed or held
@@ -91,21 +96,27 @@ public abstract class Keyboard {
             return;
         }
 
-        for (CycleSelectionKeyMapping cycleKey : this.cycleSelectionKeys) {
-            if (cycleKey.matchesKeyEvent(keyEvent)) {
-                this.eventDispatcher.invokeCycleComponentEvent(cycleKey.getCycleType());
-            }
-        }
+        Key key = InputConstants.getKey(keyEvent);
+        this.onInput(key);
 
-        if (this.isCopy(keyEvent)) {
+        if (key.getType() == Type.KEYSYM && this.isCopy(keyEvent)) {
             this.eventDispatcher.invokeCopyActionEvent();
         }
+    }
 
-        if (this.isCyclingOptionsPossible()) {
-            for (EnumOptionKeyMapping<?> enumOptionKey : this.enumOptionKeys) {
-                enumOptionKey.cycleEnumIfKeyEventMatches(keyEvent);
-            }
+    /**
+     * This method should be called each time a mouse button is
+     * pressed or held. That button is then passed as an argument.
+     *
+     * @param mouseButtonInfo the mouse button that was pressed or held
+     */
+    public void onButtonPress(MouseButtonInfo mouseButtonInfo) {
+        if (this.disablableMod.isModDisabled()) {
+            return;
         }
+
+        Key key = Type.MOUSE.getOrCreate(mouseButtonInfo.button());
+        this.onInput(key);
     }
 
     /**
@@ -120,8 +131,22 @@ public abstract class Keyboard {
         }
     }
 
+    private void onInput(Key key) {
+        for (CycleSelectionKeyMapping cycleKey : this.cycleSelectionKeys) {
+            if (cycleKey.matchesKey(key)) {
+                this.eventDispatcher.invokeCycleComponentEvent(cycleKey.getCycleType());
+            }
+        }
+
+        if (this.isCyclingOptionsPossible()) {
+            for (EnumOptionKeyMapping<?> enumOptionKey : this.enumOptionKeys) {
+                enumOptionKey.cycleEnumIfKeyMatches(key);
+            }
+        }
+    }
+
     private boolean isCopy(KeyEvent keyEvent) {
-        return keyEvent.input() == GLFW_KEY_C && (
+        return keyEvent.key() == GLFW_KEY_C && (
             (this.alternativeCopyModifierKey.getBooleanValue())
                 ? keyEvent.hasAltDown()
                 : keyEvent.hasControlDown()

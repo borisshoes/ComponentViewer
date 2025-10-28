@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.event;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,6 +25,11 @@ public class NeoForgeEventDispatcher implements EventDispatcher {
     @Override
     public void invokeKeyPressEvent(KeyEvent keyEvent) {
         NeoForge.EVENT_BUS.post(new MixinEvents.KeyPressEvent(keyEvent));
+    }
+
+    @Override
+    public void invokeButtonPressEvent(MouseButtonInfo mouseButtonInfo) {
+        NeoForge.EVENT_BUS.post(new MixinEvents.ButtonPressEvent(mouseButtonInfo));
     }
 
     @Override
