@@ -13,6 +13,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 
 import dev.fixyl.componentviewer.DisablableMod;
+import dev.fixyl.componentviewer.config.keymapping.AdvancedKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.CycleSelectionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.EnumOptionKeyMapping;
 import dev.fixyl.componentviewer.config.keymapping.KeyMappings;
@@ -35,6 +36,7 @@ public abstract class Keyboard {
     protected final DisablableMod disablableMod;
     protected final EventDispatcher eventDispatcher;
 
+    protected final AdvancedKeyMapping[] keyMappings;
     protected final List<TickedKeyMapping> tickedKeys;
     protected final List<CycleSelectionKeyMapping> cycleSelectionKeys;
     /*
@@ -60,6 +62,7 @@ public abstract class Keyboard {
         this.disablableMod = disablableMod;
         this.eventDispatcher = eventDispatcher;
 
+        this.keyMappings = keyMappings.getKeyMappings();
         this.tickedKeys = keyMappings.getSubClassKeyMappings(TickedKeyMapping.class);
         this.cycleSelectionKeys = keyMappings.getSubClassKeyMappings(CycleSelectionKeyMapping.class);
         this.enumOptionKeys = keyMappings.getSubClassKeyMappings(EnumOptionKeyMapping.class);
@@ -86,37 +89,42 @@ public abstract class Keyboard {
     }
 
     /**
-     * This method should be called each time a keyboard key is pressed
-     * or held. That key is then passed as an argument.
+     * This method should be called each time a keyboard key is pressed,
+     * held or released. That key is then passed as an argument.
      *
-     * @param keyEvent the key as a key event that was pressed or held
+     * @param keyEvent the key as a key event
+     * @param action the action of the key input
      */
-    public void onKeyPress(KeyEvent keyEvent) {
-        if (this.disablableMod.isModDisabled()) {
-            return;
-        }
-
+    public void onKeyInput(KeyEvent keyEvent, Action action) {
         Key key = InputConstants.getKey(keyEvent);
-        this.onInput(key);
+        this.setDownStateForAll(key, action);
 
-        if (key.getType() == Type.KEYSYM && this.isCopy(keyEvent)) {
-            this.eventDispatcher.invokeCopyActionEvent();
+        if (this.shouldCaptureInput(action)) {
+            this.onInput(key);
+
+            if (
+                key.getType() == Type.KEYSYM
+                && this.isCopy(keyEvent)
+            ) {
+                this.eventDispatcher.invokeCopyActionEvent();
+            }
         }
     }
 
     /**
-     * This method should be called each time a mouse button is
-     * pressed or held. That button is then passed as an argument.
+     * This method should be called each time a mouse button is pressed,
+     * held or released. That button is then passed as an argument.
      *
-     * @param mouseButtonInfo the mouse button that was pressed or held
+     * @param mouseButtonInfo the mouse button
+     * @param action the action of the mouse button input
      */
-    public void onButtonPress(MouseButtonInfo mouseButtonInfo) {
-        if (this.disablableMod.isModDisabled()) {
-            return;
-        }
-
+    public void onButtonInput(MouseButtonInfo mouseButtonInfo, Action action) {
         Key key = Type.MOUSE.getOrCreate(mouseButtonInfo.button());
-        this.onInput(key);
+        this.setDownStateForAll(key, action);
+
+        if (this.shouldCaptureInput(action)) {
+            this.onInput(key);
+        }
     }
 
     /**
@@ -141,6 +149,23 @@ public abstract class Keyboard {
         if (this.isCyclingOptionsPossible()) {
             for (EnumOptionKeyMapping<?> enumOptionKey : this.enumOptionKeys) {
                 enumOptionKey.cycleEnumIfKeyMatches(key);
+            }
+        }
+    }
+
+    private boolean shouldCaptureInput(Action action) {
+        return !(
+            this.disablableMod.isModDisabled()
+            || action == Action.RELEASE
+        );
+    }
+
+    private void setDownStateForAll(Key key, Action action) {
+        boolean isDown = (action == Action.PRESS);
+
+        for (AdvancedKeyMapping keyMapping : this.keyMappings) {
+            if (keyMapping.matchesKey(key)) {
+                keyMapping.setDownAnywhere(isDown);
             }
         }
     }
@@ -170,5 +195,34 @@ public abstract class Keyboard {
             this.allowCyclingOptionsWhileInScreen.getBooleanValue()
             && !(this.minecraftClient.screen instanceof ConfigScreen)
         );
+    }
+
+    /**
+     * Represents the action of a key or button input.
+     * <p>
+     * Is either {@code RELEASE}, {@code PRESS} or {@code REPEAT}.
+     */
+    public enum Action {
+        RELEASE,
+        PRESS,
+        REPEAT;
+
+        /**
+         * Get an {@link Action} enum from a GLFW action constant.
+         *
+         * @param action the GLFW action as an int
+         * @return the action as an enum
+         */
+        public static Action fromGlfw(int action) {
+            return switch (action) {
+                case 0 -> RELEASE;
+                case 1 -> PRESS;
+                case 2 -> REPEAT;
+                default -> throw new IllegalArgumentException(String.format(
+                    "There is no GLFW action with %s",
+                    action
+                ));
+            };
+        }
     }
 }

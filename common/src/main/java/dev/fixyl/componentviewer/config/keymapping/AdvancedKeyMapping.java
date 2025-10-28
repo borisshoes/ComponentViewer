@@ -1,15 +1,8 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
-import static org.lwjgl.glfw.GLFW.*;
-
-import org.lwjgl.glfw.GLFW;
-
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
-import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -20,6 +13,8 @@ import net.minecraft.client.Minecraft;
 public class AdvancedKeyMapping extends KeyMapping {
 
     private final ConflictContext conflictContext;
+
+    private boolean isDownAnywhere = false;
 
     public AdvancedKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext) {
         super(translationKey, keyCode, category);
@@ -75,21 +70,17 @@ public class AdvancedKeyMapping extends KeyMapping {
      * @return {@code true} if the key is currently held down, {@code false} otherwise
      */
     public boolean isDownAnywhere() {
-        Minecraft minecraftClient = Minecraft.getInstance();
-        if (minecraftClient == null) {
-            return false;
-        }
+        return this.isDownAnywhere;
+    }
 
-        Window window = minecraftClient.getWindow();
-        if (window == null) {
-            return false;
-        }
-
-        return switch (this.key.getType()) {
-            case KEYSYM -> InputConstants.isKeyDown(window, this.key.getValue());
-            case MOUSE -> GLFW.glfwGetMouseButton(window.handle(), this.key.getValue()) == GLFW_PRESS;
-            case SCANCODE -> false;  // TODO: Find a fix that scancode-only keys can also be checked
-        };
+    /**
+     * Set whether the key, associated with this mapping, is currently
+     * held down while the game is running.
+     *
+     * @param isDownAnywhere whether the key is pressed
+     */
+    public void setDownAnywhere(boolean isDownAnywhere) {
+        this.isDownAnywhere = isDownAnywhere;
     }
 
     /**

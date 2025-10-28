@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
 
 import dev.fixyl.componentviewer.control.Tooltip;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 
 public final class MixinEvents {
 
@@ -26,15 +27,15 @@ public final class MixinEvents {
         }
     });
 
-    public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> keyEvent -> {
-        for (KeyPressCallback listener : listeners) {
-            listener.onKeyPress(keyEvent);
+    public static final Event<KeyInputCallback> KEY_INPUT_EVENT = EventFactory.createArrayBacked(KeyInputCallback.class, listeners -> (keyEvent, action) -> {
+        for (KeyInputCallback listener : listeners) {
+            listener.onKeyInput(keyEvent, action);
         }
     });
 
-    public static final Event<ButtonPressCallback> BUTTON_PRESS_EVENT = EventFactory.createArrayBacked(ButtonPressCallback.class, listeners -> mouseButtonInfo -> {
-        for (ButtonPressCallback listener : listeners) {
-            listener.onButtonPress(mouseButtonInfo);
+    public static final Event<ButtonInputCallback> BUTTON_INPUT_EVENT = EventFactory.createArrayBacked(ButtonInputCallback.class, listeners -> (mouseButtonInfo, action) -> {
+        for (ButtonInputCallback listener : listeners) {
+            listener.onButtonInput(mouseButtonInfo, action);
         }
     });
 
@@ -67,13 +68,13 @@ public final class MixinEvents {
     }
 
     @FunctionalInterface
-    public static interface KeyPressCallback {
-        void onKeyPress(KeyEvent keyEvent);
+    public static interface KeyInputCallback {
+        void onKeyInput(KeyEvent keyEvent, Action action);
     }
 
     @FunctionalInterface
-    public static interface ButtonPressCallback {
-        void onButtonPress(MouseButtonInfo mouseButtonInfo);
+    public static interface ButtonInputCallback {
+        void onButtonInput(MouseButtonInfo mouseButtonInfo, Action action);
     }
 
     @FunctionalInterface
