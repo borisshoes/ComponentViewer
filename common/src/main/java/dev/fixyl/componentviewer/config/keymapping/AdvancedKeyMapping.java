@@ -1,12 +1,8 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -16,12 +12,9 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class AdvancedKeyMapping extends KeyMapping {
 
-    public static final Category GENERAL_CATEGORY = AdvancedKeyMapping.registerCategory("controls");
-    public static final Category CONFIG_CATEGORY = AdvancedKeyMapping.registerCategory("controls.cycle_configs");
-
-    private static final String CATEGORY_NAMESPACE = "componentviewer";
-
     private final ConflictContext conflictContext;
+
+    private boolean isDownAnywhere = false;
 
     public AdvancedKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext) {
         super(translationKey, keyCode, category);
@@ -31,6 +24,16 @@ public class AdvancedKeyMapping extends KeyMapping {
 
     public AdvancedKeyMapping(String translationKey, int keyCode, Category category) {
         this(translationKey, keyCode, category, ConflictContext.getDefault());
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, Category category, ConflictContext conflictContext) {
+        super(translationKey, key.getType(), key.getValue(), category);
+
+        this.conflictContext = conflictContext;
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, Category category) {
+        this(translationKey, key, category, ConflictContext.getDefault());
     }
 
     /**
@@ -46,14 +49,14 @@ public class AdvancedKeyMapping extends KeyMapping {
     }
 
     /**
-     * Check whether the provided key event represents a key that is
-     * the same as the one currently associated with this key mapping.
+     * Check whether the provided key matches the one that is currently
+     * associated with this key mapping.
      *
-     * @param keyEvent the key event to match
-     * @return {@code true} if the key event matches, {@code false} otherwise
+     * @param key the key to match
+     * @return {@code true} if the key matches, {@code false} otherwise
      */
-    public boolean matchesKeyEvent(KeyEvent keyEvent) {
-        return this.key.getValue() == keyEvent.key();
+    public boolean matchesKey(Key key) {
+        return this.key.equals(key);
     }
 
     /**
@@ -67,17 +70,17 @@ public class AdvancedKeyMapping extends KeyMapping {
      * @return {@code true} if the key is currently held down, {@code false} otherwise
      */
     public boolean isDownAnywhere() {
-        Minecraft minecraftClient = Minecraft.getInstance();
-        if (minecraftClient == null) {
-            return false;
-        }
+        return this.isDownAnywhere;
+    }
 
-        Window window = minecraftClient.getWindow();
-        if (window == null) {
-            return false;
-        }
-
-        return InputConstants.isKeyDown(window, this.key.getValue());
+    /**
+     * Set whether the key, associated with this mapping, is currently
+     * held down while the game is running.
+     *
+     * @param isDownAnywhere whether the key is pressed
+     */
+    public void setDownAnywhere(boolean isDownAnywhere) {
+        this.isDownAnywhere = isDownAnywhere;
     }
 
     /**
@@ -102,11 +105,5 @@ public class AdvancedKeyMapping extends KeyMapping {
         public static ConflictContext getDefault() {
             return UNIVERSAL;
         }
-    }
-
-    private static Category registerCategory(String id) {
-        return Category.register(
-            ResourceLocation.fromNamespaceAndPath(CATEGORY_NAMESPACE, id)
-        );
     }
 }

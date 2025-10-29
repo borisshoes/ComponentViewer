@@ -1,7 +1,11 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import net.minecraft.client.KeyMapping.Category;
 
 /**
  * Defines an object which holds various types of key mappings.
@@ -42,5 +46,20 @@ public interface KeyMappings {
         }
 
         return matchedKeyMappings;
+    }
+
+    /**
+     * Get all key mapping categories from these key mappings as a {@link Set}.
+     *
+     * @return a set containing all categories
+     */
+    default Set<Category> getKeyMappingCategories() {
+        Set<Category> categories = new HashSet<>();
+
+        for (AdvancedKeyMapping keyMapping : this.getKeyMappings()) {
+            categories.add(keyMapping.getCategory());
+        }
+
+        return categories;
     }
 }

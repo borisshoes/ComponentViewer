@@ -1,5 +1,6 @@
 package dev.fixyl.componentviewer.control.keyboard;
 
+import net.minecraft.client.KeyMapping.Category;
 import net.minecraft.client.Minecraft;
 
 import net.neoforged.api.distmarker.Dist;
@@ -37,6 +38,10 @@ public class NeoForgeKeyboard extends Keyboard {
     @SubscribeEvent
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         Configs configs = ComponentViewer.getInstance().configs;
+
+        for (Category category : configs.getKeyMappingCategories()) {
+            event.registerCategory(category);
+        }
 
         for (AdvancedKeyMapping keyMapping : configs.getKeyMappings()) {
             keyMapping.setKeyConflictContext(switch (keyMapping.getConfictContext()) {

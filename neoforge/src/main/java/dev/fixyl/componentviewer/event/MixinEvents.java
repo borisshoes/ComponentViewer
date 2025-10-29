@@ -1,11 +1,13 @@
 package dev.fixyl.componentviewer.event;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.bus.api.Event;
 
 import dev.fixyl.componentviewer.control.Tooltip;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 
 public final class MixinEvents {
 
@@ -24,12 +26,25 @@ public final class MixinEvents {
         }
     }
 
-    public static class KeyPressEvent extends Event {
+    public static class KeyInputEvent extends Event {
 
         public final KeyEvent keyEvent;
+        public final Action action;
 
-        public KeyPressEvent(KeyEvent keyEvent) {
+        public KeyInputEvent(KeyEvent keyEvent, Action action) {
             this.keyEvent = keyEvent;
+            this.action = action;
+        }
+    }
+
+    public static class ButtonInputEvent extends Event {
+
+        public final MouseButtonInfo mouseButtonInfo;
+        public final Action action;
+
+        public ButtonInputEvent(MouseButtonInfo mouseButtonInfo, Action action) {
+            this.mouseButtonInfo = mouseButtonInfo;
+            this.action = action;
         }
     }
 
