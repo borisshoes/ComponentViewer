@@ -122,6 +122,5 @@
     "key.category.componentviewer.controls.last_component": "Останній компонент",
     "key.category.componentviewer.controls.next_component": "Наступний компонент",
     "key.category.componentviewer.controls.previous_component": "Попередній компонент",
-    "key.category.componentviewer.controls.show_tooltip": "Показати підказку",
-  "modmenu.descriptionTranslation.componentviewer": "Component Viewer — це мод для Minecraft: Java Edition, який дозволяє переглядати та копіювати компоненти будь-якого стосу предметів"
+    "key.category.componentviewer.controls.show_tooltip": "Показати підказку"
 }
