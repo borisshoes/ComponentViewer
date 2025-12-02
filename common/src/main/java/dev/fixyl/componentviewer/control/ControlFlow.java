@@ -116,12 +116,11 @@ public final class ControlFlow {
         }
     }
 
-    public void onCycleComponent(Selection.CycleType cycleType) {
-        if (this.isComponentSelectionShown()) {
-            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
-                selection.updateByCycling(cycleType)
-            );
-        }
+    public InteractionResult onBundleTooltipImage() {
+        return this.isTooltipShown()
+            && this.configs.tooltipInjectMethod.getValue() == TooltipInjectMethod.REPLACE
+            ? InteractionResult.SUCCESS
+            : InteractionResult.PASS;
     }
 
     public InteractionResult onMouseScroll(double scrollDistance) {
@@ -138,6 +137,14 @@ public final class ControlFlow {
         }
 
         return InteractionResult.PASS;
+    }
+
+    public void onCycleComponent(Selection.CycleType cycleType) {
+        if (this.isComponentSelectionShown()) {
+            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
+                selection.updateByCycling(cycleType)
+            );
+        }
     }
 
     public void onCopyAction() {
