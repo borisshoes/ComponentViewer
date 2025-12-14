@@ -8,7 +8,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
@@ -29,8 +29,8 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
 
     protected static final Comparator<DataComponentType<?>> REGISTRY_ID_COMPARATOR = Comparator.comparing(
         dataComponentType -> {
-            ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
-            return (resourceLocation == null) ? "" : resourceLocation.toString();
+            Identifier identifier = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
+            return (identifier == null) ? "" : identifier.toString();
         }
     );
 

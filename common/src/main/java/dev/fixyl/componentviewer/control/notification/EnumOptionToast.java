@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.OptionEnum;
 
@@ -19,7 +19,7 @@ import dev.fixyl.componentviewer.config.option.EnumOption;
 
 public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
-    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
+    private static final Identifier BACKGROUND_SPRITE = Identifier.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 2000L;
 
     private static final int TEXT_LEFT_MARGIN = 8;
