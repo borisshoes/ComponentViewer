@@ -2,28 +2,28 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.OptionEnum;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 
 public enum TooltipInjectMethod implements OptionEnum {
 
-    @SerializedName("replace") REPLACE(1, "componentviewer.config.tooltip.inject_method.replace"),
-    @SerializedName("append") APPEND(0, "componentviewer.config.tooltip.inject_method.append");
+    @SerializedName("replace") REPLACE("componentviewer.config.tooltip.inject_method.replace"),
+    @SerializedName("append") APPEND("componentviewer.config.tooltip.inject_method.append");
 
-    private final int id;
+    private final String serializedName;
     private final String translationKey;
 
-    private TooltipInjectMethod(int id, String translationKey) {
-        this.id = id;
+    private TooltipInjectMethod(String translationKey) {
+        this.serializedName = OptionEnum.createSerializedName(this);
         this.translationKey = translationKey;
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSerializedName() {
+        return this.serializedName;
     }
 
     @Override
-    public String getKey() {
+    public String getTranslationKey() {
         return this.translationKey;
     }
 }

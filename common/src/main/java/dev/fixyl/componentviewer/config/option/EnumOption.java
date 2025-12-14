@@ -1,26 +1,28 @@
 package dev.fixyl.componentviewer.config.option;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
+
+import com.google.gson.annotations.SerializedName;
 
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.OptionInstance;
-import net.minecraft.util.ByIdMap;
-import net.minecraft.util.OptionEnum;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 
-public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E> {
+public class EnumOption<E extends Enum<E> & EnumOption.OptionEnum> extends AdvancedOption<E> {
 
     private final Class<E> enumClass;
-    private final IntFunction<E> enumByIdFunction;
+    private final List<E> enumConstants;
 
     private EnumOption(EnumOptionBuilder<E> builder) {
         super(builder);
 
         this.enumClass = this.defaultValue.getDeclaringClass();
-        this.enumByIdFunction = ByIdMap.continuous(E::getId, this.getEnumConstants(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        this.enumConstants = List.of(this.enumClass.getEnumConstants());
 
         this.postConstruct();
     }
@@ -30,14 +32,14 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
         return this.enumClass;
     }
 
-    public E[] getEnumConstants() {
-        return this.enumClass.getEnumConstants();
-    }
-
     public void cycleValue() {
-        int nextId = this.option.get().getId() + 1;
-        E nextValue = this.getEnumById(nextId);
-        this.option.set(nextValue);
+        E currentValue = this.option.get();
+        int currentIndex = this.enumConstants.indexOf(currentValue);
+
+        int nextIndex = (currentIndex + 1) % this.enumConstants.size();
+        E nextValue = this.enumConstants.get(nextIndex);
+
+        this.setValue(nextValue);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
             translationkey,
             tooltipSupplier,
             captionBasedToString,
-            new OptionInstance.Enum<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
+            new OptionInstance.Enum<>(this.enumConstants, OptionEnum.getCodec(this.enumClass)),
             defaultValue,
             changeCallback
         );
@@ -54,11 +56,7 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
 
     @Override
     protected OptionInstance.CaptionBasedToString<E> getDefaultCaptionBasedToString() {
-        return OptionInstance.forOptionEnum();
-    }
-
-    private E getEnumById(int id) {
-        return this.enumByIdFunction.apply(id);
+        return (enumOptionName, enumValue) -> enumValue.getCaption();
     }
 
     public static <E extends Enum<E> & OptionEnum> EnumOptionBuilder<E> create(String id) {
@@ -79,6 +77,34 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
         @Override
         protected EnumOptionBuilder<E> self() {
             return this;
+        }
+    }
+
+    public static interface OptionEnum extends StringRepresentable {
+
+        String getTranslationKey();
+
+        default Component getCaption() {
+            return Component.translatable(this.getTranslationKey());
+        }
+
+        static <E extends Enum<E> & OptionEnum> Codec<E> getCodec(Class<E> enumClass) {
+            return StringRepresentable.fromEnum(enumClass::getEnumConstants);
+        }
+
+        static <E extends Enum<E> & OptionEnum> String createSerializedName(E enumValue) {
+            String enumConstantName = enumValue.name();
+
+            Class<E> enumClass = enumValue.getDeclaringClass();
+
+            try {
+                Field field = enumClass.getField(enumConstantName);
+                SerializedName serializedName = field.getAnnotation(SerializedName.class);
+
+                return (serializedName == null) ? enumConstantName : serializedName.value();
+            } catch (NoSuchFieldException e) {
+                throw new EnumConstantNotPresentException(enumClass, enumConstantName);
+            }
         }
     }
 }

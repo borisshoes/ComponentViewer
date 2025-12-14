@@ -2,29 +2,29 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.OptionEnum;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 
 public enum TooltipComponents implements OptionEnum {
 
-    @SerializedName("all") ALL(0, "componentviewer.config.tooltip.components.all"),
-    @SerializedName("default") DEFAULT(1, "componentviewer.config.tooltip.components.default"),
-    @SerializedName("changes") CHANGES(2, "componentviewer.config.tooltip.components.changes");
+    @SerializedName("all") ALL("componentviewer.config.tooltip.components.all"),
+    @SerializedName("default") DEFAULT("componentviewer.config.tooltip.components.default"),
+    @SerializedName("changes") CHANGES("componentviewer.config.tooltip.components.changes");
 
-    private final int id;
+    private final String serializedName;
     private final String translationKey;
 
-    private TooltipComponents(int id, String translationKey) {
-        this.id = id;
+    private TooltipComponents(String translationKey) {
+        this.serializedName = OptionEnum.createSerializedName(this);
         this.translationKey = translationKey;
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSerializedName() {
+        return this.serializedName;
     }
 
     @Override
-    public String getKey() {
+    public String getTranslationKey() {
         return this.translationKey;
     }
 }

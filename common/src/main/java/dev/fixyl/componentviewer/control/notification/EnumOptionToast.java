@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.OptionEnum;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.option.EnumOption;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 
 public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 

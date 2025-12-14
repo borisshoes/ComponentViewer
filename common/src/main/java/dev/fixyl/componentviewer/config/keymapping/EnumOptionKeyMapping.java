@@ -3,10 +3,10 @@ package dev.fixyl.componentviewer.config.keymapping;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.minecraft.client.gui.components.toasts.Toast.Visibility;
-import net.minecraft.util.OptionEnum;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.option.EnumOption;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 import dev.fixyl.componentviewer.control.notification.EnumOptionToast;
 
 public class EnumOptionKeyMapping<E extends Enum<E> & OptionEnum> extends AdvancedKeyMapping implements TickedKeyMapping {

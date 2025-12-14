@@ -2,29 +2,29 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.OptionEnum;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 
 public enum TooltipKeepSelection implements OptionEnum {
 
-    @SerializedName("index") INDEX(0, "componentviewer.config.tooltip.keep_selection.index"),
-    @SerializedName("type") TYPE(1, "componentviewer.config.tooltip.keep_selection.type"),
-    @SerializedName("never") NEVER(2, "componentviewer.config.tooltip.keep_selection.never");
+    @SerializedName("index") INDEX("componentviewer.config.tooltip.keep_selection.index"),
+    @SerializedName("type") TYPE("componentviewer.config.tooltip.keep_selection.type"),
+    @SerializedName("never") NEVER("componentviewer.config.tooltip.keep_selection.never");
 
-    private final int id;
+    private final String serializedName;
     private final String translationKey;
 
-    private TooltipKeepSelection(int id, String translationKey) {
-        this.id = id;
+    private TooltipKeepSelection(String translationKey) {
+        this.serializedName = OptionEnum.createSerializedName(this);
         this.translationKey = translationKey;
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSerializedName() {
+        return this.serializedName;
     }
 
     @Override
-    public String getKey() {
+    public String getTranslationKey() {
         return this.translationKey;
     }
 }
