@@ -7,7 +7,7 @@ import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping.Category;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.slf4j.Logger;
 
@@ -376,6 +376,6 @@ public final class Configs implements Options, KeyMappings {
     };
 
     private static Category createKeyCategory(String id) {
-        return new Category(ResourceLocation.fromNamespaceAndPath(KEY_CATEGORY_NAMESPACE, id));
+        return new Category(Identifier.fromNamespaceAndPath(KEY_CATEGORY_NAMESPACE, id));
     }
 }

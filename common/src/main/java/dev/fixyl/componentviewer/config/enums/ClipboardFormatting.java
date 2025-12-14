@@ -2,30 +2,30 @@ package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
-import net.minecraft.util.OptionEnum;
+import dev.fixyl.componentviewer.config.option.EnumOption.OptionEnum;
 
 public enum ClipboardFormatting implements OptionEnum {
 
-    @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
-    @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
-    @SerializedName("json") JSON(2, "componentviewer.config.clipboard.formatting.json"),
-    @SerializedName("object") OBJECT(3, "componentviewer.config.clipboard.formatting.object");
+    @SerializedName("sync") SYNC("componentviewer.config.clipboard.formatting.sync"),
+    @SerializedName("snbt") SNBT("componentviewer.config.clipboard.formatting.snbt"),
+    @SerializedName("json") JSON("componentviewer.config.clipboard.formatting.json"),
+    @SerializedName("object") OBJECT("componentviewer.config.clipboard.formatting.object");
 
-    private final int id;
+    private final String serializedName;
     private final String translationKey;
 
-    private ClipboardFormatting(int id, String translationKey) {
-        this.id = id;
+    private ClipboardFormatting(String translationKey) {
+        this.serializedName = OptionEnum.createSerializedName(this);
         this.translationKey = translationKey;
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSerializedName() {
+        return this.serializedName;
     }
 
     @Override
-    public String getKey() {
+    public String getTranslationKey() {
         return this.translationKey;
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
@@ -167,13 +167,13 @@ public class Tooltip {
 
         // Add all component types
         for (DataComponentType<?> dataComponentType : dataComponentTypes) {
-            ResourceLocation resourceLocation = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
+            Identifier identifier = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(dataComponentType);
             MutableComponent componentTypeText = (
-                (resourceLocation == null)
+                (identifier == null)
                     ? Component.translatable(NOT_REGISTERED_TRANSLATION_KEY)
                         .withStyle(COMPONENT_STYLE)
                         .withStyle(NOT_REGISTERED_COMPONENT_STYLE)
-                    : Component.literal(resourceLocation.toString())
+                    : Component.literal(identifier.toString())
                         .withStyle(COMPONENT_STYLE)
             );
 
